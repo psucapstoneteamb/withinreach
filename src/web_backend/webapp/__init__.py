@@ -18,39 +18,39 @@ app_run_args = {}
 #db = SQLAlchemy()
 
 def create_app(run_mode="development"):
-    # Create Flask app
-    global app
-    app = Flask("webapp")
+	# Create Flask app
+	global app
+	app = Flask("webapp")
 
-    # Load default configuration
-    app.config.from_object("webapp.base_settings")
+	# Load base configuration
+	app.config.from_object("webapp.base_settings")
 
-	# Config host and port
-    global app_run_args
-    app_run_args = {'port': 5000, 'host': '127.0.0.1'}
+	# Config default host and port
+	global app_run_args
+	app_run_args = {'port': 5000, 'host': '127.0.0.1'}
 
-    if run_mode == "development":
-        app.config["DEBUG"] = True
-        app.config["SECRET_KEY"] = "development_key"
-        toolbar = DebugToolbarExtension(app)
+	if run_mode == "development":
+		app.config["DEBUG"] = True
+		app.config["SECRET_KEY"] = "development_key"
+		toolbar = DebugToolbarExtension(app)
 
-    elif run_mode == "teamtest":
-        app.config["DEBUG"] = False
-        # Get port number from Heroku environment variable
-        app_run_args['port'] = int(os.environ.get('PORT', 5000))
+	elif run_mode == "teamtest":
+		app.config["DEBUG"] = False
+		# Get port number from Heroku environment variable
+		app_run_args['port'] = int(os.environ.get('PORT', 5000))
 
-    elif run_mode == "production":
-        logging.error("Not yet config production run mode")
+	elif run_mode == "production":
+		logging.error("Not yet config production run mode")
 
-    else:
-        logging.error("Did not recognize run mode '%s'" % run_mode)
-        return
+	else:
+		logging.error("Did not recognize run mode '%s'" % run_mode)
+		return
 
-    # TODO Initialize the database
+	# TODO Initialize the database
 
-    # Initialize application
-    # Import the api (views), to apply the decorators which use the global app object.
-    import webapp.api
+	# Initialize application
+	# Import the api (views), to apply the decorators which use the global app object.
+	import webapp.api
 
 def run_app():
-    app.run(**app_run_args)
+	app.run(**app_run_args)

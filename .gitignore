@@ -1,0 +1,11 @@
+*~
+*.pyc
+*.egg
+*.egg-info
+local_settings.py
+env/
+bin/
+include/
+lib/
+.installed.cfg
+pip-log.txt

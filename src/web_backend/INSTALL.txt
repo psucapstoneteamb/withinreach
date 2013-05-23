@@ -1,9 +1,0 @@
-<rough instruction - to be edited>
-Set up project on Linux (should be similar on Mac):
-Prerequisites: virtualenv, python2.7
-$ git pull blah blah blah
-$ cd ....../web_backend/
-$ virtualenv --no-site-packages env
-$ source env/bin/activate
-$ pip install -r requirements.txt
-$ python run_server.py

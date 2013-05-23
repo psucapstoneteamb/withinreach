@@ -1,0 +1,40 @@
+<rough instruction - to be edited>
+Set up project on Linux (should be similar on Mac):
+Prerequisites:
+	virtualenv (https://pypi.python.org/pypi/virtualenv)
+	python (ver 2.7)
+
+Checkout the repo:
+$ git pull blah blah blah
+
+We will make a virtual environment for the libraries, frameworks that are
+required for the Python backend to run. Pros: no dependencies mess, everything
+is encapsulated in the virtual environment, no actual install to the machine.
+
+On terminal go to this folder: sp2013cs487-team-b/src/web_backend/
+Create a virtual environment. The command will create a folder name env:
+$ virtualenv --no-site-packages env
+
+Tell the terminal where to look for executable files:
+$ source env/bin/activate
+(The reverse command is '$ deactivate')
+
+Now when we run '$ python', The python file that get called is the one inside
+env, not the global one. Make sure you get 2.7.x when running '$ python --version'.
+(if not, email me).
+
+Install Flask and other libraries into env:
+$ pip install -r requirements.txt
+
+Run the webapp on local server at 127.0.0.1:
+$ python run_server.py
+Go to http://127.0.0.1:5000 on a web browser to see if it works.
+
+-----------
+I will try to complete this guide with instructions for Windows. However, I'm really
+grateful if any of you figure out how to set this up for Windows and edit this.
+
+-----------
+Some note about the local server:
+Flask has a built-in server for development. That is what the webapp running on
+with this configuration on your local machine.

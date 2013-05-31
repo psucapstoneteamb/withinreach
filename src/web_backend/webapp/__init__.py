@@ -27,7 +27,7 @@ def create_app(run_mode="development"):
 
 	# Config default host and port
 	global app_run_args
-	app_run_args = {'port': 5000, 'host': '127.0.0.1'}
+	app_run_args = {"port": 5000, "host": "127.0.0.1"}
 
 	if run_mode == "development":
 		app.config["DEBUG"] = True
@@ -36,8 +36,9 @@ def create_app(run_mode="development"):
 
 	elif run_mode == "teamtest":
 		app.config["DEBUG"] = False
+		app_run_args["host"] = "0.0.0.0"
 		# Get port number from Heroku environment variable
-		app_run_args['port'] = int(os.environ.get('PORT', 5000))
+		app_run_args["port"] = int(os.environ.get("PORT", 5000))
 
 	elif run_mode == "production":
 		logging.error("Not yet config production run mode")

@@ -29,7 +29,7 @@ public class ServerComMgr extends AsyncTask<String, Void, String>
 		// "http://withinreach.herokuapp.com/arrival/6309" as url for this test
 		
 		//to call this function in main thread:
-		// new ServerCommunication().execute(url);
+		// new ServerComMgr().execute(url);
 		
 		
 		HttpClient client = new DefaultHttpClient();

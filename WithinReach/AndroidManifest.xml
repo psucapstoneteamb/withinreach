@@ -11,7 +11,14 @@
     <permission
         android:name="org.leifolson.withinreach.permission.MAPS_RECEIVE"
         android:protectionLevel="signature"/>
-    
+        
+    <uses-permission android:name="org.leifolson.withinreach.permission.MAPS_RECEIVE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     
     <uses-feature
@@ -25,6 +32,10 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+       <!--  
+        <uses-library android:name="com.google.android.maps"/>
+        -->
+        <uses-library android:name="com.google.android.maps"/>
         <activity
             android:name="org.leifolson.withinreach.WithinReachActivity"
             android:label="@string/app_name" 
@@ -50,12 +61,6 @@
             android:value="AIzaSyAox1kk5_7iB7pfaN2XA7lyhvKzihR0o-8"/>
     </application>
     
-    <uses-permission android:name="org.leifolson.withinreach.permission.MAPS_RECEIVE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
 
 </manifest>

@@ -11,17 +11,32 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/select_time"
+        android:textStyle="bold"
         android:layout_marginTop="@dimen/menu_title_vertical_margin"
         android:layout_marginBottom="@dimen/menu_title_vertical_margin"  />
 
-    <SeekBar
-        android:id="@+id/seekBar1"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/menu_seekbar_vertical_margin"
-        android:layout_marginBottom="@dimen/menu_seekbar_vertical_margin"
-        android:layout_marginLeft="@dimen/menu_seekbar_horizontal_margin"
-        android:layout_marginRight="@dimen/menu_seekbar_horizontal_margin" />
+        android:orientation="vertical" >
+            
+        <TextView
+        	android:id="@+id/time_text"
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:gravity="center"
+        	android:text="@string/init_seek_time"/>
+        
+        
+    	<SeekBar
+     	   	android:id="@+id/time_seekbar"
+       	 	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:layout_marginTop="@dimen/menu_seekbar_vertical_margin"
+        	android:layout_marginBottom="@dimen/menu_seekbar_vertical_margin"
+        	android:layout_marginLeft="@dimen/menu_seekbar_horizontal_margin"
+        	android:layout_marginRight="@dimen/menu_seekbar_horizontal_margin" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/mode_title"
@@ -29,6 +44,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/select_transport_mode"
+        android:textStyle="bold"
         android:layout_marginTop="@dimen/menu_title_vertical_margin"
         android:layout_marginBottom="@dimen/menu_title_vertical_margin" />
 
@@ -38,7 +54,7 @@
         android:orientation="horizontal" >
 
         <ToggleButton
-            android:id="@+id/toggle_button0"
+            android:id="@+id/toggle_button_walk"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -46,7 +62,7 @@
             android:textOn="@string/walk" />
 
         <ToggleButton
-            android:id="@+id/toggle_button1"
+            android:id="@+id/toggle_button_bike"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -54,7 +70,7 @@
             android:textOn="@string/bike" />
 
         <ToggleButton
-            android:id="@+id/toggle_button2"
+            android:id="@+id/toggle_button_transit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -68,6 +84,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/menu_done" />
+    
+    <Button
+        android:id="@+id/help_menu_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/help" />
 
 
 

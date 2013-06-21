@@ -1,5 +1,8 @@
 package org.leifolson.withinreach;
 
+import java.util.concurrent.ExecutionException;
+
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
@@ -9,8 +12,8 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
-public class WithinReachActivity extends FragmentActivity {
-	//Haneen is adding a comment 
+
+public class WithinReachActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -26,7 +29,12 @@ public class WithinReachActivity extends FragmentActivity {
 			@Override
 			public void onClick(View view) {
 				startMenu();
+				//params[0] should be the url of the json file. I used:
+				// "http://withinreach.herokuapp.com/arrival/6309" as url for this test
 				
+				//to call this function in main thread:
+				//String url = "http://withinreach.herokuapp.com/arrival/6309";
+				//AsyncTask<String,Void,String> smgr = new ServerComMgr().execute(url);
 			}
 		}); 
 	}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Within Reach</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_title">Main Menu</string>
+    <string name="walk">Walk</string>
+    <string name="bike">Bike</string>
+    <string name="transit">Transit</string>
+    <string name="main_button">Menu</string>
+    <string name="select_transport_mode">Select Transportation Mode</string>
+    <string name="menu_done">Done!</string>
+    <string name="select_time">Select Time</string>
+    <string name="help">Help</string>
+    <string name="init_seek_time">0 mins</string>
+
+</resources>

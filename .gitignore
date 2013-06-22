@@ -3,7 +3,7 @@
 *.egg
 *.egg-info
 local_settings.py
-env/
+src/web_backend/env/
 bin/
 include/
 lib/

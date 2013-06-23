@@ -24,3 +24,11 @@ def feed_reach():
         return jsonify(reach.get_result())
     except:
         return jsonify({"success":False})
+
+@app.route("/echo")
+def echo():
+    try:
+        Reach(request.args)
+        return jsonify({"correct":True, "echo":request.args})
+    except:
+        return jsonify({"correct":False, "echo":request.args})

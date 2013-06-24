@@ -16,9 +16,13 @@
 
 package org.leifolson.withinreach;
 
+import java.util.Date;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
@@ -126,7 +130,8 @@ public class MenuActivity extends Activity {
 				// takes us back to the WithinReachActivity
 				// will need to do some communication with the server before
 				// invoking the WithinReachActivity
-				startWithinReach();
+				
+				invokeServerComMgr();
 				
 			}
 		});
@@ -135,9 +140,32 @@ public class MenuActivity extends Activity {
 	
 	// when the user clicks the "Done!" button, this method will be called,
 	// launching the main WithinReach activity
-	public void startWithinReach(){
-		Intent launchWithinReach = new Intent(this, WithinReachActivity.class);
-		startActivity(launchWithinReach);
+	public void invokeServerComMgr(){
+		//Setting up a handler to handle the server response. If the server gives back a message of 1, then this handler
+		//will call 
+		Handler asyncHandler = new Handler()
+		{
+		    public void handleMessage(Message msg){
+		        super.handleMessage(msg);
+		        //What did that async task say?
+		        switch (msg.what)
+		        {
+		            case 1:
+		                returnToWithinReachActivity();
+		                break;                      
+		        }
+		    }
+		};  
+		
+		
+		long str = new Date().getTime();
+		new ServerComMgr(this, asyncHandler).execute("http://withinreach.herokuapp.com/echo?something=" + str);
 	}
 
+	public void returnToWithinReachActivity()
+	{
+		Intent launchWithinReach = new Intent(this, WithinReachActivity.class);
+		launchWithinReach.putExtra("serverCallDone", 1);
+		startActivity(launchWithinReach);
+	}
 }

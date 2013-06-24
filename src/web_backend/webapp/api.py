@@ -4,11 +4,19 @@ from flask import jsonify, request
 # Local
 from webapp import app
 import trimet_getters
-from reach import Reach
+from controller import Controller
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    d={  "success":True,
+         "result":{
+             0:{"coordinate": [{"lat":1.1,"long":2.2}, {"lat":2.2,"long":3.3}]},
+             1:{"coordinate": [{"lat":1.2,"long":2.5}]}
+         }
+      }
+    print d
+    print '---'
+    return jsonify(d)
 
 @app.route("/arrival/<int:stop_id>")
 def feed_arrival(stop_id):
@@ -19,16 +27,17 @@ def feed_arrival(stop_id):
 def feed_reach():
     # TODO: add logging
     try:
-        reach = Reach(request.args)
-        reach.calculate_simple()
-        return jsonify(reach.get_result())
+        c = Controller(request.args)
+        c.calculate_simple()
+        return jsonify(c.get_result())
     except:
         return jsonify({"success":False})
 
 @app.route("/echo")
 def echo():
     try:
-        Reach(request.args)
+        Controller(request.args)
         return jsonify({"correct":True, "echo":request.args})
     except:
         return jsonify({"correct":False, "echo":request.args})
+

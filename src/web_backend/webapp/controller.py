@@ -1,4 +1,6 @@
-class Reach:
+from result import Result
+
+class Controller:
     """
     This class encapsulates request arguments from the Android app,
     validates inputs, processes inputs and creates results which is
@@ -15,10 +17,12 @@ class Reach:
             self.mode_code = request_args["mode_code"]
             self.constraint = request_args["constraint"]
         except KeyError:
-            raise Exception("Missing arguments")
+            raise Exception("* Missing arguments")
         
         if not self.validate():
-            raise Exception("Ill-formated arguments")
+            raise Exception("* Ill-formated arguments")
+        
+        self.r = Result()
             
     def validate(self):
         # lat, lng          -> float
@@ -32,7 +36,18 @@ class Reach:
         """
         Phase 1 simple routing (circles).
         """
-        pass
+        # Calculate mode 1
+        self.r.set_cur_mode(1)
+        self.r.add_coordinate(4.2,5.3)
+        self.r.add_coordinate(4.4,5.6)
+
+        # Calculate mode 3
+        self.r.set_cur_mode(3)
+        self.r.add_coordinate(10.5,10.9)
+        
+        # Set success flag
+        self.r.set_success_true()
+        print 'HEY'
     
     def calculate_2(self):
         """
@@ -41,4 +56,4 @@ class Reach:
         pass
     
     def get_result(self):
-        return {"success":True, "poligon":"..."}
+        return self.r.get()

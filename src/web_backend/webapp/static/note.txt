@@ -1,0 +1,33 @@
+Sample result JSON:
+{
+  "success": true, 
+  "result": {
+    "0": {
+      "coordinate": [
+        {
+          "long": 2.2, 
+          "lat": 1.1
+        }, 
+        {
+          "long": 3.3, 
+          "lat": 2.2
+        }
+      ]
+    }, 
+    "1": {
+      "coordinate": [
+        {
+          "long": 2.5, 
+          "lat": 1.2
+        }
+      ]
+    }
+  }
+}
+
+Structure explanation:
+	+KEY:"success" (always in the JSON file); VAL:a flag
+	+KEY:"result" (appears when success is true); VAL: one or more pairs of subkeys and values, each subkey is a transport mode (see below)
+		+KEY:"0"; VAL: one pair of subkey "coordinate" and its value
+			+KEY:"coordiante"; VALUE: a list of coordinates
+		+KEY:"1"; ...

@@ -1,5 +1,5 @@
 # Libraries
-from flask import jsonify, request
+from flask import jsonify, request, redirect, url_for
 
 # Local
 from webapp import app
@@ -8,15 +8,8 @@ from controller import Controller
 
 @app.route("/")
 def hello():
-    d={  "success":True,
-         "result":{
-             0:{"coordinate": [{"lat":1.1,"long":2.2}, {"lat":2.2,"long":3.3}]},
-             1:{"coordinate": [{"lat":1.2,"long":2.5}]}
-         }
-      }
-    print d
-    print '---'
-    return jsonify(d)
+    print url_for('static', filename='note.txt')
+    return redirect(url_for('static', filename='note.txt'))
 
 @app.route("/arrival/<int:stop_id>")
 def feed_arrival(stop_id):

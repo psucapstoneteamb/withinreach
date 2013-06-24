@@ -3,8 +3,8 @@ from result import Result
 class Controller:
     """
     This class encapsulates request arguments from the Android app,
-    validates inputs, processes inputs and creates results which is
-    ready for jsonify.
+    validates inputs, processes inputs and creates result (self.r) which
+    is ready for jsonify.
     """
     def __init__(self, request_args):
         try:

@@ -1,16 +1,26 @@
 package org.leifolson.withinreach;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.concurrent.ExecutionException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 
 public class WithinReachActivity extends Activity {
@@ -24,17 +34,14 @@ public class WithinReachActivity extends Activity {
 		
 		// setting up the onclick listener to handle the button click
 		// this is just a way to launch the menu for now
+
+		
 		menuButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View view) {
 				startMenu();
-				//params[0] should be the url of the json file. I used:
-				// "http://withinreach.herokuapp.com/arrival/6309" as url for this test
 				
-				//to call this function in main thread:
-				//String url = "http://withinreach.herokuapp.com/arrival/6309";
-				//AsyncTask<String,Void,String> smgr = new ServerComMgr().execute(url);
 			}
 		}); 
 	}
@@ -48,6 +55,66 @@ public class WithinReachActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.within_reach, menu);
 		return true;
+	}
+	
+	public void onNewIntent(Intent t) //This gets called from MenuActivity when it launches the WithinReachActivity
+	{
+		Bundle extras = t.getExtras();
+		if (extras != null)
+		{
+			int serverDone = extras.getInt("serverCallDone");
+			if (serverDone == 1)
+			{
+				handleDataFile();		
+			}
+		}
+		else
+			System.out.println("EXTRAS ARE NULL");
+	}
+	
+	public void handleDataFile()
+	{
+		FileInputStream fileInputStream = null;
+		try
+		{
+			fileInputStream = openFileInput("test.txt");
+		} 
+		catch (FileNotFoundException e) 
+		{
+			e.printStackTrace();
+		}
+		
+		InputStreamReader inputStreamReader = new InputStreamReader ( fileInputStream ) ;
+        BufferedReader bufferedReader = new BufferedReader ( inputStreamReader ) ;
+        String stringReader;
+        String fullString = "";
+        try 
+        {
+	        while ((stringReader = bufferedReader.readLine()) != null)
+	        {
+	        	fullString += stringReader;
+	        }
+	        fileInputStream.close();
+
+        }
+        catch (IOException e)
+        {
+        	e.printStackTrace();
+        	
+        }
+        try 
+        {
+			JSONObject jsonObject = new JSONObject(fullString);
+			EditText textField = (EditText) findViewById(R.id.editText1);
+			textField.setText("Server Echo Response: " + jsonObject.getJSONObject("echo").getString("something"));
+				
+		}
+        catch (JSONException e) 
+		{
+
+			e.printStackTrace();
+		}
+		
 	}
 
 }

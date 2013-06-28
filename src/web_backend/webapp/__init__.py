@@ -3,6 +3,7 @@
 #
 # Different run modes:
 #   development - local, personal development server (default)
+#   test        - local unit test
 #   teamtest    - deploy on Heroku
 #   production  - <not yet config>
 
@@ -33,6 +34,11 @@ def create_app(run_mode="development"):
         app.config["DEBUG"] = True
         app.config["SECRET_KEY"] = "development_key"
         toolbar = DebugToolbarExtension(app)
+    
+    elif run_mode == "test":
+        app.config["DEBUG"] = True
+        app.config["TESTING"] = True
+        #app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
 
     elif run_mode == "teamtest":
         app.config["DEBUG"] = False

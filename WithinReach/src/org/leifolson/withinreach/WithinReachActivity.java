@@ -146,7 +146,7 @@ public class WithinReachActivity extends FragmentActivity {
 		FileInputStream fileInputStream = null;
 		try
 		{
-			fileInputStream = openFileInput("test.txt");
+			fileInputStream = openFileInput("jsonResult.txt");
 		} 
 		catch (FileNotFoundException e) 
 		{

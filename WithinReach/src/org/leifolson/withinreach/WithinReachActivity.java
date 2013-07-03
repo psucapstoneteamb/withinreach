@@ -78,15 +78,14 @@ public class WithinReachActivity extends FragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item){
 		super.onOptionsItemSelected(item);
 		
-		switch (item.getItemId()){
+		if (item.getItemId() == R.id.action_settings){
 		
 			// this is the settings menu item
-			case (R.id.action_settings):{
-				// launch the menu activity to specify app settings
-				startMenu();
-			}
-			default: return false;
+			// launch the menu activity to specify app settings
+			startMenu();
+			return true;
 		}
+		else return false;
 	}
 	
     /**

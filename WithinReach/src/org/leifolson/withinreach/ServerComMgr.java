@@ -82,28 +82,12 @@ public class ServerComMgr extends AsyncTask<String, Void, String>
 		}
 		
 		result = stringBuilder.toString();
-		
-//		try //building the JSON object and grabbing the ETA of a bus
-//		{
-//			JSONObject jsonObject = new JSONObject(result);
-//		
-//			//JSONArray jsonArray = jsonObject.getJSONObject("resultSet").getJSONArray("arrival");
-//			//JSONObject jsonObj = jsonArray.getJSONObject(0);
-//			String output = jsonObject.getJSONObject("echo").getString("something");
-//			System.out.println("echo: " + output);
-//		}
-//		catch (JSONException e)
-//		{
-//			System.out.println(e.getMessage());
-//			
-//		}
-		
+		System.out.println("RESULT IS " + result);
 
-		//File file = context.getFilesDir();
 
 		try 
 		{
-			FileOutputStream fstream = context.openFileOutput("test.txt", Context.MODE_PRIVATE);
+			FileOutputStream fstream = context.openFileOutput("jsonResult.txt", Context.MODE_PRIVATE);
 			fstream.write(result.getBytes());
 			fstream.close();
 		}

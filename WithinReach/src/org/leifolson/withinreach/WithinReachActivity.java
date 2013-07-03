@@ -77,7 +77,7 @@ public class WithinReachActivity extends Activity {
 		FileInputStream fileInputStream = null;
 		try
 		{
-			fileInputStream = openFileInput("test.txt");
+			fileInputStream = openFileInput("jsonResult.txt");
 		} 
 		catch (FileNotFoundException e) 
 		{
@@ -105,8 +105,12 @@ public class WithinReachActivity extends Activity {
         try 
         {
 			JSONObject jsonObject = new JSONObject(fullString);
+			JSONObject jsonObject2 = new JSONObject();
+			
+			System.out.println("JSON IS " + jsonObject.toString());
+
 			EditText textField = (EditText) findViewById(R.id.editText1);
-			textField.setText("Server Echo Response: " + jsonObject.getJSONObject("echo").getString("something"));
+			textField.setText("Server Response: " + jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(0).getString("long"));
 				
 		}
         catch (JSONException e) 

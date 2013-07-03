@@ -185,11 +185,10 @@ containing a value of this type.
         public static int ic_launcher=0x7f020018;
     }
     public static final class id {
-        public static int action_settings=0x7f050010;
-        public static int button1=0x7f05000e;
-        public static int editText1=0x7f05000f;
+        public static int action_settings=0x7f05000f;
         public static int help_menu_button=0x7f05000d;
         public static int hybrid=0x7f050004;
+        public static int map=0x7f05000e;
         public static int menu_done_button=0x7f05000c;
         public static int mode_title=0x7f050008;
         public static int none=0x7f050000;

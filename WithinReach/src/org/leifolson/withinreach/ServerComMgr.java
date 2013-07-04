@@ -103,7 +103,7 @@ public class ServerComMgr extends AsyncTask<String, Void, String>
 
 		try 
 		{
-			FileOutputStream fstream = context.openFileOutput("test.txt", Context.MODE_PRIVATE);
+			FileOutputStream fstream = context.openFileOutput("jsonResult.txt", Context.MODE_PRIVATE);
 			fstream.write(result.getBytes());
 			fstream.close();
 		}

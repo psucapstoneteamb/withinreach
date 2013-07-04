@@ -16,11 +16,7 @@
 
 package org.leifolson.withinreach;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -32,7 +28,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -163,30 +158,8 @@ public class MenuActivity extends Activity {
 		};  
 		
 		
-		GregorianCalendar calendar = (GregorianCalendar)Calendar.getInstance();
-		int day = calendar.get(Calendar.DAY_OF_WEEK);
-		int month = calendar.get(Calendar.MONTH);
-		int year = calendar.get(Calendar.YEAR);
-		double latitude = 1.111111;
-		double longitude = 2.222222;
-		int time = 200;
-		int mode_code = 0;
-		SeekBar timeSeekBar = (SeekBar) findViewById(R.id.time_seekbar);
-		int time_constraint = timeSeekBar.getProgress();
-		
-		
-		String url = "http://withinreach.herokuapp.com/json?";
-		url += ("lat=" + latitude);
-		url += ("&long=" + longitude);
-		url += ("&time=" + time);
-		url += ("&day=" + day);
-		url += ("&month=" + month);
-		url += ("&year=" + year);
-		url += ("&mode_code=" + mode_code);
-		url += ("&constraint=" + time_constraint);
-		System.out.println(url);
-		
-		new ServerComMgr(this, asyncHandler).execute(url);
+		long str = new Date().getTime();
+		new ServerComMgr(this, asyncHandler).execute("http://withinreach.herokuapp.com/echo?something=" + str);
 	}
 
 	public void returnToWithinReachActivity()

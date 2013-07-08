@@ -36,18 +36,31 @@ class Controller:
         """
         Phase 1 simple routing (circles).
         """
-        # Calculate mode 1
-        self.r.set_cur_mode(1)
-        self.r.add_coordinate(4.2,5.3)
-        self.r.add_coordinate(4.4,5.6)
-
-        # Calculate mode 3
-        self.r.set_cur_mode(3)
-        self.r.add_coordinate(10.5,10.9)
+        mode = int(self.mode_code)
+        time = float(self.constraint)
+        lat = float(self.lat)
+        long = float(self.lng)
+        
+        if (mode % 2) == 1: #walking, using 4 MPH, or 1/1035 latitude a minute as the walk speed
+            self.r.set_cur_mode(1)
+            self.r.add_coordinate(lat,long)
+            self.r.add_coordinate(lat+(time/1035),long)
+        if (mode % 4) >= 2: #biking, using 12 MPH, or 1/345 latitude a minute as the bike speed
+            self.r.set_cur_mode(2)
+            self.r.add_coordinate(lat,long)
+            self.r.add_coordinate(lat+(time/345),long)
+        if (mode % 8) >= 4: #transit, using 30 MPH, or 1/138 latitude a minute as the transit speed
+            self.r.set_cur_mode(4)
+            self.r.add_coordinate(lat,long)
+            self.r.add_coordinate(lat+(time/138),long)
+        
+        
         
         # Set success flag
         self.r.set_success_true()
         print 'HEY'
+		
+		
     
     def calculate_2(self):
         """

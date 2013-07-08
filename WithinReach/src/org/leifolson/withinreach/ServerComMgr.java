@@ -175,7 +175,6 @@ public class ServerComMgr extends AsyncTask<String, Void, String>
 	
 	protected void onPostExecute(String str)
 	{
-		System.out.println("onPostExecute");
 		Message msg = Message.obtain();
         msg.what = 1; //sending 1 means server call is done
         uiHandler.sendMessage(msg);

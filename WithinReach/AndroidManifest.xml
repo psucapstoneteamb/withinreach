@@ -54,10 +54,11 @@
         
         
         <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyAox1kk5_7iB7pfaN2XA7lyhvKzihR0o-8"/>
+            android:name="com.google.android.maps.v2.API_KEY"  
+            android:value="AIzaSyAox1kk5_7iB7pfaN2XA7lyhvKzihR0o-8"/> 
             <!-- android:value="AIzaSyCrE5BVGY64zLgBjQK8BsiSRTwIIgrwbLI"/> Haneen's key -->
-        	<!-- android:value="AIzaSyCm4udZpw73SvJe_V_Ii7OKfA_HidUnQ_0"/>  Alex's key  -->
+            <!-- android:value="AIzaSyCm4udZpw73SvJe_V_Ii7OKfA_HidUnQ_0"/> Alex's key -->
+        	  
         
     </application>
     

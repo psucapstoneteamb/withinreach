@@ -3,8 +3,11 @@ package org.leifolson.withinreach;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.concurrent.ExecutionException;
 
 import org.json.JSONException;
@@ -15,11 +18,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.annotation.TargetApi;
 import android.support.v4.app.FragmentActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,6 +44,7 @@ public class WithinReachActivity extends FragmentActivity {
 		setContentView(R.layout.activity_within_reach);
 		
 		setUpMapIfNeeded();
+		setupSettingsFile();
 		
 	}
 	
@@ -125,6 +131,54 @@ public class WithinReachActivity extends FragmentActivity {
     private void setUpMap() {
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
+    
+    private void setupSettingsFile()
+    {
+    	GregorianCalendar calendar = (GregorianCalendar)Calendar.getInstance();
+		int day = calendar.get(Calendar.DAY_OF_WEEK);
+		int month = calendar.get(Calendar.MONTH);
+		int year = calendar.get(Calendar.YEAR);
+    	JSONObject settingsJson = new JSONObject();
+    	double latitude = 0;
+    	double longitude = 0;
+		try 
+		{
+			
+			settingsJson.put("lat", latitude);
+			settingsJson.put("long", longitude);
+			settingsJson.put("time", 200);
+			settingsJson.put("day", day);
+			settingsJson.put("month", month);
+			settingsJson.put("year", year);
+			settingsJson.put("mode", 1);
+			settingsJson.put("constraint", 0);
+		} 
+		catch (JSONException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		FileOutputStream fstream;
+		try 
+		{
+			fstream = openFileOutput("settingsJson.txt", Context.MODE_PRIVATE);
+
+			fstream.write(settingsJson.toString().getBytes());
+			
+		} 
+		catch (FileNotFoundException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+    	
+    }
 	
 	public void onNewIntent(Intent t) //This gets called from MenuActivity when it launches the WithinReachActivity
 	{
@@ -174,8 +228,9 @@ public class WithinReachActivity extends FragmentActivity {
         try 
         {
 			JSONObject jsonObject = new JSONObject(fullString);
-	//		EditText textField = (EditText) findViewById(R.id.editText1);
-	//		textField.setText("Server Echo Response: " + jsonObject.getJSONObject("echo").getString("something"));
+	
+			String result = jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(0).getString("lat");
+			System.out.println(result);
 				
 		}
         catch (JSONException e) 
@@ -183,6 +238,8 @@ public class WithinReachActivity extends FragmentActivity {
 
 			e.printStackTrace();
 		}
+        
+    
 		
 	}
 

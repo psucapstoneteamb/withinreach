@@ -5,17 +5,20 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.concurrent.ExecutionException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-import android.os.AsyncTask;
+
+import android.location.Location;
+import android.location.LocationManager;
+import android.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.annotation.TargetApi;
@@ -23,13 +26,25 @@ import android.support.v4.app.FragmentActivity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 
 
-public class WithinReachActivity extends FragmentActivity {
+public class WithinReachActivity extends FragmentActivity implements
+	//GooglePlayServicesClient.ConnectionCallbacks,
+	//GooglePlayServicesClient.OnConnectionFailedListener,
+	LocationListener,
+	LocationSource{
 	
 	// used as a handle to the map object
 	private GoogleMap mMap;
+	private OnLocationChangedListener mListener;
+	private LocationManager mLocationManager;
+
+	
+	// the start latitudes/longitudes define a starting location
+	// of Portland, OR
+	private static final Double startLat = 45.52;
+	private static final Double startLng = -122.681944;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +53,66 @@ public class WithinReachActivity extends FragmentActivity {
 		// inflate the UI
 		setContentView(R.layout.activity_within_reach);
 		
+		mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+		if(mLocationManager != null){
+			if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+				mLocationManager.requestLocationUpdates(
+						LocationManager.GPS_PROVIDER, 5000L, 5F, this);
+			}
+			else if(mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+				mLocationManager.requestLocationUpdates(
+						LocationManager.NETWORK_PROVIDER, 5000L, 5F, this);
+			}
+			else{
+				// error that gps is disabled
+			}
+		}
+		else{
+			// something has gone wrong with loc manager
+		}
+		
 		setUpMapIfNeeded();
 		
+		// set the starting location of the map
+		// the emulator does not like these two lines of code but an
+		// actual device does fine with this
+    	LatLng loc = new LatLng(startLat, startLng);
+    	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14.0f));
+		
+		
+	}
+	
+	@Override
+	protected void onStart(){
+		super.onStart();
+		
+		mMap.setMyLocationEnabled(true);
+		
+	}
+	
+	@Override
+	protected void onStop(){
+
+		super.onStop();
+	}
+	
+	@Override
+	protected void onPause(){
+
+		if(mLocationManager != null){
+			mLocationManager.removeUpdates(this);
+		}
+		super.onPause();
+	}
+	
+	@Override
+	protected void onResume(){
+		super.onResume();
+
+		setUpMapIfNeeded();
+		if(mLocationManager != null){
+			mMap.setMyLocationEnabled(true);
+		}
 	}
 	
 	/***
@@ -109,10 +182,13 @@ public class WithinReachActivity extends FragmentActivity {
             // Try to obtain the map from the SupportMapFragment.
             mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
+            
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 setUpMap();
             }
+            mMap.setLocationSource(this);
+            
         }
     }
 
@@ -123,7 +199,7 @@ public class WithinReachActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+    	mMap.setMyLocationEnabled(true);    	
     }
 	
 	public void onNewIntent(Intent t) //This gets called from MenuActivity when it launches the WithinReachActivity
@@ -183,6 +259,50 @@ public class WithinReachActivity extends FragmentActivity {
 
 			e.printStackTrace();
 		}
+		
+	}
+	
+
+	@Override
+	public void onLocationChanged(Location location){
+
+		if(mListener != null){
+			mListener.onLocationChanged(location);
+			mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(
+					location.getLatitude(),location.getLongitude())));
+		}
+	}
+
+  
+
+	@Override
+	public void activate(OnLocationChangedListener listener) {
+		// TODO Auto-generated method stub
+		mListener = listener;
+	}
+
+	@Override
+	public void deactivate() {
+		// TODO Auto-generated method stub
+		mListener = null;
+		
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
 		
 	}
 

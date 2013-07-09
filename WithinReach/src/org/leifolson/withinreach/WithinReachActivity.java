@@ -6,12 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-<<<<<<< .merge_file_XEd1ow
-=======
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.concurrent.ExecutionException;
->>>>>>> .merge_file_jlSa7e
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,15 +21,15 @@ import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
-<<<<<<< .merge_file_XEd1ow
+
 
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationListener;
-=======
+
 import android.location.Location;
 import android.os.AsyncTask;
->>>>>>> .merge_file_jlSa7e
+
 import android.os.Build;
 import android.os.Bundle;
 import android.annotation.TargetApi;

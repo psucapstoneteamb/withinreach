@@ -3,8 +3,15 @@ package org.leifolson.withinreach;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+<<<<<<< .merge_file_XEd1ow
+=======
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.concurrent.ExecutionException;
+>>>>>>> .merge_file_jlSa7e
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,14 +22,20 @@ import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
+<<<<<<< .merge_file_XEd1ow
 
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationListener;
+=======
+import android.location.Location;
+import android.os.AsyncTask;
+>>>>>>> .merge_file_jlSa7e
 import android.os.Build;
 import android.os.Bundle;
 import android.annotation.TargetApi;
 import android.support.v4.app.FragmentActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -72,6 +85,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		}
 		
 		setUpMapIfNeeded();
+		setupSettingsFile();
 		
 		// set the starting location of the map
 		// the emulator does not like these two lines of code but an
@@ -201,6 +215,54 @@ public class WithinReachActivity extends FragmentActivity implements
     private void setUpMap() {
     	mMap.setMyLocationEnabled(true);    	
     }
+    
+    private void setupSettingsFile()
+    {
+    	GregorianCalendar calendar = (GregorianCalendar)Calendar.getInstance();
+		int day = calendar.get(Calendar.DAY_OF_WEEK);
+		int month = calendar.get(Calendar.MONTH);
+		int year = calendar.get(Calendar.YEAR);
+    	JSONObject settingsJson = new JSONObject();
+    	double latitude = 0;
+    	double longitude = 0;
+		try 
+		{
+			
+			settingsJson.put("lat", latitude);
+			settingsJson.put("long", longitude);
+			settingsJson.put("time", 200);
+			settingsJson.put("day", day);
+			settingsJson.put("month", month);
+			settingsJson.put("year", year);
+			settingsJson.put("mode", 1);
+			settingsJson.put("constraint", 0);
+		} 
+		catch (JSONException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		FileOutputStream fstream;
+		try 
+		{
+			fstream = openFileOutput("settingsJson.txt", Context.MODE_PRIVATE);
+
+			fstream.write(settingsJson.toString().getBytes());
+			
+		} 
+		catch (FileNotFoundException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+    	
+    }
 	
 	public void onNewIntent(Intent t) //This gets called from MenuActivity when it launches the WithinReachActivity
 	{
@@ -250,8 +312,9 @@ public class WithinReachActivity extends FragmentActivity implements
         try 
         {
 			JSONObject jsonObject = new JSONObject(fullString);
-	//		EditText textField = (EditText) findViewById(R.id.editText1);
-	//		textField.setText("Server Echo Response: " + jsonObject.getJSONObject("echo").getString("something"));
+	
+			String result = jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(0).getString("lat");
+			System.out.println(result);
 				
 		}
         catch (JSONException e) 
@@ -259,6 +322,8 @@ public class WithinReachActivity extends FragmentActivity implements
 
 			e.printStackTrace();
 		}
+        
+    
 		
 	}
 	

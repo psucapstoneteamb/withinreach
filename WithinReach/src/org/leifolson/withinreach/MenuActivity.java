@@ -16,9 +16,21 @@
 
 package org.leifolson.withinreach;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -157,9 +169,84 @@ public class MenuActivity extends Activity {
 		    }
 		};  
 		
+		FileInputStream fileInputStream = null;
+		try
+		{
+			fileInputStream = openFileInput("settingsJson.txt");
+		} 
+		catch (FileNotFoundException e) 
+		{
+			e.printStackTrace();
+		}
 		
-		long str = new Date().getTime();
-		new ServerComMgr(this, asyncHandler).execute("http://withinreach.herokuapp.com/echo?something=" + str);
+		InputStreamReader inputStreamReader = new InputStreamReader ( fileInputStream ) ;
+        BufferedReader bufferedReader = new BufferedReader ( inputStreamReader ) ;
+        String stringReader;
+        String fullString = "";
+        try 
+        {
+	        while ((stringReader = bufferedReader.readLine()) != null)
+	        {
+	        	fullString += stringReader;
+	        }
+	        fileInputStream.close();
+
+        }
+        catch (IOException e)
+        {
+        	e.printStackTrace();
+        	
+        }
+        
+		try
+		{
+			JSONObject settingsJson = new JSONObject(fullString);
+			double latitude = settingsJson.getDouble("lat");
+			double longitude = settingsJson.getDouble("long");
+			int time = 200;
+			int mode_code = 0;
+			
+			SeekBar timeSeekBar = (SeekBar) findViewById(R.id.time_seekbar);
+			int time_constraint = timeSeekBar.getProgress();
+			settingsJson.put("constraint", time_constraint);
+	
+			String url = "http://withinreach.herokuapp.com/json?";
+			url += ("lat=" + latitude);
+			url += ("&long=" + longitude);
+			url += ("&time=" + time);
+			url += ("&day=" + settingsJson.getInt("day"));
+			url += ("&month=" + settingsJson.getInt("month"));
+			url += ("&year=" + settingsJson.getInt("year"));
+			url += ("&mode_code=" + mode_code);
+			url += ("&constraint=" + time_constraint);
+			System.out.println(url);
+			
+			FileOutputStream fstream;
+			try 
+			{
+				fstream = openFileOutput("settingsJson.txt", Context.MODE_PRIVATE);
+
+				fstream.write(settingsJson.toString().getBytes());
+				
+			} 
+			catch (FileNotFoundException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			new ServerComMgr(this, asyncHandler).execute(url);
+		}
+		catch (JSONException e) 
+		{
+			
+			
+		}
 	}
 
 	public void returnToWithinReachActivity()

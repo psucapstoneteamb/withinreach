@@ -41,18 +41,18 @@ class Controller:
         lat = float(self.lat)
         long = float(self.lng)
         
-        if (mode % 2) == 1: #walking, using 4 MPH, or 1/1035 latitude a minute as the walk speed
+        if (mode % 2) == 1: #walking, using 3 MPH, or 1/1380 latitude a minute as the walk speed
             self.r.set_cur_mode(1)
             self.r.add_coordinate(lat,long)
-            self.r.add_coordinate(lat+(time/1035),long)
-        if (mode % 4) >= 2: #biking, using 12 MPH, or 1/345 latitude a minute as the bike speed
+            self.r.add_coordinate(lat+(time/1380),long)
+        if (mode % 4) >= 2: #biking, using 10 MPH, or 1/414 latitude a minute as the bike speed
             self.r.set_cur_mode(2)
             self.r.add_coordinate(lat,long)
-            self.r.add_coordinate(lat+(time/345),long)
-        if (mode % 8) >= 4: #transit, using 30 MPH, or 1/138 latitude a minute as the transit speed
+            self.r.add_coordinate(lat+(time/414),long)
+        if (mode % 8) >= 4: #transit, using 20 MPH, or 1/207 latitude a minute as the transit speed
             self.r.set_cur_mode(4)
             self.r.add_coordinate(lat,long)
-            self.r.add_coordinate(lat+(time/138),long)
+            self.r.add_coordinate(lat+(time/207),long)
         
         
         

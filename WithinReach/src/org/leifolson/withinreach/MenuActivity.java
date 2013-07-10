@@ -85,6 +85,13 @@ public class MenuActivity extends Activity {
 		bikeToggleButton = (ToggleButton)findViewById(R.id.toggle_button_bike);
 		transitToggleButton = (ToggleButton)findViewById(R.id.toggle_button_transit);
 		
+		// set options to default values
+		walkToggleButton.setChecked(true);
+		bikeToggleButton.setChecked(true);
+		transitToggleButton.setChecked(true);
+		
+		timeSeekBar.setProgress(15);
+		seekTime.setText(Integer.toString(timeSeekBar.getProgress()));
 		
 		// setting up click listener for the seekbar
 		timeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){

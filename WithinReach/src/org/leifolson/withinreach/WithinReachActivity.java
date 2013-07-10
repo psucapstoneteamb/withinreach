@@ -22,6 +22,7 @@ import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 
 
@@ -56,6 +57,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	private GoogleMap mMap;
 	private OnLocationChangedListener mListener;
 	private LocationManager mLocationManager;
+	private Location mCurrentLocation;
 
 	
 	// the start latitudes/longitudes define a starting location
@@ -225,8 +227,13 @@ public class WithinReachActivity extends FragmentActivity implements
      * <p>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
+    private static final LatLng PORTLAND = new LatLng(45.5236, -122.6750);
     private void setUpMap() {
     	mMap.setMyLocationEnabled(true);
+    	mMap.addMarker(new MarkerOptions()
+         .position(PORTLAND)
+         .title("Marker"))
+         .setDraggable(true);
     }
     
     private void setupSettingsFile()
@@ -433,6 +440,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	@Override
 	public void onLocationChanged(Location location){
 
+		mCurrentLocation = location;
 		if(mListener != null){
 			mListener.onLocationChanged(location);
 			mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(

@@ -14,5 +14,6 @@
     <string name="select_time">Select Time</string>
     <string name="help">Help</string>
     <string name="init_seek_time">0 mins</string>
+    <string name="action_refresh">REFRESH</string>
 
 </resources>

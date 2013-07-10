@@ -204,11 +204,20 @@ public class MenuActivity extends Activity {
 			double latitude = settingsJson.getDouble("lat");
 			double longitude = settingsJson.getDouble("long");
 			int time = 200;
+			
 			int mode_code = 0;
+			if (walkToggled)
+				mode_code += 1;
+			if (bikeToggled)
+				mode_code += 2;
+			if (transitToggled)
+				mode_code += 4;
 			
 			SeekBar timeSeekBar = (SeekBar) findViewById(R.id.time_seekbar);
 			int time_constraint = timeSeekBar.getProgress();
+			
 			settingsJson.put("constraint", time_constraint);
+			settingsJson.put("mode", mode_code);
 	
 			String url = "http://withinreach.herokuapp.com/json?";
 			url += ("lat=" + latitude);
@@ -227,6 +236,8 @@ public class MenuActivity extends Activity {
 				fstream = openFileOutput("settingsJson.txt", Context.MODE_PRIVATE);
 
 				fstream.write(settingsJson.toString().getBytes());
+				
+				fstream.close();
 				
 			} 
 			catch (FileNotFoundException e) 

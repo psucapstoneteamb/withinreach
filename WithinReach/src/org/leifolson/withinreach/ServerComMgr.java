@@ -83,23 +83,7 @@ public class ServerComMgr extends AsyncTask<String, Void, String>
 		
 		result = stringBuilder.toString();
 		
-//		try //building the JSON object and grabbing the ETA of a bus
-//		{
-//			JSONObject jsonObject = new JSONObject(result);
-//		
-//			//JSONArray jsonArray = jsonObject.getJSONObject("resultSet").getJSONArray("arrival");
-//			//JSONObject jsonObj = jsonArray.getJSONObject(0);
-//			String output = jsonObject.getJSONObject("echo").getString("something");
-//			System.out.println("echo: " + output);
-//		}
-//		catch (JSONException e)
-//		{
-//			System.out.println(e.getMessage());
-//			
-//		}
-		
 
-		//File file = context.getFilesDir();
 
 		try 
 		{
@@ -118,55 +102,7 @@ public class ServerComMgr extends AsyncTask<String, Void, String>
 			e.printStackTrace();
 		}
 
-//		FileInputStream fileInputStream = null;
-//		try {
-//			fileInputStream = context.openFileInput("test.txt");
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//		InputStreamReader inputStreamReader = new InputStreamReader ( fileInputStream ) ;
-//        BufferedReader bufferedReader = new BufferedReader ( inputStreamReader ) ;
-//        String stringReader;
-//        String fullString = "";
-//        try {
-//        while ((stringReader = bufferedReader.readLine()) != null)
-//        {
-//        	fullString += stringReader;
-//        }
-//        fileInputStream.close();
-//        //System.out.println(fullString);
-//        
-//        }
-//        catch (IOException e)
-//        {
-//        	e.printStackTrace();
-//        	
-//        }
-//        try {
-//			JSONObject jsonObject = new JSONObject(fullString);
-//			System.out.println(jsonObject.getJSONObject("echo").getString("something"));
-//			
-//			
-//		} catch (JSONException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-//		try 
-//		{
-//			File file = Environment.getExternalStorageDirectory();
-//			
-//			FileWriter fstream = new FileWriter(fileName);
-//			fstream.write(string);
-//			fstream.close();
-//		} 
-//		catch (IOException e) 
-//		{
-//			
-//			e.printStackTrace();
-//		}
+
 
 
 		

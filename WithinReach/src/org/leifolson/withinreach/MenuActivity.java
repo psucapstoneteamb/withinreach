@@ -52,9 +52,9 @@ public class MenuActivity extends Activity {
 	// at a later time
 	// its possible we dont even need many of these
 	private int timeConstraint = 0;
-	private boolean walkToggled = false;
-	private boolean bikeToggled = false;
-	private boolean transitToggled = false;
+	private boolean walkToggled = true;
+	private boolean bikeToggled = true;
+	private boolean transitToggled = true;
 	private final int MAX_TIME = 90;
 	
 	// the menu has the following UI elements
@@ -215,6 +215,8 @@ public class MenuActivity extends Activity {
 			int mode_code = 0;
 			if (walkToggled)
 				mode_code += 1;
+			else
+				System.out.println("NOT CHECKED");
 			if (bikeToggled)
 				mode_code += 2;
 			if (transitToggled)

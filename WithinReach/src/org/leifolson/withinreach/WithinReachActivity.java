@@ -47,6 +47,7 @@ import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 
 public class WithinReachActivity extends FragmentActivity implements
@@ -88,6 +89,7 @@ public class WithinReachActivity extends FragmentActivity implements
 			}
 			else{
 				// error that gps is disabled
+				Toast.makeText(this, "No Provider", Toast.LENGTH_SHORT);
 			}
 		}
 		else{
@@ -134,7 +136,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		super.onResume();
 
 		setUpMapIfNeeded();
-		if(mLocationManager != null){
+		if(mMap != null){
 			mMap.setMyLocationEnabled(true);
 		}
 	}
@@ -235,10 +237,9 @@ public class WithinReachActivity extends FragmentActivity implements
     	marker = mMap.addMarker(new MarkerOptions()
          .position(PORTLAND)
          .title("Marker"));
-         marker.setDraggable(true);
-         
-
+         marker.setDraggable(true);     
     }
+    
     private void setupSettingsFile()
     {
     	GregorianCalendar calendar = (GregorianCalendar)Calendar.getInstance();

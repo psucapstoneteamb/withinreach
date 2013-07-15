@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -58,6 +59,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	private OnLocationChangedListener mListener;
 	private LocationManager mLocationManager;
 	private Location mCurrentLocation;
+	private OnMapLongClickListener mLongClick;
 
 	
 	// the start latitudes/longitudes define a starting location
@@ -230,9 +232,11 @@ public class WithinReachActivity extends FragmentActivity implements
     private void setUpMap() {
     	mMap.setMyLocationEnabled(true);
     	mMap.addMarker(new MarkerOptions()
+    	 .visible(false)
          .position(PORTLAND)
          .title("Marker"))
-         .setDraggable(true);
+         .setDraggable(true) 
+         ;
     }
     
     private void setupSettingsFile()

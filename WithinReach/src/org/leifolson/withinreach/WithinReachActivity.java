@@ -42,6 +42,7 @@ import android.annotation.TargetApi;
 import android.support.v4.app.FragmentActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -415,7 +416,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		        LatLng latLng = new LatLng(markerLat, markerLong);
 		        options.center(latLng);
 		        options.radius(distance);
-		        options.fillColor(0x600000ff);
+		        options.fillColor(0x6000ff00);
 		        options.strokeColor(Color.TRANSPARENT);
 
 		        mMap.addCircle(options);
@@ -461,8 +462,8 @@ public class WithinReachActivity extends FragmentActivity implements
 	public void deactivate() {
 		// TODO Auto-generated method stub
 		mListener = null;
-		
 	}
+	
 
 	@Override
 	public void onProviderDisabled(String provider) {

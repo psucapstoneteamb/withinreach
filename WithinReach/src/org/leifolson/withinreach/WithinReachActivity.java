@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -51,24 +52,27 @@ import android.widget.Toast;
 
 
 public class WithinReachActivity extends FragmentActivity implements
-	//GooglePlayServicesClient.ConnectionCallbacks,
-	//GooglePlayServicesClient.OnConnectionFailedListener,
 	LocationListener,
 	LocationSource{
 	
 	// used as a handle to the map object
 	private GoogleMap mMap;
+	
+	// other private members
 	private OnLocationChangedListener mListener;
 	private LocationManager mLocationManager;
 	private Location mCurrentLocation;
+	
+	//marker
+	private Marker marker;
 	
 	// the start latitudes/longitudes define a starting location
 	// of Portland, OR
 	private static final Double startLat = 45.5236;
 	private static final Double startLng = -122.6750;
+    private static final LatLng PORTLAND = new LatLng(startLat, startLng);
 	
-	//marker
-	private Marker marker;
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,11 +93,12 @@ public class WithinReachActivity extends FragmentActivity implements
 			}
 			else{
 				// error that gps is disabled
-				Toast.makeText(this, "No Provider", Toast.LENGTH_SHORT);
+				Toast.makeText(this, R.string.error_no_provider, Toast.LENGTH_SHORT).show();
 			}
 		}
 		else{
 			// something has gone wrong with loc manager
+			Toast.makeText(this, R.string.error_fatal_loc_mgr, Toast.LENGTH_LONG).show();
 		}
 		
 		setUpMapIfNeeded();
@@ -102,9 +107,10 @@ public class WithinReachActivity extends FragmentActivity implements
 		// set the starting location of the map
 		// the emulator does not like these two lines of code but an
 		// actual device does fine with this
-    	LatLng loc = new LatLng(startLat, startLng);
-    	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14.0f));
-		
+    	//LatLng loc = new LatLng(startLat, startLng);
+    	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(PORTLAND, 14.0f));
+    	
+    	
 		
 	}
 	
@@ -231,13 +237,9 @@ public class WithinReachActivity extends FragmentActivity implements
      * <p>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
-    private static final LatLng PORTLAND = new LatLng(45.5236, -122.6750);
     private void setUpMap() {
     	mMap.setMyLocationEnabled(true);
-    	marker = mMap.addMarker(new MarkerOptions()
-         .position(PORTLAND)
-         .title("Marker"));
-         marker.setDraggable(true);     
+    
     }
     
     private void setupSettingsFile()
@@ -604,5 +606,6 @@ public class WithinReachActivity extends FragmentActivity implements
 		
 		
 	}
+
 
 }

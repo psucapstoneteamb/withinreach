@@ -23,6 +23,7 @@ import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
@@ -42,17 +43,20 @@ import android.annotation.TargetApi;
 import android.support.v4.app.FragmentActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 
 public class WithinReachActivity extends FragmentActivity implements
 	//GooglePlayServicesClient.ConnectionCallbacks,
 	//GooglePlayServicesClient.OnConnectionFailedListener,
 	LocationListener,
-	LocationSource{
+	LocationSource, 
+	OnMapLongClickListener{
 	
 	// used as a handle to the map object
 	private GoogleMap mMap;
@@ -64,9 +68,11 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 	// the start latitudes/longitudes define a starting location
 	// of Portland, OR
-	private static final Double startLat = 45.52;
-	private static final Double startLng = -122.681944;
+	private static final Double startLat = 45.5236;
+	private static final Double startLng = -122.6750;
 	
+	//marker
+	private Marker marker;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +93,7 @@ public class WithinReachActivity extends FragmentActivity implements
 			}
 			else{
 				// error that gps is disabled
+				Toast.makeText(this, "No Provider", Toast.LENGTH_SHORT);
 			}
 		}
 		else{
@@ -133,7 +140,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		super.onResume();
 
 		setUpMapIfNeeded();
-		if(mLocationManager != null){
+		if(mMap != null){
 			mMap.setMyLocationEnabled(true);
 		}
 	}
@@ -217,6 +224,7 @@ public class WithinReachActivity extends FragmentActivity implements
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 setUpMap();
+                mMap.setOnMapLongClickListener(this);
             }
             mMap.setLocationSource(this);
             
@@ -231,12 +239,7 @@ public class WithinReachActivity extends FragmentActivity implements
     private static final LatLng PORTLAND = new LatLng(45.5236, -122.6750);
     private void setUpMap() {
     	mMap.setMyLocationEnabled(true);
-    	mMap.addMarker(new MarkerOptions()
-    	 .visible(false)
-         .position(PORTLAND)
-         .title("Marker"))
-         .setDraggable(true) 
-         ;
+
     }
     
     private void setupSettingsFile()
@@ -300,12 +303,17 @@ public class WithinReachActivity extends FragmentActivity implements
 				handleDataFile();		
 			}
 		}
-		else
-			System.out.println("EXTRAS ARE NULL");
+		
 	}
 	
 	public void handleDataFile()
 	{
+
+		double markerLat = marker.getPosition().latitude;
+		double markerLong = marker.getPosition().longitude;
+		
+		
+		
 		FileInputStream fileInputStream = null;
 		try
 		{
@@ -335,9 +343,14 @@ public class WithinReachActivity extends FragmentActivity implements
         	
         }
         
+        mMap.clear();
         
-        
-        
+    	marker = mMap.addMarker(new MarkerOptions()
+        .position(new LatLng(markerLat, markerLong))
+        .title("Marker"));
+    	marker.setDraggable(true);
+
+
         try 
         {
 			JSONObject jsonObject = new JSONObject(fullString);
@@ -354,20 +367,17 @@ public class WithinReachActivity extends FragmentActivity implements
 				double long2 = jsonObject.getJSONObject("result").getJSONObject("4").getJSONArray("coordinate").getJSONObject(1).getDouble("long");
 				
 				double distance = distFrom(lat1, long1, lat2, long2);
-				System.out.println("DISTANCE IS " + distance + " meters");
-				
+
 				
 				
 				
 				CircleOptions options = new CircleOptions();
-		        LatLng latLng = new LatLng(startLat, startLng);
+		        LatLng latLng = new LatLng(markerLat, markerLong);
 		        options.center(latLng);
 		        options.radius(distance);
-		        options.fillColor(Color.TRANSPARENT);
+		        options.fillColor(0x50000000);
+		        options.strokeColor(Color.TRANSPARENT);
 		        
-		        
-		        options.strokeWidth(10);
-		        options.strokeColor(Color.BLACK);
 		        mMap.addCircle(options);
 				
 			}
@@ -381,19 +391,17 @@ public class WithinReachActivity extends FragmentActivity implements
 				double long2 = jsonObject.getJSONObject("result").getJSONObject("2").getJSONArray("coordinate").getJSONObject(1).getDouble("long");
 				
 				double distance = distFrom(lat1, long1, lat2, long2);
-				System.out.println("DISTANCE IS " + distance + " meters");
-				
+
 				
 				
 				CircleOptions options = new CircleOptions();
-		        LatLng latLng = new LatLng(startLat, startLng);
+		        LatLng latLng = new LatLng(markerLat, markerLong);
 		        options.center(latLng);
 		        options.radius(distance);
-		        options.fillColor(Color.TRANSPARENT);
-		        options.strokeColor(Color.RED);
-		        options.strokeWidth(10);
+		        options.fillColor(0x30ff0000);
+		        options.strokeColor(Color.TRANSPARENT);
+		        
 		        mMap.addCircle(options);
-				
 			}
 			
 			if (jsonObject.getJSONObject("result").has("1"))
@@ -405,26 +413,20 @@ public class WithinReachActivity extends FragmentActivity implements
 				double long2 = jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(1).getDouble("long");
 				
 				double distance = distFrom(lat1, long1, lat2, long2);
-				System.out.println("DISTANCE IS " + distance + " meters");
-				
+	
 				
 				CircleOptions options = new CircleOptions();
-		        LatLng latLng = new LatLng(startLat, startLng);
+		        LatLng latLng = new LatLng(markerLat, markerLong);
 		        options.center(latLng);
 		        options.radius(distance);
-		        options.fillColor(Color.TRANSPARENT);
-		        options.strokeColor(Color.BLUE);
-		        options.strokeWidth(10);
+		        options.fillColor(0x6000ff00);
+		        options.strokeColor(Color.TRANSPARENT);
+
 		        mMap.addCircle(options);
 				
 			}
 			
-			//String result = jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(0).getString("lat");
-			System.out.println(fullString);
-//			JSONArray array = jsonObject.getJSONArray("coordinate");
-//			array.
-			
-			
+
 			
 			
 			
@@ -463,8 +465,8 @@ public class WithinReachActivity extends FragmentActivity implements
 	public void deactivate() {
 		// TODO Auto-generated method stub
 		mListener = null;
-		
 	}
+	
 
 	@Override
 	public void onProviderDisabled(String provider) {
@@ -550,8 +552,8 @@ public class WithinReachActivity extends FragmentActivity implements
 		try
 		{
 			JSONObject settingsJson = new JSONObject(fullString);
-			double latitude = settingsJson.getDouble("lat");
-			double longitude = settingsJson.getDouble("long");
+			double latitude = marker.getPosition().latitude;
+			double longitude = marker.getPosition().longitude;
 			int time = 200;
 			int mode_code = settingsJson.getInt("mode");
 			int time_constraint = settingsJson.getInt("constraint");
@@ -559,7 +561,9 @@ public class WithinReachActivity extends FragmentActivity implements
 			int month = settingsJson.getInt("month");
 			int year = settingsJson.getInt("year");
 
-	
+			settingsJson.put("lat", marker.getPosition().latitude);
+			settingsJson.put("long", marker.getPosition().longitude);
+			
 			String url = "http://withinreach.herokuapp.com/json?";
 			url += ("lat=" + latitude);
 			url += ("&long=" + longitude);
@@ -569,8 +573,7 @@ public class WithinReachActivity extends FragmentActivity implements
 			url += ("&year=" + year);
 			url += ("&mode_code=" + mode_code);
 			url += ("&constraint=" + time_constraint);
-			System.out.println(url);
-			
+	
 			FileOutputStream fstream;
 			try 
 			{
@@ -601,6 +604,19 @@ public class WithinReachActivity extends FragmentActivity implements
 		}
 		
 		
+		
+	}
+
+	@Override
+	public void onMapLongClick(LatLng point) {
+		
+		
+		mMap.addMarker(new MarkerOptions()
+   	 	.visible(true)
+        .position(point)
+        .title("Marker"))
+        .setDraggable(true) 
+        ;
 		
 	}
 

@@ -56,8 +56,9 @@
         
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"  
-            android:value="AIzaSyCrE5BVGY64zLgBjQK8BsiSRTwIIgrwbLI"/>
-            <!-- android:value="AIzaSyAox1kk5_7iB7pfaN2XA7lyhvKzihR0o-8"/> Clint key -->
+            android:value="AIzaSyCrE5BVGY64zLgBjQK8BsiSRTwIIgrwbLI"/> 
+            <!-- android:value="AIzaSyAox1kk5_7iB7pfaN2XA7lyhvKzihR0o-8"/> Haneen-->
+            
             <!-- android:value="AIzaSyCm4udZpw73SvJe_V_Ii7OKfA_HidUnQ_0"/> Alex's key -->
         	  
         

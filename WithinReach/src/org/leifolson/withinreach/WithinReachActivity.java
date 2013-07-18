@@ -52,27 +52,30 @@ import android.widget.Toast;
 
 
 public class WithinReachActivity extends FragmentActivity implements
-	//GooglePlayServicesClient.ConnectionCallbacks,
-	//GooglePlayServicesClient.OnConnectionFailedListener,
 	LocationListener,
 	LocationSource, 
 	OnMapLongClickListener{
 	
 	// used as a handle to the map object
 	private GoogleMap mMap;
+	
+	// other private members
 	private OnLocationChangedListener mListener;
 	private LocationManager mLocationManager;
 	private Location mCurrentLocation;
 	private OnMapLongClickListener mLongClick;
 
 	
+	//marker
+	private Marker marker;
+	
 	// the start latitudes/longitudes define a starting location
 	// of Portland, OR
 	private static final Double startLat = 45.5236;
 	private static final Double startLng = -122.6750;
+    private static final LatLng PORTLAND = new LatLng(startLat, startLng);
 	
-	//marker
-	private Marker marker;
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +84,10 @@ public class WithinReachActivity extends FragmentActivity implements
 		// inflate the UI
 		setContentView(R.layout.activity_within_reach);
 		
+		// get a location manager
 		mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+		
+		// attempt to get a provider for the location manager
 		if(mLocationManager != null){
 			if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 				mLocationManager.requestLocationUpdates(
@@ -92,24 +98,22 @@ public class WithinReachActivity extends FragmentActivity implements
 						LocationManager.NETWORK_PROVIDER, 5000L, 5F, this);
 			}
 			else{
-				// error that gps is disabled
-				Toast.makeText(this, "No Provider", Toast.LENGTH_SHORT);
+				// we were unable to obtain a provider
+				Toast.makeText(this, R.string.error_no_provider, Toast.LENGTH_SHORT).show();
 			}
 		}
 		else{
 			// something has gone wrong with loc manager
+			Toast.makeText(this, R.string.error_fatal_loc_mgr, Toast.LENGTH_LONG).show();
 		}
 		
+		// set up the map and settings files if necessary
 		setUpMapIfNeeded();
-		setupSettingsFile();
+		setUpSettingsFile();
 		
 		// set the starting location of the map
-		// the emulator does not like these two lines of code but an
-		// actual device does fine with this
-    	LatLng loc = new LatLng(startLat, startLng);
-    	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc, 14.0f));
-		
-		
+    	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(PORTLAND, 14.0f));
+    	
 	}
 	
 	@Override
@@ -128,7 +132,8 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 	@Override
 	protected void onPause(){
-
+		// when paused we do not want to consume resources by updating
+		// the users location
 		if(mLocationManager != null){
 			mLocationManager.removeUpdates(this);
 		}
@@ -159,7 +164,8 @@ public class WithinReachActivity extends FragmentActivity implements
 	 * this method inflates the menu UI when the user presses the hardware menu key
 	 * on their android device. 
 	 */
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	// designates that the code present is supported only on targets API 11 and later
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB) 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -226,6 +232,8 @@ public class WithinReachActivity extends FragmentActivity implements
                 setUpMap();
                 mMap.setOnMapLongClickListener(this);
             }
+            
+            // set location source to track users location over time
             mMap.setLocationSource(this);
             
         }
@@ -236,13 +244,11 @@ public class WithinReachActivity extends FragmentActivity implements
      * <p>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
-    private static final LatLng PORTLAND = new LatLng(45.5236, -122.6750);
     private void setUpMap() {
     	mMap.setMyLocationEnabled(true);
-
     }
     
-    private void setupSettingsFile()
+    private void setUpSettingsFile()
     {
     	GregorianCalendar calendar = (GregorianCalendar)Calendar.getInstance();
 		int day = calendar.get(Calendar.DAY_OF_WEEK);
@@ -602,9 +608,7 @@ public class WithinReachActivity extends FragmentActivity implements
 			
 			
 		}
-		
-		
-		
+				
 	}
 
 	@Override
@@ -619,5 +623,6 @@ public class WithinReachActivity extends FragmentActivity implements
         ;
 		
 	}
+
 
 }

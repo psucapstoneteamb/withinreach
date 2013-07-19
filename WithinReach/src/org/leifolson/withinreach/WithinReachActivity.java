@@ -184,11 +184,9 @@ public class WithinReachActivity extends FragmentActivity implements
 		// make this menu item available in the action bar if API supports it
 		if(Build.VERSION.SDK_INT>11){
 			MenuItem settingsItem = menu.findItem(R.id.action_settings);
-			settingsItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | 
-										 MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+			settingsItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 			MenuItem refreshItem = menu.findItem(R.id.action_refresh);
-			refreshItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | 
-										 MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+			refreshItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		}
 		return true;
 	}

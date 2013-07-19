@@ -59,7 +59,8 @@ import android.widget.Toast;
 
 public class WithinReachActivity extends FragmentActivity implements
 	LocationListener,
-	LocationSource{
+	LocationSource, 
+	OnMapLongClickListener{
 	
 	// used as a handle to the map object
 	private GoogleMap mMap;
@@ -68,6 +69,8 @@ public class WithinReachActivity extends FragmentActivity implements
 	private OnLocationChangedListener mListener;
 	private LocationManager mLocationManager;
 	private Location mCurrentLocation;
+	private OnMapLongClickListener mLongClick;
+
 	
 	//marker
 	private Marker marker;
@@ -237,6 +240,7 @@ public class WithinReachActivity extends FragmentActivity implements
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 setUpMap();
+                mMap.setOnMapLongClickListener(this);
             }
             
             // set location source to track users location over time
@@ -350,9 +354,6 @@ public class WithinReachActivity extends FragmentActivity implements
 	public void handleDataFile()
 	{
 
-		double markerLat = marker.getPosition().latitude;
-		double markerLong = marker.getPosition().longitude;
-		
 		
 		
 		FileInputStream fileInputStream = null;
@@ -384,12 +385,26 @@ public class WithinReachActivity extends FragmentActivity implements
         	
         }
         
-        mMap.clear();
         
-    	marker = mMap.addMarker(new MarkerOptions()
-        .position(new LatLng(markerLat, markerLong))
-        .title("Marker"));
-    	marker.setDraggable(true);
+        LatLng circleLocation = null;
+        
+        if (marker != null)
+        {
+        	LatLng markerLocation = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
+        	circleLocation = markerLocation;
+            
+        	mMap.clear();
+        	
+        	marker = mMap.addMarker(new MarkerOptions()
+            .position(markerLocation)
+            .title("Marker"));
+        	marker.setDraggable(true);
+        }
+        else
+        {
+        	circleLocation = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        	mMap.clear();
+        }
 
 
         try 
@@ -413,8 +428,8 @@ public class WithinReachActivity extends FragmentActivity implements
 				
 				
 				CircleOptions options = new CircleOptions();
-		        LatLng latLng = new LatLng(markerLat, markerLong);
-		        options.center(latLng);
+		        
+		        options.center(circleLocation);
 		        options.radius(distance);
 		        options.fillColor(0x50000000);
 		        options.strokeColor(Color.TRANSPARENT);
@@ -436,8 +451,7 @@ public class WithinReachActivity extends FragmentActivity implements
 				
 				
 				CircleOptions options = new CircleOptions();
-		        LatLng latLng = new LatLng(markerLat, markerLong);
-		        options.center(latLng);
+		        options.center(circleLocation);
 		        options.radius(distance);
 		        options.fillColor(0x30ff0000);
 		        options.strokeColor(Color.TRANSPARENT);
@@ -457,10 +471,9 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 				
 				CircleOptions options = new CircleOptions();
-		        LatLng latLng = new LatLng(markerLat, markerLong);
-		        options.center(latLng);
+		        options.center(circleLocation);
 		        options.radius(distance);
-		        options.fillColor(0x6000ff00);
+		        options.fillColor(0x60ffff00);
 		        options.strokeColor(Color.TRANSPARENT);
 
 		        mMap.addCircle(options);
@@ -485,7 +498,7 @@ public class WithinReachActivity extends FragmentActivity implements
 
 	@Override
 	public void onLocationChanged(Location location){
-
+		System.out.println("LOCATION CHANGED");
 		mCurrentLocation = location;
 		
 		// update map camera to current location
@@ -595,8 +608,20 @@ public class WithinReachActivity extends FragmentActivity implements
 		try
 		{
 			JSONObject settingsJson = new JSONObject(fullString);
-			double latitude = marker.getPosition().latitude;
-			double longitude = marker.getPosition().longitude;
+			double latitude = 0;
+			double longitude = 0;
+			if (marker == null)
+			{
+				latitude = mCurrentLocation.getLatitude();
+				longitude = mCurrentLocation.getLongitude();
+				
+
+			}
+			else
+			{
+				 latitude = marker.getPosition().latitude;
+				 longitude = marker.getPosition().longitude;
+			}
 			int time = 200;
 			int mode_code = settingsJson.getInt("mode");
 			int time_constraint = settingsJson.getInt("constraint");
@@ -604,8 +629,8 @@ public class WithinReachActivity extends FragmentActivity implements
 			int month = settingsJson.getInt("month");
 			int year = settingsJson.getInt("year");
 
-			settingsJson.put("lat", marker.getPosition().latitude);
-			settingsJson.put("long", marker.getPosition().longitude);
+			settingsJson.put("lat", latitude);
+			settingsJson.put("long", longitude);
 			
 			String url = "http://withinreach.herokuapp.com/json?";
 			url += ("lat=" + latitude);
@@ -645,8 +670,18 @@ public class WithinReachActivity extends FragmentActivity implements
 			
 			
 		}
+				
+	}
+
+	@Override
+	public void onMapLongClick(LatLng point) {
 		
 		
+		marker = mMap.addMarker(new MarkerOptions()
+   	 	.visible(true)
+        .position(point)
+        .title("Marker"));
+        marker.setDraggable(true);
 		
 	}
 

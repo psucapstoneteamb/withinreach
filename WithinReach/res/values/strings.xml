@@ -17,5 +17,6 @@
     <string name="action_refresh">REFRESH</string>
     <string name="error_fatal_loc_mgr">Fatal Error: Location Manager Error</string>
     <string name="error_no_provider">No Provider Available</string>
+    
 
 </resources>

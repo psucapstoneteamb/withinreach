@@ -49,10 +49,10 @@ class Controller:
             self.r.set_cur_mode(2)
             self.r.add_coordinate(lat,long)
             self.r.add_coordinate(lat+(time/414),long)
-        if (mode % 8) >= 4: #transit, using 15 MPH, or 1/276 latitude a minute as the transit speed
+        if (mode % 8) >= 4: #transit, using 20 MPH, or 1/207 latitude a minute as the transit speed
             self.r.set_cur_mode(4)
             self.r.add_coordinate(lat,long)
-            self.r.add_coordinate(lat+(time/276),long)
+            self.r.add_coordinate(lat+(time/207),long)
         
         
         

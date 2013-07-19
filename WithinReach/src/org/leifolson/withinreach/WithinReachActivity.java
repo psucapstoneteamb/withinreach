@@ -6,9 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 
@@ -27,6 +30,9 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.android.gms.maps.model.TileProvider;
+import com.google.android.gms.maps.model.UrlTileProvider;
 
 
 
@@ -74,6 +80,10 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 	//marker
 	private Marker marker;
+	
+	/* TILE TEST CODE */
+	private static final String OTPA_URL_FORMAT = 
+		"http://queue.its.pdx.edu:8080/opentripplanner-api-webapp/ws/tile/%d/%d/%d.png";
 	
 	// the start latitudes/longitudes define a starting location
 	// of Portland, OR
@@ -180,11 +190,9 @@ public class WithinReachActivity extends FragmentActivity implements
 		// make this menu item available in the action bar if API supports it
 		if(Build.VERSION.SDK_INT>11){
 			MenuItem settingsItem = menu.findItem(R.id.action_settings);
-			settingsItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | 
-										 MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+			settingsItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 			MenuItem refreshItem = menu.findItem(R.id.action_refresh);
-			refreshItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | 
-										 MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+			refreshItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		}
 		return true;
 	}
@@ -252,6 +260,35 @@ public class WithinReachActivity extends FragmentActivity implements
      */
     private void setUpMap() {
     	mMap.setMyLocationEnabled(true);
+    	
+        // some more TILE TEST CODE  
+    	/*
+        TileProvider tileProvider = new UrlTileProvider(256, 256) {
+            @Override
+            public synchronized URL getTileUrl(int x, int y, int zoom) {
+
+                String s = String.format(Locale.US, OTPA_URL_FORMAT, zoom, x, y);
+                URL url = null;
+                try {
+                	s += 
+                		"?layers=traveltime&styles=color30&batch=true&mode=TRANSIT%2CWALK&" +
+                    		"maxWalkDistance=2000&time=2013-07-10T08%3A00%3A00&"+
+                    		"fromPlace=45.51212126820532%2C-122.62321472167969&toPlace=45.381403%2C-122.27416674999999";
+                     url = new URL(s);
+                } catch (MalformedURLException e) {
+                    throw new AssertionError(e);
+                }
+                return url;
+            }
+        };
+        
+        
+        TileOverlayOptions opts = new TileOverlayOptions();
+        opts.tileProvider(tileProvider);
+        opts.zIndex(5);
+    	
+        mMap.addTileOverlay(opts);
+        */
     }
     
     private void setUpSettingsFile()
@@ -321,9 +358,6 @@ public class WithinReachActivity extends FragmentActivity implements
 	public void handleDataFile()
 	{
 
-		double markerLat = marker.getPosition().latitude;
-		double markerLong = marker.getPosition().longitude;
-		
 		
 		
 		FileInputStream fileInputStream = null;
@@ -355,12 +389,34 @@ public class WithinReachActivity extends FragmentActivity implements
         	
         }
         
-        mMap.clear();
         
-    	marker = mMap.addMarker(new MarkerOptions()
-        .position(new LatLng(markerLat, markerLong))
-        .title("Marker"));
-    	marker.setDraggable(true);
+        LatLng circleLocation = null;
+        
+        if (marker != null)
+        {
+        	LatLng markerLocation = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
+        	circleLocation = markerLocation;
+            
+        	mMap.clear();
+        	
+        	marker = mMap.addMarker(new MarkerOptions()
+            .position(markerLocation)
+            .title("Marker"));
+        	marker.setDraggable(true);
+        }
+        else
+        {
+        	// check if we have a current location yet
+        	if(mCurrentLocation != null){
+        		circleLocation = new LatLng(mCurrentLocation.getLatitude(), 
+        				                    mCurrentLocation.getLongitude());
+        	}
+        	// no location obtained...set to default
+        	else{ 
+        		circleLocation = PORTLAND;
+        	}
+        	mMap.clear();
+        }
 
 
         try 
@@ -384,8 +440,8 @@ public class WithinReachActivity extends FragmentActivity implements
 				
 				
 				CircleOptions options = new CircleOptions();
-		        LatLng latLng = new LatLng(markerLat, markerLong);
-		        options.center(latLng);
+		        
+		        options.center(circleLocation);
 		        options.radius(distance);
 		        options.fillColor(0x50000000);
 		        options.strokeColor(Color.TRANSPARENT);
@@ -407,8 +463,7 @@ public class WithinReachActivity extends FragmentActivity implements
 				
 				
 				CircleOptions options = new CircleOptions();
-		        LatLng latLng = new LatLng(markerLat, markerLong);
-		        options.center(latLng);
+		        options.center(circleLocation);
 		        options.radius(distance);
 		        options.fillColor(0x30ff0000);
 		        options.strokeColor(Color.TRANSPARENT);
@@ -428,10 +483,9 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 				
 				CircleOptions options = new CircleOptions();
-		        LatLng latLng = new LatLng(markerLat, markerLong);
-		        options.center(latLng);
+		        options.center(circleLocation);
 		        options.radius(distance);
-		        options.fillColor(0x6000ff00);
+		        options.fillColor(0x60ffff00);
 		        options.strokeColor(Color.TRANSPARENT);
 
 		        mMap.addCircle(options);
@@ -456,9 +510,11 @@ public class WithinReachActivity extends FragmentActivity implements
 
 	@Override
 	public void onLocationChanged(Location location){
-
+		
 		mCurrentLocation = location;
-		if(mListener != null){
+		
+		// update map camera to current location
+		if(mListener != null && mMap != null){
 			mListener.onLocationChanged(location);
 			mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(
 					location.getLatitude(),location.getLongitude())));
@@ -564,8 +620,20 @@ public class WithinReachActivity extends FragmentActivity implements
 		try
 		{
 			JSONObject settingsJson = new JSONObject(fullString);
-			double latitude = marker.getPosition().latitude;
-			double longitude = marker.getPosition().longitude;
+			double latitude = 0;
+			double longitude = 0;
+			if (marker == null)
+			{
+				latitude = mCurrentLocation.getLatitude();
+				longitude = mCurrentLocation.getLongitude();
+				
+
+			}
+			else
+			{
+				 latitude = marker.getPosition().latitude;
+				 longitude = marker.getPosition().longitude;
+			}
 			int time = 200;
 			int mode_code = settingsJson.getInt("mode");
 			int time_constraint = settingsJson.getInt("constraint");
@@ -573,8 +641,8 @@ public class WithinReachActivity extends FragmentActivity implements
 			int month = settingsJson.getInt("month");
 			int year = settingsJson.getInt("year");
 
-			settingsJson.put("lat", marker.getPosition().latitude);
-			settingsJson.put("long", marker.getPosition().longitude);
+			settingsJson.put("lat", latitude);
+			settingsJson.put("long", longitude);
 			
 			String url = "http://withinreach.herokuapp.com/json?";
 			url += ("lat=" + latitude);
@@ -619,6 +687,7 @@ public class WithinReachActivity extends FragmentActivity implements
 
 	@Override
 	public void onMapLongClick(LatLng point) {
+<<<<<<< HEAD
 		
 		
 		mMap.addMarker(new MarkerOptions()
@@ -627,6 +696,18 @@ public class WithinReachActivity extends FragmentActivity implements
         .title("Delete?"))
         .setDraggable(true) 
         ;
+=======
+		if (marker != null)
+			marker.setPosition(point);
+		else
+		{
+			marker = mMap.addMarker(new MarkerOptions()
+	   	 	.visible(true)
+	        .position(point)
+	        .title("Marker"));
+	        marker.setDraggable(true);
+		}
+>>>>>>> 180aded42e70df65da8de58aa70160977afecf82
 		
 		mMap.setOnInfoWindowClickListener(this);
 		

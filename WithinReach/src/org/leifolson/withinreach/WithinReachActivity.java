@@ -6,9 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 
@@ -25,6 +28,9 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.android.gms.maps.model.TileProvider;
+import com.google.android.gms.maps.model.UrlTileProvider;
 
 
 
@@ -65,6 +71,10 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 	//marker
 	private Marker marker;
+	
+	/* TILE TEST CODE */
+	private static final String OTPA_URL_FORMAT = 
+		"http://queue.its.pdx.edu:8080/opentripplanner-api-webapp/ws/tile/%d/%d/%d.png";
 	
 	// the start latitudes/longitudes define a starting location
 	// of Portland, OR
@@ -242,6 +252,35 @@ public class WithinReachActivity extends FragmentActivity implements
      */
     private void setUpMap() {
     	mMap.setMyLocationEnabled(true);
+    	
+        // some more TILE TEST CODE  
+    	/*
+        TileProvider tileProvider = new UrlTileProvider(256, 256) {
+            @Override
+            public synchronized URL getTileUrl(int x, int y, int zoom) {
+
+                String s = String.format(Locale.US, OTPA_URL_FORMAT, zoom, x, y);
+                URL url = null;
+                try {
+                	s += 
+                		"?layers=traveltime&styles=color30&batch=true&mode=TRANSIT%2CWALK&" +
+                    		"maxWalkDistance=2000&time=2013-07-10T08%3A00%3A00&"+
+                    		"fromPlace=45.51212126820532%2C-122.62321472167969&toPlace=45.381403%2C-122.27416674999999";
+                     url = new URL(s);
+                } catch (MalformedURLException e) {
+                    throw new AssertionError(e);
+                }
+                return url;
+            }
+        };
+        
+        
+        TileOverlayOptions opts = new TileOverlayOptions();
+        opts.tileProvider(tileProvider);
+        opts.zIndex(5);
+    	
+        mMap.addTileOverlay(opts);
+        */
     }
     
     private void setUpSettingsFile()
@@ -448,7 +487,9 @@ public class WithinReachActivity extends FragmentActivity implements
 	public void onLocationChanged(Location location){
 
 		mCurrentLocation = location;
-		if(mListener != null){
+		
+		// update map camera to current location
+		if(mListener != null && mMap != null){
 			mListener.onLocationChanged(location);
 			mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(
 					location.getLatitude(),location.getLongitude())));

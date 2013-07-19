@@ -402,7 +402,15 @@ public class WithinReachActivity extends FragmentActivity implements
         }
         else
         {
-        	circleLocation = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        	// check if we have a current location yet
+        	if(mCurrentLocation != null){
+        		circleLocation = new LatLng(mCurrentLocation.getLatitude(), 
+        				                    mCurrentLocation.getLongitude());
+        	}
+        	// no location obtained...set to default
+        	else{ 
+        		circleLocation = PORTLAND;
+        	}
         	mMap.clear();
         }
 

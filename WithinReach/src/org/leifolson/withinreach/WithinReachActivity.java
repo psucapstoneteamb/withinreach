@@ -18,7 +18,9 @@ import org.json.JSONObject;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -54,7 +56,9 @@ import android.widget.Toast;
 public class WithinReachActivity extends FragmentActivity implements
 	LocationListener,
 	LocationSource, 
-	OnMapLongClickListener{
+	OnMapLongClickListener,
+	OnMarkerClickListener,
+	OnInfoWindowClickListener{
 	
 	// used as a handle to the map object
 	private GoogleMap mMap;
@@ -64,6 +68,8 @@ public class WithinReachActivity extends FragmentActivity implements
 	private LocationManager mLocationManager;
 	private Location mCurrentLocation;
 	private OnMapLongClickListener mLongClick;
+	private OnMarkerClickListener mClickListener;
+	private OnInfoWindowClickListener mWindow;
 
 	
 	//marker
@@ -618,11 +624,26 @@ public class WithinReachActivity extends FragmentActivity implements
 		mMap.addMarker(new MarkerOptions()
    	 	.visible(true)
         .position(point)
-        .title("Marker"))
+        .title("Delete?"))
         .setDraggable(true) 
         ;
 		
+		mMap.setOnInfoWindowClickListener(this);
+		
 	}
 
+	@Override
+	public boolean onMarkerClick(Marker arg0) {
+		// TODO Auto-generated method stub
+		
+		return false;
+	}
+
+	@Override
+	public void onInfoWindowClick(Marker arg0) {
+		System.out.println("Info Window Click");
+		marker.remove();
+	}
+	
 
 }

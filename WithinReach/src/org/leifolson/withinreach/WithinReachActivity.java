@@ -459,7 +459,7 @@ public class WithinReachActivity extends FragmentActivity implements
 
 	@Override
 	public void onLocationChanged(Location location){
-		System.out.println("LOCATION CHANGED");
+		
 		mCurrentLocation = location;
 		if(mListener != null){
 			mListener.onLocationChanged(location);
@@ -634,13 +634,16 @@ public class WithinReachActivity extends FragmentActivity implements
 
 	@Override
 	public void onMapLongClick(LatLng point) {
-		
-		
-		marker = mMap.addMarker(new MarkerOptions()
-   	 	.visible(true)
-        .position(point)
-        .title("Marker"));
-        marker.setDraggable(true);
+		if (marker != null)
+			marker.setPosition(point);
+		else
+		{
+			marker = mMap.addMarker(new MarkerOptions()
+	   	 	.visible(true)
+	        .position(point)
+	        .title("Marker"));
+	        marker.setDraggable(true);
+		}
 		
 	}
 

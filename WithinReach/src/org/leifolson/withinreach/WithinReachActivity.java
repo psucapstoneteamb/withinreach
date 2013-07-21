@@ -52,6 +52,7 @@ import android.support.v4.app.FragmentActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -81,6 +82,9 @@ public class WithinReachActivity extends FragmentActivity implements
 	//marker
 	private Marker marker;
 	
+	//application resources
+	private Resources appRes;
+	
 	/* TILE TEST CODE */
 	private static final String OTPA_URL_FORMAT = 
 		"http://queue.its.pdx.edu:8080/opentripplanner-api-webapp/ws/tile/%d/%d/%d.png";
@@ -96,6 +100,9 @@ public class WithinReachActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// used to access shared resources like strings, etc.
+		appRes = getResources();
 		
 		// inflate the UI
 		setContentView(R.layout.activity_within_reach);
@@ -400,10 +407,7 @@ public class WithinReachActivity extends FragmentActivity implements
             
         	mMap.clear();
         	
-        	marker = mMap.addMarker(new MarkerOptions()
-            .position(markerLocation)
-            .title("Marker"));
-        	marker.setDraggable(true);
+        	marker = makeMapMarker(markerLocation,appRes.getString(R.string.delete_marker));
         }
         else
         {
@@ -693,12 +697,7 @@ public class WithinReachActivity extends FragmentActivity implements
 			marker.setPosition(point);
 		else
 		{
-			marker = mMap.addMarker(new MarkerOptions()
-	   	 	.visible(true)
-	        .position(point)
-	        .title("Delete?"));
-	        marker.setDraggable(true);
-	        
+			marker = makeMapMarker(point,appRes.getString(R.string.delete_marker));   
 		}
 		
 		mMap.setOnInfoWindowClickListener(this);
@@ -717,6 +716,16 @@ public class WithinReachActivity extends FragmentActivity implements
 		System.out.println("Info Window Click");
 		marker.remove();
 		marker = null;
+	}
+	
+	// returns a visible marker at the passed in position
+	// with the passed in title
+	private Marker makeMapMarker(LatLng point, String title){
+		return mMap.addMarker(new MarkerOptions()
+			.visible(true)
+			.position(point)
+			.title(title)
+			.draggable(true));
 	}
 	
 

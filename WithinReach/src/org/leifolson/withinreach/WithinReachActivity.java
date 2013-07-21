@@ -280,6 +280,7 @@ public class WithinReachActivity extends FragmentActivity implements
         TileOverlayOptions opts = new TileOverlayOptions();
         opts.tileProvider(tileProvider);
         opts.zIndex(5);
+        
     	
         mMap.addTileOverlay(opts);
         */

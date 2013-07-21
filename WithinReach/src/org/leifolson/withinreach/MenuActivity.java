@@ -32,11 +32,11 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
+//import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.FragmentActivity;
+//import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -180,22 +180,20 @@ public class MenuActivity extends Activity {
 	}
 	
 	
-	@Override
-	public void onConfigurationChanged(Configuration newConfig){
-		super.onConfigurationChanged(newConfig);
-		System.out.println("Config CHANGED *****");
-		if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
-			// do nothing?
-			seekTime.setText(Integer.toString(timeSeekBar.getProgress()));
-			System.out.println("Orientation land CHANGED *****");
-		}
-		
-		if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-			// do nothing?
-			seekTime.setText(Integer.toString(timeSeekBar.getProgress()));
-			System.out.println("Orientation port CHANGED *****");
-		}
-	}
+//	@Override
+//	public void onConfigurationChanged(Configuration newConfig){
+//		super.onConfigurationChanged(newConfig);
+//		System.out.println("Config CHANGED *****");
+//		if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
+//			seekTime.setText(Integer.toString(timeSeekBar.getProgress()));
+//			System.out.println("Orientation land CHANGED *****");
+//		}
+//		
+//		if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+//			seekTime.setText(Integer.toString(timeSeekBar.getProgress()));
+//			System.out.println("Orientation port CHANGED *****");
+//		}
+//	}
 	
 	// when the user clicks the "Done!" button, this method will be called,
 	// launching the main WithinReach activity

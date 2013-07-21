@@ -51,12 +51,10 @@ import android.annotation.TargetApi;
 import android.support.v4.app.FragmentActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 
@@ -64,7 +62,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	LocationListener,
 	LocationSource, 
 	OnMapLongClickListener,
-	OnMarkerClickListener,
+//	OnMarkerClickListener,
 	OnInfoWindowClickListener{
 	
 	// used as a handle to the map object
@@ -74,9 +72,9 @@ public class WithinReachActivity extends FragmentActivity implements
 	private OnLocationChangedListener mListener;
 	private LocationManager mLocationManager;
 	private Location mCurrentLocation;
-	private OnMapLongClickListener mLongClick;
-	private OnMarkerClickListener mClickListener;
-	private OnInfoWindowClickListener mWindow;
+//	private OnMapLongClickListener mLongClick;
+//	private OnMarkerClickListener mClickListener;
+//	private OnInfoWindowClickListener mWindow;
 
 	
 	//marker
@@ -86,6 +84,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	private Resources appRes;
 	
 	/* TILE TEST CODE */
+	private boolean toggleOTPATiles = false;
 	private static final String OTPA_URL_FORMAT = 
 		"http://queue.its.pdx.edu:8080/opentripplanner-api-webapp/ws/tile/%d/%d/%d.png";
 	
@@ -269,34 +268,35 @@ public class WithinReachActivity extends FragmentActivity implements
     	mMap.setMyLocationEnabled(true);
     	
         // some more TILE TEST CODE  
-    	/*
-        TileProvider tileProvider = new UrlTileProvider(256, 256) {
-            @Override
-            public synchronized URL getTileUrl(int x, int y, int zoom) {
-
-                String s = String.format(Locale.US, OTPA_URL_FORMAT, zoom, x, y);
-                URL url = null;
-                try {
-                	s += 
-                		"?layers=traveltime&styles=color30&batch=true&mode=TRANSIT%2CWALK&" +
-                    		"maxWalkDistance=2000&time=2013-07-10T08%3A00%3A00&"+
-                    		"fromPlace=45.51212126820532%2C-122.62321472167969&toPlace=45.381403%2C-122.27416674999999";
-                     url = new URL(s);
-                } catch (MalformedURLException e) {
-                    throw new AssertionError(e);
-                }
-                return url;
-            }
-        };
+    	if(toggleOTPATiles){
+	        TileProvider tileProvider = new UrlTileProvider(256, 256) {
+	            @Override
+	            public synchronized URL getTileUrl(int x, int y, int zoom) {
+	
+	                String s = String.format(Locale.US, OTPA_URL_FORMAT, zoom, x, y);
+	                URL url = null;
+	                try {
+	                	s += 
+	                		"?layers=traveltime&styles=color30&batch=true&mode=TRANSIT%2CWALK&" +
+	                    		"maxWalkDistance=2000&time=2013-07-10T08%3A00%3A00&"+
+	                    		"fromPlace=45.51212126820532%2C-122.62321472167969&toPlace=45.381403%2C-122.27416674999999";
+	                     url = new URL(s);
+	                } catch (MalformedURLException e) {
+	                    throw new AssertionError(e);
+	                }
+	                return url;
+	            }
+	        };
+	        
+	        
+	        TileOverlayOptions opts = new TileOverlayOptions();
+	        opts.tileProvider(tileProvider);
+	        opts.zIndex(5);
+	        
+	    	
+	        mMap.addTileOverlay(opts);
+    	}
         
-        
-        TileOverlayOptions opts = new TileOverlayOptions();
-        opts.tileProvider(tileProvider);
-        opts.zIndex(5);
-        
-    	
-        mMap.addTileOverlay(opts);
-        */
     }
     
     private void setUpSettingsFile()
@@ -349,7 +349,8 @@ public class WithinReachActivity extends FragmentActivity implements
     	
     }
 	
-	public void onNewIntent(Intent t) //This gets called from MenuActivity when it launches the WithinReachActivity
+    //This gets called from MenuActivity when it launches the WithinReachActivity
+	public void onNewIntent(Intent t) 
 	{
 		Bundle extras = t.getExtras();
 		if (extras != null)
@@ -365,9 +366,6 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 	public void handleDataFile()
 	{
-
-		
-		
 		FileInputStream fileInputStream = null;
 		try
 		{
@@ -693,25 +691,29 @@ public class WithinReachActivity extends FragmentActivity implements
 	@Override
 	public void onMapLongClick(LatLng point) {
 
+		// if a marker has already been created then move to new position
 		if (marker != null)
 			marker.setPosition(point);
+		
+		// otherwise create a new marker at the clicked on position
 		else
 		{
 			marker = makeMapMarker(point,appRes.getString(R.string.delete_marker));   
 		}
-		
+		// listen for info window clicks to delete marker
 		mMap.setOnInfoWindowClickListener(this);
 		
 	}
 
-	@Override
-	public boolean onMarkerClick(Marker arg0) {
-		// TODO Auto-generated method stub
-		
-		return false;
-	}
+//	@Override
+//	public boolean onMarkerClick(Marker arg0) {
+//		// TODO Auto-generated method stub
+//		
+//		return false;
+//	}
 
 	@Override
+	// handle info window clicks by deleting the marker
 	public void onInfoWindowClick(Marker arg0) {
 		System.out.println("Info Window Click");
 		marker.remove();

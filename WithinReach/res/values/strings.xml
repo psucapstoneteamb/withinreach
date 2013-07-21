@@ -19,16 +19,11 @@
     <string name="select_time">Select Time</string>
     <string name="help">Help</string>
     <string name="init_seek_time">0 mins</string>
-<<<<<<< HEAD
-    <string name="action_refresh">REFRESH</string>
-    <string name="error_fatal_loc_mgr">Fatal Error: Location Manager Error</string>
-    <string name="error_no_provider">No Provider Available</string>
-=======
+
     
     <!-- Error Messages -->
     <string name="error_fatal_loc_mgr">Fatal Error: Location Manager Error</string>
     <string name="error_no_provider">No Provider Available</string>
     
->>>>>>> 180aded42e70df65da8de58aa70160977afecf82
 
 </resources>

@@ -91,6 +91,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+
 		// inflate the UI
 		setContentView(R.layout.activity_within_reach);
 		
@@ -439,7 +440,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		        
 		        options.center(circleLocation);
 		        options.radius(distance);
-		        options.fillColor(0x50000000);
+		        options.fillColor(0x500000ff);
 		        options.strokeColor(Color.TRANSPARENT);
 		        
 		        mMap.addCircle(options);
@@ -693,7 +694,6 @@ public class WithinReachActivity extends FragmentActivity implements
 	        .title("Marker"));
 	        marker.setDraggable(true);
 		}
-		
 	}
 
 

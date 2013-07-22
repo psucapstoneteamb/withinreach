@@ -405,7 +405,7 @@ public class WithinReachActivity extends FragmentActivity implements
             
         	mMap.clear();
         	
-        	//marker = makeMapMarker(markerLocation,appRes.getString(R.string.delete_marker));
+        	marker = makeMapMarker(markerLocation,appRes.getString(R.string.delete_marker));
         }
         else
         {
@@ -707,13 +707,13 @@ public class WithinReachActivity extends FragmentActivity implements
 	        marker.setDraggable(true);
 		}
 		
-			//marker = makeMapMarker(point,appRes.getString(R.string.delete_marker));   
+			marker = makeMapMarker(point,appRes.getString(R.string.delete_marker));   
 		}
 		// listen for info window clicks to delete marker
 
-		//mMap.setOnInfoWindowClickListener(this);
+		mMap.setOnInfoWindowClickListener(this);
 		
-//}
+}
 
 //	@Override
 //	public boolean onMarkerClick(Marker arg0) {

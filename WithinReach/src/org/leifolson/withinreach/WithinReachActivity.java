@@ -687,16 +687,7 @@ public class WithinReachActivity extends FragmentActivity implements
 
 	@Override
 	public void onMapLongClick(LatLng point) {
-<<<<<<< HEAD
-		
-		
-		mMap.addMarker(new MarkerOptions()
-   	 	.visible(true)
-        .position(point)
-        .title("Delete?"))
-        .setDraggable(true) 
-        ;
-=======
+
 		if (marker != null)
 			marker.setPosition(point);
 		else
@@ -704,10 +695,9 @@ public class WithinReachActivity extends FragmentActivity implements
 			marker = mMap.addMarker(new MarkerOptions()
 	   	 	.visible(true)
 	        .position(point)
-	        .title("Marker"));
+	        .title("Delete?"));
 	        marker.setDraggable(true);
 		}
->>>>>>> 180aded42e70df65da8de58aa70160977afecf82
 		
 		mMap.setOnInfoWindowClickListener(this);
 		

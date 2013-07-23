@@ -708,7 +708,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		}
 		
 			marker = makeMapMarker(point,appRes.getString(R.string.delete_marker));   
-		}
+		
 		// listen for info window clicks to delete marker
 
 		mMap.setOnInfoWindowClickListener(this);

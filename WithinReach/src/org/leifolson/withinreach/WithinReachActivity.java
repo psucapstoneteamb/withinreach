@@ -694,26 +694,18 @@ public class WithinReachActivity extends FragmentActivity implements
 
 		// if a marker has already been created then move to new position
 
-		if (marker != null)
+		if (marker != null){
 			marker.setPosition(point);
-		
-		// otherwise create a new marker at the clicked on position
-		else
-		{
-			marker = mMap.addMarker(new MarkerOptions()
-	   	 	.visible(true)
-	        .position(point)
-	        .title("Delete?"));
-	        marker.setDraggable(true);
 		}
-		
+		// otherwise create a new marker at the clicked on position
+		else{
 			marker = makeMapMarker(point,appRes.getString(R.string.delete_marker));   
 		
 		// listen for info window clicks to delete marker
 
 		mMap.setOnInfoWindowClickListener(this);
 		
-}
+	}
 
 //	@Override
 //	public boolean onMarkerClick(Marker arg0) {

@@ -712,13 +712,14 @@ public class WithinReachActivity extends FragmentActivity implements
 			marker.setPosition(point);
 		}
 		// otherwise create a new marker at the clicked on position
-		else{
+		else
+		{
 			marker = makeMapMarker(point,appRes.getString(R.string.delete_marker));   
-		}
+		
 		// listen for info window clicks to delete marker
 
-		mMap.setOnInfoWindowClickListener(this);
-		
+			mMap.setOnInfoWindowClickListener(this);
+		}
 	}
 
 //	@Override

@@ -83,6 +83,9 @@ public class WithinReachActivity extends FragmentActivity implements
 	//application resources
 	private Resources appRes;
 	
+	//provider flag
+	private boolean providerAvailable = false;
+	
 	/* TILE TEST CODE */
 	private boolean toggleOTPATiles = false;
 	private static final String OTPA_URL_FORMAT = 
@@ -114,10 +117,14 @@ public class WithinReachActivity extends FragmentActivity implements
 			if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 				mLocationManager.requestLocationUpdates(
 						LocationManager.GPS_PROVIDER, 5000L, 5F, this);
+				
+				providerAvailable = true;
 			}
 			else if(mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
 				mLocationManager.requestLocationUpdates(
 						LocationManager.NETWORK_PROVIDER, 5000L, 5F, this);
+				
+				providerAvailable = true;
 			}
 			else{
 				// we were unable to obtain a provider
@@ -574,116 +581,123 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 	public void invokeServerComMgr()
 	{
-		
-		Handler asyncHandler = new Handler()
-		{
-		    public void handleMessage(Message msg){
-		        super.handleMessage(msg);
-		        //What did that async task say?
-		        switch (msg.what)
-		        {
-		            case 1:
-		                handleDataFile();
-		                break;                      
-		        }
-		    }
-		}; 
-		
-		
-		
-		FileInputStream fileInputStream = null;
-		try
-		{
-			fileInputStream = openFileInput("settingsJson.txt");
-		} 
-		catch (FileNotFoundException e) 
-		{
-			e.printStackTrace();
-		}
-		
-		InputStreamReader inputStreamReader = new InputStreamReader ( fileInputStream ) ;
-        BufferedReader bufferedReader = new BufferedReader ( inputStreamReader ) ;
-        String stringReader;
-        String fullString = "";
-        try 
-        {
-	        while ((stringReader = bufferedReader.readLine()) != null)
-	        {
-	        	fullString += stringReader;
-	        }
-	        fileInputStream.close();
-
-        }
-        catch (IOException e)
-        {
-        	e.printStackTrace();
-        	
-        }
-        
-		try
-		{
-			JSONObject settingsJson = new JSONObject(fullString);
-			double latitude = 0;
-			double longitude = 0;
-			if (marker == null)
-			{
-				latitude = mCurrentLocation.getLatitude();
-				longitude = mCurrentLocation.getLongitude();
-				
-
-			}
-			else
-			{
-				 latitude = marker.getPosition().latitude;
-				 longitude = marker.getPosition().longitude;
-			}
-			int time = 200;
-			int mode_code = settingsJson.getInt("mode");
-			int time_constraint = settingsJson.getInt("constraint");
-			int day = settingsJson.getInt("day");
-			int month = settingsJson.getInt("month");
-			int year = settingsJson.getInt("year");
-
-			settingsJson.put("lat", latitude);
-			settingsJson.put("long", longitude);
+		// check if we obtained a provider
+		if(providerAvailable){
 			
-			String url = "http://withinreach.herokuapp.com/json?";
-			url += ("lat=" + latitude);
-			url += ("&long=" + longitude);
-			url += ("&time=" + time);
-			url += ("&day=" + day);
-			url += ("&month=" + month);
-			url += ("&year=" + year);
-			url += ("&mode_code=" + mode_code);
-			url += ("&constraint=" + time_constraint);
-	
-			FileOutputStream fstream;
-			try 
+			Handler asyncHandler = new Handler()
 			{
-				fstream = openFileOutput("settingsJson.txt", Context.MODE_PRIVATE);
-
-				fstream.write(settingsJson.toString().getBytes());
-				
-				fstream.close();
-				
+			    public void handleMessage(Message msg){
+			        super.handleMessage(msg);
+			        //What did that async task say?
+			        switch (msg.what)
+			        {
+			            case 1:
+			                handleDataFile();
+			                break;                      
+			        }
+			    }
+			}; 
+			
+			
+			
+			FileInputStream fileInputStream = null;
+			try
+			{
+				fileInputStream = openFileInput("settingsJson.txt");
 			} 
 			catch (FileNotFoundException e) 
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			catch (IOException e)
+			
+			InputStreamReader inputStreamReader = new InputStreamReader ( fileInputStream ) ;
+	        BufferedReader bufferedReader = new BufferedReader ( inputStreamReader ) ;
+	        String stringReader;
+	        String fullString = "";
+	        try 
+	        {
+		        while ((stringReader = bufferedReader.readLine()) != null)
+		        {
+		        	fullString += stringReader;
+		        }
+		        fileInputStream.close();
+	
+	        }
+	        catch (IOException e)
+	        {
+	        	e.printStackTrace();
+	        	
+	        }
+	        
+			try
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				JSONObject settingsJson = new JSONObject(fullString);
+				double latitude = 0;
+				double longitude = 0;
+				if (marker == null)
+				{
+					latitude = mCurrentLocation.getLatitude();
+					longitude = mCurrentLocation.getLongitude();
+					
+	
+				}
+				else
+				{
+					 latitude = marker.getPosition().latitude;
+					 longitude = marker.getPosition().longitude;
+				}
+				int time = 200;
+				int mode_code = settingsJson.getInt("mode");
+				int time_constraint = settingsJson.getInt("constraint");
+				int day = settingsJson.getInt("day");
+				int month = settingsJson.getInt("month");
+				int year = settingsJson.getInt("year");
+	
+				settingsJson.put("lat", latitude);
+				settingsJson.put("long", longitude);
+				
+				String url = "http://withinreach.herokuapp.com/json?";
+				url += ("lat=" + latitude);
+				url += ("&long=" + longitude);
+				url += ("&time=" + time);
+				url += ("&day=" + day);
+				url += ("&month=" + month);
+				url += ("&year=" + year);
+				url += ("&mode_code=" + mode_code);
+				url += ("&constraint=" + time_constraint);
+		
+				FileOutputStream fstream;
+				try 
+				{
+					fstream = openFileOutput("settingsJson.txt", Context.MODE_PRIVATE);
+	
+					fstream.write(settingsJson.toString().getBytes());
+					
+					fstream.close();
+					
+				} 
+				catch (FileNotFoundException e) 
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				new ServerComMgr(this, asyncHandler).execute(url);
 			}
-			
-			new ServerComMgr(this, asyncHandler).execute(url);
+			catch (JSONException e) 
+			{
+				
+				
+			}
 		}
-		catch (JSONException e) 
-		{
-			
-			
+		// no provider was obtained: display error message
+		else{
+			Toast.makeText(this, R.string.error_provider_try_again, Toast.LENGTH_LONG).show();
 		}
 				
 	}

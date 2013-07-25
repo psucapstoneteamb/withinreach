@@ -448,9 +448,7 @@ public class WithinReachActivity extends FragmentActivity implements
 				double long2 = jsonObject.getJSONObject("result").getJSONObject("2").getJSONArray("coordinate").getJSONObject(1).getDouble("long");
 				
 				double distance = distFrom(lat1, long1, lat2, long2);
-
-				
-				
+	
 				CircleOptions options = new CircleOptions();
 		        options.center(circleLocation);
 		        options.radius(distance);
@@ -479,21 +477,12 @@ public class WithinReachActivity extends FragmentActivity implements
 
 		        mMap.addCircle(options);
 				
-			}
-			
-
-			
-			
-			
+			}		
 		}
         catch (JSONException e) 
 		{
-
 			e.printStackTrace();
 		}
-        
-    
-		
 	}
 	
 
@@ -560,50 +549,40 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 	public void invokeServerComMgr()
 	{
-		// check if we obtained a provider
-		if(providerAvailable)
+			
+		if (mCurrentLocation == null && marker == null)
 		{
-			
-			if (mCurrentLocation == null && marker == null)
-			{
-				Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
-				return;
-			}
-			
-			Handler asyncHandler = new Handler()
-			{
-			    public void handleMessage(Message msg){
-			        super.handleMessage(msg);
-			        //What did that async task say?
-			        switch (msg.what)
-			        {
-			            case 1:
-			                handleDataFile();
-			                break;                      
-			        }
-			    }
-			}; 
-			double latitude = 0.0;
-			double longitude = 0.0;
-			if(marker != null)
-			{
-				latitude = marker.getPosition().latitude;
-				longitude = marker.getPosition().longitude;
-			}
-			else
-			{
-				latitude = mCurrentLocation.getLatitude();
-				longitude = mCurrentLocation.getLongitude();
-			}
-			ServerInvoker invoker = new ServerInvoker(this, asyncHandler, latitude, longitude, modeCode, timeConstraint);
-			invoker.invokeServerComMgr();
-			
-			
+			Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
+			return;
 		}
-		// no provider was obtained: display error message
-		else{
-			Toast.makeText(this, R.string.error_provider_try_again, Toast.LENGTH_LONG).show();
+		
+		Handler asyncHandler = new Handler()
+		{
+		    public void handleMessage(Message msg){
+		        super.handleMessage(msg);
+		        //What did that async task say?
+		        switch (msg.what)
+		        {
+		            case 1:
+		                handleDataFile();
+		                break;                      
+		        }
+		    }
+		}; 
+		double latitude = 0.0;
+		double longitude = 0.0;
+		if(marker != null)
+		{
+			latitude = marker.getPosition().latitude;
+			longitude = marker.getPosition().longitude;
 		}
+		else
+		{
+			latitude = mCurrentLocation.getLatitude();
+			longitude = mCurrentLocation.getLongitude();
+		}
+		ServerInvoker invoker = new ServerInvoker(this, asyncHandler, latitude, longitude, modeCode, timeConstraint);
+		invoker.invokeServerComMgr();
 				
 	}
 

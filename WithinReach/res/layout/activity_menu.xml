@@ -91,6 +91,20 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/help" />
+    
+    <Button
+        android:id="@+id/about_menu_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/about" />
+    
+    <Button
+        android:id="@+id/license_menu_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/license" />
 
 
 

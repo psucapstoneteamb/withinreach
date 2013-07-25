@@ -204,8 +204,9 @@ public class WithinReachActivity extends FragmentActivity implements
 		}
 		else
 		{
-			Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
-			return;
+			//fail codes 0.0 will be handled in MenuActivity
+			launchMenu.putExtra("latitude", 0.0); 
+			launchMenu.putExtra("longitude", 0.0);
 		}
 		startActivity(launchMenu);
 	}
@@ -340,6 +341,10 @@ public class WithinReachActivity extends FragmentActivity implements
 			if (serverDone == 1)
 			{
 				handleDataFile();		
+			}
+			else if (serverDone == 0)
+			{
+				Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
 			}
 		}
 		

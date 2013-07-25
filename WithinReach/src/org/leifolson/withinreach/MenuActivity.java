@@ -233,6 +233,10 @@ public class MenuActivity extends Activity {
 		if (transitToggled)
 			modeCode += 4;
 		
+		if (latitude == 0.0 && longitude == 0.0)
+		{
+			returnToWithinReachActivity();
+		}
 		ServerInvoker invoker = new ServerInvoker(this, asyncHandler, latitude, longitude, modeCode, timeConstraint);
 		invoker.invokeServerComMgr();
 	}
@@ -251,7 +255,11 @@ public class MenuActivity extends Activity {
 	public void returnToWithinReachActivity()
 	{
 		Intent launchWithinReach = new Intent(this, WithinReachActivity.class);
-		launchWithinReach.putExtra("serverCallDone", 1);
+		if (latitude == 0.0 && longitude == 0.0)
+			launchWithinReach.putExtra("serverCallDone", 0); //0 means fail/no location was given from main activity
+		else 
+			launchWithinReach.putExtra("serverCallDone", 1); //1 means success
+		
 		launchWithinReach.putExtra("timeConstraint", timeConstraint);
 		launchWithinReach.putExtra("modeCode", modeCode);
 		startActivity(launchWithinReach);

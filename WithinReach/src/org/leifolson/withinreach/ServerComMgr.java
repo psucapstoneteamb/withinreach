@@ -41,11 +41,6 @@ public class ServerComMgr extends AsyncTask<String, Void, String>
 	protected String doInBackground(String... params) 
 	{
 		
-		//params[0] should be the url of the json file. I used:
-		// "http://withinreach.herokuapp.com/echo?something=1234" as url for this test
-		
-		//to call this function in main thread:
-		// new ServerComMgr().execute(url);
 		
 		
 		HttpClient client = new DefaultHttpClient();

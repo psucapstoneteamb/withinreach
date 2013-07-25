@@ -52,11 +52,16 @@ public class MenuActivity extends Activity {
 	// or find a way to pass it back to the WithinReachActivity
 	// at a later time
 	// its possible we dont even need many of these
-	private int timeConstraint = 0;
+	private int timeConstraint = 15;
+	private int modeCode = 7;
 	private boolean walkToggled = true;
 	private boolean bikeToggled = true;
 	private boolean transitToggled = true;
 	private final int MAX_TIME = 90;
+	
+	//the lat/long will be passed from the WithinReachActivity
+	private double latitude = 0.0; 
+	private double longitude = 0.0;
 	
 	// the menu has the following UI elements
 	// these will most likely be changed to fragments at a later time
@@ -80,6 +85,12 @@ public class MenuActivity extends Activity {
 		
 		timeSeekBar.setMax(MAX_TIME);
 		
+		Bundle extras = getIntent().getExtras();
+		if (extras != null)
+		{
+			latitude = extras.getDouble("latitude");
+			longitude = extras.getDouble("longitude");
+		}
 		
 		// getting a reference to the toggle buttons
 		walkToggleButton = (ToggleButton)findViewById(R.id.toggle_button_walk);
@@ -213,104 +224,36 @@ public class MenuActivity extends Activity {
 		        }
 		    }
 		};  
-		
-		FileInputStream fileInputStream = null;
-		try
-		{
-			fileInputStream = openFileInput("settingsJson.txt");
-		} 
-		catch (FileNotFoundException e) 
-		{
-			e.printStackTrace();
-		}
-		
-		InputStreamReader inputStreamReader = new InputStreamReader ( fileInputStream ) ;
-        BufferedReader bufferedReader = new BufferedReader ( inputStreamReader ) ;
-        String stringReader;
-        String fullString = "";
-        try 
-        {
-	        while ((stringReader = bufferedReader.readLine()) != null)
-	        {
-	        	fullString += stringReader;
-	        }
-	        fileInputStream.close();
 
-        }
-        catch (IOException e)
-        {
-        	e.printStackTrace();
-        	
-        }
-        
-		try
-		{
-			JSONObject settingsJson = new JSONObject(fullString);
-			double latitude = settingsJson.getDouble("lat");
-			double longitude = settingsJson.getDouble("long");
-			int time = 200;
-			
-			int mode_code = 0;
-			if (walkToggled)
-				mode_code += 1;
-			else
-				System.out.println("NOT CHECKED");
-			if (bikeToggled)
-				mode_code += 2;
-			if (transitToggled)
-				mode_code += 4;
-			
-			SeekBar timeSeekBar = (SeekBar) findViewById(R.id.time_seekbar);
-			int time_constraint = timeSeekBar.getProgress();
-			
-			settingsJson.put("constraint", time_constraint);
-			settingsJson.put("mode", mode_code);
+		modeCode = 0;
+		if (walkToggled)
+			modeCode += 1;
+		if (bikeToggled)
+			modeCode += 2;
+		if (transitToggled)
+			modeCode += 4;
+		
+		ServerInvoker invoker = new ServerInvoker(this, asyncHandler, latitude, longitude, modeCode, timeConstraint);
+		invoker.invokeServerComMgr();
+	}
 	
-			String url = "http://withinreach.herokuapp.com/json?";
-			url += ("lat=" + latitude);
-			url += ("&long=" + longitude);
-			url += ("&time=" + time);
-			url += ("&day=" + settingsJson.getInt("day"));
-			url += ("&month=" + settingsJson.getInt("month"));
-			url += ("&year=" + settingsJson.getInt("year"));
-			url += ("&mode_code=" + mode_code);
-			url += ("&constraint=" + time_constraint);
-			System.out.println(url);
-			
-			FileOutputStream fstream;
-			try 
-			{
-				fstream = openFileOutput("settingsJson.txt", Context.MODE_PRIVATE);
-
-				fstream.write(settingsJson.toString().getBytes());
-				
-				fstream.close();
-				
-			} 
-			catch (FileNotFoundException e) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			new ServerComMgr(this, asyncHandler).execute(url);
-		}
-		catch (JSONException e) 
+	public void onNewIntent(Intent t) 
+	{
+		Bundle extras = t.getExtras();
+		if (extras != null)
 		{
-			
-			
+			latitude = extras.getDouble("latitude");
+			longitude = extras.getDouble("longitude");
 		}
+		
 	}
 
 	public void returnToWithinReachActivity()
 	{
 		Intent launchWithinReach = new Intent(this, WithinReachActivity.class);
 		launchWithinReach.putExtra("serverCallDone", 1);
+		launchWithinReach.putExtra("timeConstraint", timeConstraint);
+		launchWithinReach.putExtra("modeCode", modeCode);
 		startActivity(launchWithinReach);
 	}
 }

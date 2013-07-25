@@ -97,7 +97,9 @@ public class WithinReachActivity extends FragmentActivity implements
 	private static final Double startLng = -122.6750;
     private static final LatLng PORTLAND = new LatLng(startLat, startLng);
 	
-
+    //the time constraint and transportation mode code for making the server call
+    private int modeCode;
+    private int timeConstraint;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -136,9 +138,11 @@ public class WithinReachActivity extends FragmentActivity implements
 			Toast.makeText(this, R.string.error_fatal_loc_mgr, Toast.LENGTH_LONG).show();
 		}
 		
-		// set up the map and settings files if necessary
+		// set up the map if necessary
 		setUpMapIfNeeded();
-		setUpSettingsFile();
+		
+		timeConstraint = 15; //initial time_constraint
+		modeCode = 7; //initial transportation mode code for all modes selected 
 		
 		// set the starting location of the map
     	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(PORTLAND, 14.0f));
@@ -184,8 +188,25 @@ public class WithinReachActivity extends FragmentActivity implements
 	 *  time constraint
 	 *  transport mode
 	 */
-	private void startMenu(){
+	private void startMenu()
+	{
 		Intent launchMenu = new Intent(this,MenuActivity.class);
+
+		if (mCurrentLocation != null)
+		{
+			launchMenu.putExtra("latitude", mCurrentLocation.getLatitude());
+			launchMenu.putExtra("longitude", mCurrentLocation.getLongitude());
+		}
+		else if (marker != null)
+		{
+			launchMenu.putExtra("latitude", marker.getPosition().latitude);
+			launchMenu.putExtra("longitude", marker.getPosition().longitude);
+		}
+		else
+		{
+			Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
+			return;
+		}
 		startActivity(launchMenu);
 	}
 
@@ -305,56 +326,7 @@ public class WithinReachActivity extends FragmentActivity implements
     	}
         
     }
-    
-    private void setUpSettingsFile()
-    {
-    	GregorianCalendar calendar = (GregorianCalendar)Calendar.getInstance();
-		int day = calendar.get(Calendar.DAY_OF_WEEK);
-		int month = calendar.get(Calendar.MONTH);
-		int year = calendar.get(Calendar.YEAR);
-		int time = 200;
-    	JSONObject settingsJson = new JSONObject();
-    	
-    	double latitude = WithinReachActivity.startLat;
-    	double longitude = WithinReachActivity.startLng;
-		try 
-		{
-			
-			settingsJson.put("lat", latitude);
-			settingsJson.put("long", longitude);
-			settingsJson.put("time", time);
-			settingsJson.put("day", day);
-			settingsJson.put("month", month);
-			settingsJson.put("year", year);
-			settingsJson.put("mode", 7);
-			settingsJson.put("constraint", 15);
-		} 
-		catch (JSONException e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		FileOutputStream fstream;
-		try 
-		{
-			fstream = openFileOutput("settingsJson.txt", Context.MODE_PRIVATE);
-
-			fstream.write(settingsJson.toString().getBytes());
-			
-		} 
-		catch (FileNotFoundException e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-    	
-    }
+ 
 	
     //This gets called from MenuActivity when it launches the WithinReachActivity
 	public void onNewIntent(Intent t) 
@@ -363,6 +335,8 @@ public class WithinReachActivity extends FragmentActivity implements
 		if (extras != null)
 		{
 			int serverDone = extras.getInt("serverCallDone");
+			timeConstraint = extras.getInt("timeConstraint");
+			modeCode = extras.getInt("modeCode");
 			if (serverDone == 1)
 			{
 				handleDataFile();		
@@ -582,7 +556,14 @@ public class WithinReachActivity extends FragmentActivity implements
 	public void invokeServerComMgr()
 	{
 		// check if we obtained a provider
-		if(providerAvailable){
+		if(providerAvailable)
+		{
+			
+			if (mCurrentLocation == null && marker == null)
+			{
+				Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
+				return;
+			}
 			
 			Handler asyncHandler = new Handler()
 			{
@@ -597,103 +578,22 @@ public class WithinReachActivity extends FragmentActivity implements
 			        }
 			    }
 			}; 
-			
-			
-			
-			FileInputStream fileInputStream = null;
-			try
+			double latitude = 0.0;
+			double longitude = 0.0;
+			if(marker != null)
 			{
-				fileInputStream = openFileInput("settingsJson.txt");
-			} 
-			catch (FileNotFoundException e) 
-			{
-				e.printStackTrace();
+				latitude = marker.getPosition().latitude;
+				longitude = marker.getPosition().longitude;
 			}
+			else
+			{
+				latitude = mCurrentLocation.getLatitude();
+				longitude = mCurrentLocation.getLongitude();
+			}
+			ServerInvoker invoker = new ServerInvoker(this, asyncHandler, latitude, longitude, modeCode, timeConstraint);
+			invoker.invokeServerComMgr();
 			
-			InputStreamReader inputStreamReader = new InputStreamReader ( fileInputStream ) ;
-	        BufferedReader bufferedReader = new BufferedReader ( inputStreamReader ) ;
-	        String stringReader;
-	        String fullString = "";
-	        try 
-	        {
-		        while ((stringReader = bufferedReader.readLine()) != null)
-		        {
-		        	fullString += stringReader;
-		        }
-		        fileInputStream.close();
-	
-	        }
-	        catch (IOException e)
-	        {
-	        	e.printStackTrace();
-	        	
-	        }
-	        
-			try
-			{
-				JSONObject settingsJson = new JSONObject(fullString);
-				double latitude = 0;
-				double longitude = 0;
-				if (marker == null)
-				{
-					latitude = mCurrentLocation.getLatitude();
-					longitude = mCurrentLocation.getLongitude();
-					
-	
-				}
-				else
-				{
-					 latitude = marker.getPosition().latitude;
-					 longitude = marker.getPosition().longitude;
-				}
-				int time = 200;
-				int mode_code = settingsJson.getInt("mode");
-				int time_constraint = settingsJson.getInt("constraint");
-				int day = settingsJson.getInt("day");
-				int month = settingsJson.getInt("month");
-				int year = settingsJson.getInt("year");
-	
-				settingsJson.put("lat", latitude);
-				settingsJson.put("long", longitude);
-				
-				String url = "http://withinreach.herokuapp.com/json?";
-				url += ("lat=" + latitude);
-				url += ("&long=" + longitude);
-				url += ("&time=" + time);
-				url += ("&day=" + day);
-				url += ("&month=" + month);
-				url += ("&year=" + year);
-				url += ("&mode_code=" + mode_code);
-				url += ("&constraint=" + time_constraint);
-		
-				FileOutputStream fstream;
-				try 
-				{
-					fstream = openFileOutput("settingsJson.txt", Context.MODE_PRIVATE);
-	
-					fstream.write(settingsJson.toString().getBytes());
-					
-					fstream.close();
-					
-				} 
-				catch (FileNotFoundException e) 
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				new ServerComMgr(this, asyncHandler).execute(url);
-			}
-			catch (JSONException e) 
-			{
-				
-				
-			}
+			
 		}
 		// no provider was obtained: display error message
 		else{
@@ -731,8 +631,8 @@ public class WithinReachActivity extends FragmentActivity implements
 
 	@Override
 	// handle info window clicks by deleting the marker
-	public void onInfoWindowClick(Marker arg0) {
-		System.out.println("Info Window Click");
+	public void onInfoWindowClick(Marker arg0) 
+	{
 		marker.remove();
 		marker = null;
 	}

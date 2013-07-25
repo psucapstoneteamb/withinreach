@@ -31,6 +31,6 @@
     <string name="error_fatal_loc_mgr">Fatal Error: Location Manager Error</string>
     <string name="error_no_provider">No Provider Available</string>
     <string name="error_provider_try_again">No Provider: Try Again</string>
-
+	<string name="no_location_message">No Location Provided: Drop a Pin or Enable Android GPS</string>
 
 </resources>

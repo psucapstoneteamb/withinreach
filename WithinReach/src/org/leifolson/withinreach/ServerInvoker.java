@@ -21,12 +21,7 @@ public class ServerInvoker
 	private Handler handler;
 	private Context context;
 	
-	private double latitude;
-	private double longitude;
-	
-	private int modeCode;
-	private int timeConstraint;
-	private int time; //time of day
+	private int time; //time of day in minutes
 	private int day;
 	private int month;
 	private int year;
@@ -39,16 +34,11 @@ public class ServerInvoker
 		this.handler = handler;
 		this.context = context;
 		
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.modeCode = modeCode;
-		this.timeConstraint = timeConstraint;
-		
 		GregorianCalendar calendar = (GregorianCalendar)Calendar.getInstance();
 		day = calendar.get(Calendar.DAY_OF_WEEK);
 		month = calendar.get(Calendar.MONTH);
 		year = calendar.get(Calendar.YEAR);
-		time = calendar.get(Calendar.MINUTE);
+		time = (60 * calendar.get(Calendar.HOUR_OF_DAY)) + calendar.get(Calendar.MINUTE);
 		
 
 		url = "http://withinreach.herokuapp.com/json?";

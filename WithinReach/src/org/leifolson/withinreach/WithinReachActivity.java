@@ -317,7 +317,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	                	s += 
 	                		"?layers=traveltime&styles=color30&batch=true&mode=TRANSIT%2CWALK&" +
 	                    		"maxWalkDistance=2000&time=2013-07-10T08%3A00%3A00&"+
-	                    		"fromPlace=45.5236%2C-122.6750"; //&toPlace=34.838911%2C-82.379294";
+	                    		"fromPlace=45.5236%2C-122.6750&toPlace=0"; //&toPlace=34.838911%2C-82.379294";
 	                     url = new URL(s);
 	                } catch (MalformedURLException e) {
 	                    throw new AssertionError(e);

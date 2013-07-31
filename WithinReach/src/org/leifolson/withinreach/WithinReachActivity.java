@@ -90,6 +90,12 @@ public class WithinReachActivity extends FragmentActivity implements
 	private boolean toggleOTPATiles = false;
 	private static final String OTPA_URL_FORMAT = 
 		"http://queue.its.pdx.edu:8080/opentripplanner-api-webapp/ws/tile/%d/%d/%d.png";
+
+	private static final String GREENVILLE_URL_FORMAT = 
+		"http://trip.greenvilleopenmap.info/opentripplanner-api-webapp/ws/tile/%d/%d/%d.png";
+	
+	// test location for greenville
+    private static final LatLng GREENVILLE = new LatLng(34.828911, -82.369294);
 	
 	// the start latitudes/longitudes define a starting location
 	// of Portland, OR
@@ -145,8 +151,11 @@ public class WithinReachActivity extends FragmentActivity implements
 		modeCode = 7; //initial transportation mode code for all modes selected 
 		
 		// set the starting location of the map
-    	mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(PORTLAND, 14.0f));
-    	
+		if(toggleOTPATiles){
+			mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(GREENVILLE, 14.0f));
+		}else{
+			mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(PORTLAND, 14.0f));	
+		}
 	}
 	
 	@Override
@@ -308,7 +317,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	                	s += 
 	                		"?layers=traveltime&styles=color30&batch=true&mode=TRANSIT%2CWALK&" +
 	                    		"maxWalkDistance=2000&time=2013-07-10T08%3A00%3A00&"+
-	                    		"fromPlace=45.51212126820532%2C-122.62321472167969&toPlace=45.381403%2C-122.27416674999999";
+	                    		"fromPlace=45.5236%2C-122.6750"; //&toPlace=34.838911%2C-82.379294";
 	                     url = new URL(s);
 	                } catch (MalformedURLException e) {
 	                    throw new AssertionError(e);

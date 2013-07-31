@@ -11,6 +11,7 @@ import java.net.URL;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
@@ -36,6 +37,9 @@ import com.google.android.gms.maps.model.UrlTileProvider;
 
 
 
+
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationListener;
@@ -263,6 +267,38 @@ public class WithinReachActivity extends FragmentActivity implements
 		else return false;
 	}
 	
+	
+	
+	public void handlePlaces() //this will be called by the search bar for locations to add
+	{
+		Handler asyncHandler = new Handler()
+		{
+		    public void handleMessage(Message msg){
+		        super.handleMessage(msg);
+		        //What did that async task say?
+		        switch (msg.what)
+		        {
+		            case 1:
+	            		Bundle bundle = msg.getData();
+	            		String str = bundle.getString("PlacesJSON");
+	            		if (str != null)
+	            			System.out.println(str);
+		                break;                      
+		        }
+		    }
+		}; 
+		
+		new PlacesMgr(asyncHandler).execute("searchTerm");
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
      * installed) and the map has not already been instantiated.. This will ensure that we only ever
@@ -415,8 +451,9 @@ public class WithinReachActivity extends FragmentActivity implements
         	}
         	mMap.clear();
         }
-
-
+        
+        
+        
         try 
         {
 			JSONObject jsonObject = new JSONObject(fullString);

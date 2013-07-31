@@ -48,7 +48,7 @@
             android:name="org.leifolson.withinreach.MenuActivity"
             android:label="@string/menu_title"
             android:launchMode="singleInstance"
-            android:configChanges="keyboardHidden|orientation" >
+            android:configChanges="keyboardHidden|orientation|screenSize" >
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>

@@ -27,6 +27,7 @@ import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -262,6 +263,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		if (item.getItemId() == R.id.action_refresh)
 		{
 			invokeServerComMgr();
+			//handlePlaces();
 			return true;
 		}
 		else return false;
@@ -282,7 +284,38 @@ public class WithinReachActivity extends FragmentActivity implements
 	            		Bundle bundle = msg.getData();
 	            		String str = bundle.getString("PlacesJSON");
 	            		if (str != null)
-	            			System.out.println(str);
+	            		{
+	            			try 
+	            			{
+								JSONObject jsonObject = new JSONObject(str);
+								JSONArray jsonArray = jsonObject.getJSONArray("results");
+								System.out.println("json array length is " + jsonArray.length());
+								Marker[] markers;
+								markers = new Marker[5];
+								for (int i = 0; i < 5; ++i)
+								{
+									JSONObject jsonElement = jsonArray.getJSONObject(i);
+									String name = jsonElement.getString("name");
+									
+									LatLng latLng = new LatLng(jsonElement.getJSONObject("geometry").getJSONObject("location").getDouble("lat"),
+											jsonElement.getJSONObject("geometry").getJSONObject("location").getDouble("lng"));
+									
+									System.out.println("latlng is " + latLng.latitude + " " + latLng.longitude);
+									
+									markers[i] = makeMapMarker(latLng, name, true);
+									
+								}
+							} 
+	            			catch (JSONException e) 
+	            			{
+								e.printStackTrace();
+							}
+	            			
+	            			
+	            			
+	            			
+	            			
+	            		}
 		                break;                      
 		        }
 		    }
@@ -436,7 +469,7 @@ public class WithinReachActivity extends FragmentActivity implements
             
         	mMap.clear();
         	
-        	marker = makeMapMarker(markerLocation,appRes.getString(R.string.delete_marker));
+        	marker = makeMapMarker(markerLocation,appRes.getString(R.string.delete_marker), false);
         }
         else
         {
@@ -644,7 +677,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		// otherwise create a new marker at the clicked on position
 		else
 		{
-			marker = makeMapMarker(point,appRes.getString(R.string.delete_marker));   
+			marker = makeMapMarker(point,appRes.getString(R.string.delete_marker), false);   
 		
 		// listen for info window clicks to delete marker
 
@@ -663,18 +696,31 @@ public class WithinReachActivity extends FragmentActivity implements
 	// handle info window clicks by deleting the marker
 	public void onInfoWindowClick(Marker arg0) 
 	{
-		marker.remove();
-		marker = null;
+		
+		if (arg0.equals(marker))
+		{
+			marker.remove();
+			marker = null;
+		}
+		
 	}
 	
 	// returns a visible marker at the passed in position
 	// with the passed in title
-	private Marker makeMapMarker(LatLng point, String title){
+	private Marker makeMapMarker(LatLng point, String title, boolean isPlace)
+	{
+		float color = BitmapDescriptorFactory.HUE_RED;
+		if (isPlace == true)
+			color = BitmapDescriptorFactory.HUE_AZURE;
+		
+		boolean draggable = !isPlace; 
+		
 		return mMap.addMarker(new MarkerOptions()
 			.visible(true)
 			.position(point)
 			.title(title)
-			.draggable(true));
+			.draggable(draggable)
+			.icon(BitmapDescriptorFactory.defaultMarker(color)));
 	}
 	
 

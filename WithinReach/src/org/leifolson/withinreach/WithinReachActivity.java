@@ -54,12 +54,18 @@ import android.os.Handler;
 import android.os.Message;
 import android.annotation.TargetApi;
 import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnKeyListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -72,6 +78,15 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 	// used as a handle to the map object
 	private GoogleMap mMap;
+	
+	
+	//Search Bar
+	private TextView textView;
+	
+	private TextWatcher textWatcher;
+	
+	
+	private Marker placeMarkers[];
 	
 	// other private members
 	private OnLocationChangedListener mListener;
@@ -124,6 +139,39 @@ public class WithinReachActivity extends FragmentActivity implements
 		
 		// get a location manager
 		mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+		
+		
+		textWatcher = new TextWatcher()
+		{
+
+			public void afterTextChanged(Editable s) 
+			{
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) 
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) 
+			{
+				handlePlaces();
+				
+			}
+			
+			
+		};
+		
+		textView = (TextView)findViewById(R.id.editText1);
+		textView.setAlpha((float) .3);
+		textView.addTextChangedListener(textWatcher);
+		
+		placeMarkers = new Marker[10];
+		
 		
 		// attempt to get a provider for the location manager
 		if(mLocationManager != null){
@@ -263,7 +311,6 @@ public class WithinReachActivity extends FragmentActivity implements
 		if (item.getItemId() == R.id.action_refresh)
 		{
 			invokeServerComMgr();
-			//handlePlaces();
 			return true;
 		}
 		else return false;
@@ -273,6 +320,8 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 	public void handlePlaces() //this will be called by the search bar for locations to add
 	{
+		
+		System.out.println("TEXT IS" + textView.getText());
 		Handler asyncHandler = new Handler()
 		{
 		    public void handleMessage(Message msg){
@@ -290,10 +339,15 @@ public class WithinReachActivity extends FragmentActivity implements
 								JSONObject jsonObject = new JSONObject(str);
 								JSONArray jsonArray = jsonObject.getJSONArray("results");
 								System.out.println("json array length is " + jsonArray.length());
-								Marker[] markers;
-								markers = new Marker[5];
-								for (int i = 0; i < 5; ++i)
+								if (jsonArray.length() < 1)
+									break;
+								for (int i = 0; i < 10; ++i)
 								{
+									if (placeMarkers[i] != null)
+										placeMarkers[i].remove();
+									if (jsonArray.isNull(i))
+										 break;
+									
 									JSONObject jsonElement = jsonArray.getJSONObject(i);
 									String name = jsonElement.getString("name");
 									
@@ -302,7 +356,7 @@ public class WithinReachActivity extends FragmentActivity implements
 									
 									System.out.println("latlng is " + latLng.latitude + " " + latLng.longitude);
 									
-									markers[i] = makeMapMarker(latLng, name, true);
+									placeMarkers[i] = makeMapMarker(latLng, name, true);
 									
 								}
 							} 
@@ -321,7 +375,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		    }
 		}; 
 		
-		new PlacesMgr(asyncHandler).execute("searchTerm");
+		new PlacesMgr(asyncHandler).execute(textView.getText().toString());
 		
 		
 	}
@@ -722,6 +776,7 @@ public class WithinReachActivity extends FragmentActivity implements
 			.draggable(draggable)
 			.icon(BitmapDescriptorFactory.defaultMarker(color)));
 	}
+
 	
 
 }

@@ -77,7 +77,6 @@ public class WithinReachActivity extends FragmentActivity implements
 	LocationListener,
 	LocationSource, 
 	OnMapLongClickListener,
-//	OnMarkerClickListener,
 	OnInfoWindowClickListener{
 	
 	// used as a handle to the map object
@@ -96,10 +95,6 @@ public class WithinReachActivity extends FragmentActivity implements
 	private OnLocationChangedListener mListener;
 	private LocationManager mLocationManager;
 	private Location mCurrentLocation;
-//	private OnMapLongClickListener mLongClick;
-//	private OnMarkerClickListener mClickListener;
-//	private OnInfoWindowClickListener mWindow;
-
 	
 	//marker
 	private Marker marker;
@@ -123,20 +118,14 @@ public class WithinReachActivity extends FragmentActivity implements
     
     // provider for transit
     private TileOverlay overlayTransit;
-    //private TileProvider tileProviderTransit;
-    //private TileOverlayOptions optsTransit;
     private static int TRANSIT_Z = 6;
     
     // provider for biking
     private TileOverlay overlayBiking;
-    //private TileProvider tileProviderBiking;
-    //private TileOverlayOptions optsBiking;
     private static int BIKING_Z = 5;
     
     // provider for walking
     private TileOverlay overlayWalk;
-    //private TileProvider tileProviderWalk;
-    //private TileOverlayOptions optsWalk;
     private static int WALK_Z = 4;
     
     /* END TILE TEST CODE */
@@ -542,12 +531,6 @@ public class WithinReachActivity extends FragmentActivity implements
 	                try {
 	                	switch(travelMode){
 	                	case 1:
-	                		//s += 
-//	                		"?batch=true&layers=traveltime&styles=color30&time=2013-08-03T08%3A00%3A00&"
-//	                		+"mode=WALK&maxWalkDistance=4000&"
-//	                		+"clampInitialWait=600&fromPlace=" + loc.latitude + "%2C"
-//	                		+ loc.longitude + "&toPlace=0";
-
 	                		mode = "BICYCLE%2CWALK";
 	                		style = "maskblue";
 	                		break;
@@ -566,15 +549,16 @@ public class WithinReachActivity extends FragmentActivity implements
 	                	s +="?batch=true"
 	                		+"&layers=traveltime" 
 	                		+"&styles=" + style 
-	                		+"&time=" + day + "T08%3A00%3A00&"
-                			+"mode="+ mode 
+	                		+"&time=" + day + "T08%3A00%3A00"
+                			+"&mode="+ mode 
                 			+"&maxWalkDistance=4000"
-                			+"&timeconstraint=" + timeConstraint + "&"
-                			+"clampInitialWait=600&fromPlace=" + loc.latitude + "%2C"
-                			+ loc.longitude + "&toPlace=0";
+                			+"&timeconstraint=" + timeConstraint
+                			+"&clampInitialWait=600"
+                			+"&fromPlace=" + loc.latitude + "%2C"+ loc.longitude 
+                			+"&toPlace=0";
 	                	
 	                	System.out.println(s);
-	                     url = new URL(s);
+	                    url = new URL(s);
 	                } catch (MalformedURLException e) {
 	                    throw new AssertionError(e);
 	                }
@@ -882,12 +866,6 @@ public class WithinReachActivity extends FragmentActivity implements
 		}
 	}
 
-//	@Override
-//	public boolean onMarkerClick(Marker arg0) {
-//		// TODO Auto-generated method stub
-//		
-//		return false;
-//	}
 
 	@Override
 	// handle info window clicks by deleting the marker

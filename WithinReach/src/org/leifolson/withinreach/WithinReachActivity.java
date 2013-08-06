@@ -30,6 +30,7 @@ import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -57,12 +58,18 @@ import android.os.Handler;
 import android.os.Message;
 import android.annotation.TargetApi;
 import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnKeyListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -75,6 +82,15 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 	// used as a handle to the map object
 	private GoogleMap mMap;
+	
+	
+	//Search Bar
+	private TextView textView;
+	
+	private TextWatcher textWatcher;
+	
+	
+	private Marker placeMarkers[];
 	
 	// other private members
 	private OnLocationChangedListener mListener;
@@ -147,6 +163,39 @@ public class WithinReachActivity extends FragmentActivity implements
 		
 		// get a location manager
 		mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+		
+		
+		textWatcher = new TextWatcher()
+		{
+
+			public void afterTextChanged(Editable s) 
+			{
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) 
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) 
+			{
+				handlePlaces();
+				
+			}
+			
+			
+		};
+		
+		textView = (TextView)findViewById(R.id.editText1);
+		textView.setAlpha((float) .3);
+		textView.addTextChangedListener(textWatcher);
+		
+		placeMarkers = new Marker[10];
+		
 		
 		// attempt to get a provider for the location manager
 		if(mLocationManager != null){
@@ -302,6 +351,8 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 	public void handlePlaces() //this will be called by the search bar for locations to add
 	{
+		
+		System.out.println("TEXT IS" + textView.getText());
 		Handler asyncHandler = new Handler()
 		{
 		    public void handleMessage(Message msg){
@@ -313,13 +364,49 @@ public class WithinReachActivity extends FragmentActivity implements
 	            		Bundle bundle = msg.getData();
 	            		String str = bundle.getString("PlacesJSON");
 	            		if (str != null)
-	            			System.out.println(str);
+	            		{
+	            			try 
+	            			{
+								JSONObject jsonObject = new JSONObject(str);
+								JSONArray jsonArray = jsonObject.getJSONArray("results");
+								System.out.println("json array length is " + jsonArray.length());
+								if (jsonArray.length() < 1)
+									break;
+								for (int i = 0; i < 10; ++i)
+								{
+									if (placeMarkers[i] != null)
+										placeMarkers[i].remove();
+									if (jsonArray.isNull(i))
+										 break;
+									
+									JSONObject jsonElement = jsonArray.getJSONObject(i);
+									String name = jsonElement.getString("name");
+									
+									LatLng latLng = new LatLng(jsonElement.getJSONObject("geometry").getJSONObject("location").getDouble("lat"),
+											jsonElement.getJSONObject("geometry").getJSONObject("location").getDouble("lng"));
+									
+									System.out.println("latlng is " + latLng.latitude + " " + latLng.longitude);
+									
+									placeMarkers[i] = makeMapMarker(latLng, name, true);
+									
+								}
+							} 
+	            			catch (JSONException e) 
+	            			{
+								e.printStackTrace();
+							}
+	            			
+	            			
+	            			
+	            			
+	            			
+	            		}
 		                break;                      
 		        }
 		    }
 		}; 
 		
-		new PlacesMgr(asyncHandler).execute("searchTerm");
+		new PlacesMgr(asyncHandler).execute(textView.getText().toString());
 		
 		
 	}
@@ -556,6 +643,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		        fileInputStream.close();
 	
 	        }
+<<<<<<< HEAD
 	        catch (IOException e)
 	        {
 	        	e.printStackTrace();
@@ -594,6 +682,48 @@ public class WithinReachActivity extends FragmentActivity implements
 	        {
 				JSONObject jsonObject = new JSONObject(fullString);
 		
+=======
+	        fileInputStream.close();
+
+        }
+        catch (IOException e)
+        {
+        	e.printStackTrace();
+        	
+        }
+        
+        
+        LatLng circleLocation = null;
+        
+        if (marker != null)
+        {
+        	LatLng markerLocation = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
+        	circleLocation = markerLocation;
+            
+        	mMap.clear();
+        	
+        	marker = makeMapMarker(markerLocation,appRes.getString(R.string.delete_marker), false);
+        }
+        else
+        {
+        	// check if we have a current location yet
+        	if(mCurrentLocation != null){
+        		circleLocation = new LatLng(mCurrentLocation.getLatitude(), 
+        				                    mCurrentLocation.getLongitude());
+        	}
+        	// no location obtained...set to default
+        	else{ 
+        		circleLocation = PORTLAND;
+        	}
+        	mMap.clear();
+        }
+        
+        
+        
+        try 
+        {
+			JSONObject jsonObject = new JSONObject(fullString);
+>>>>>>> 17204c37d56cc3d8778a6635f8a953ab1c41e76c
 	
 				
 				
@@ -785,7 +915,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		// otherwise create a new marker at the clicked on position
 		else
 		{
-			marker = makeMapMarker(point,appRes.getString(R.string.delete_marker));   
+			marker = makeMapMarker(point,appRes.getString(R.string.delete_marker), false);   
 		
 		// listen for info window clicks to delete marker
 
@@ -804,19 +934,33 @@ public class WithinReachActivity extends FragmentActivity implements
 	// handle info window clicks by deleting the marker
 	public void onInfoWindowClick(Marker arg0) 
 	{
-		marker.remove();
-		marker = null;
+		
+		if (arg0.equals(marker))
+		{
+			marker.remove();
+			marker = null;
+		}
+		
 	}
 	
 	// returns a visible marker at the passed in position
 	// with the passed in title
-	private Marker makeMapMarker(LatLng point, String title){
+	private Marker makeMapMarker(LatLng point, String title, boolean isPlace)
+	{
+		float color = BitmapDescriptorFactory.HUE_RED;
+		if (isPlace == true)
+			color = BitmapDescriptorFactory.HUE_AZURE;
+		
+		boolean draggable = !isPlace; 
+		
 		return mMap.addMarker(new MarkerOptions()
 			.visible(true)
 			.position(point)
 			.title(title)
-			.draggable(true));
+			.draggable(draggable)
+			.icon(BitmapDescriptorFactory.defaultMarker(color)));
 	}
+
 	
 
 }

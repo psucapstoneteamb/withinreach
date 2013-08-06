@@ -29,11 +29,11 @@ public class PlacesMgr extends AsyncTask<String, Void, String>
 	protected String doInBackground(String... searchTerms) 
 	{
 		HttpClient client = new DefaultHttpClient();
-		HttpGet httpGetter = new HttpGet("https://maps.googleapis.com/maps/api/place/search/json?location=45.52,-122.67&radius=1000&keyword=coffee&sensor=false&key=AIzaSyAAlYH3-CUofsc7dFG73vF-C3q8YQaK71k");
+		HttpGet httpGet = new HttpGet("https://maps.googleapis.com/maps/api/place/search/json?location=45.52,-122.67&radius=1000&keyword=" + searchTerms[0] + "&sensor=false&key=AIzaSyAAlYH3-CUofsc7dFG73vF-C3q8YQaK71k");
 		String result = null;
 		try 
 		{
-			HttpResponse response = client.execute(httpGetter);
+			HttpResponse response = client.execute(httpGet);
 			
 			HttpEntity entity = response.getEntity();
 		    InputStream content = entity.getContent();

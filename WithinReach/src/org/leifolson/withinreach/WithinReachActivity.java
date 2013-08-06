@@ -180,8 +180,11 @@ public class WithinReachActivity extends FragmentActivity implements
 		};
 		
 		textView = (TextView)findViewById(R.id.editText1);
+
+		textView.addTextChangedListener(textWatcher);	
+
 		textView.addTextChangedListener(textWatcher);
-		
+
 		placeMarkers = new Marker[10];
 		
 		

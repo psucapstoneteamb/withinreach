@@ -9,3 +9,11 @@ include/
 lib/
 .installed.cfg
 pip-log.txt
+src/web_backend/webapp/sandbox/
+
+
+WithinReach/.classpath
+WithinReach/project.properties
+WithinReach/gen/
+WithinReach/lint.xml
+*.local

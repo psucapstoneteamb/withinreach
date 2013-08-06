@@ -191,7 +191,6 @@ public class WithinReachActivity extends FragmentActivity implements
 		};
 		
 		textView = (TextView)findViewById(R.id.editText1);
-		textView.setAlpha((float) .3);
 		textView.addTextChangedListener(textWatcher);
 		
 		placeMarkers = new Marker[10];
@@ -643,7 +642,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		        fileInputStream.close();
 	
 	        }
-<<<<<<< HEAD
+
 	        catch (IOException e)
 	        {
 	        	e.printStackTrace();
@@ -660,7 +659,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	            
 	        	mMap.clear();
 	        	
-	        	marker = makeMapMarker(markerLocation,appRes.getString(R.string.delete_marker));
+	        	marker = makeMapMarker(markerLocation,appRes.getString(R.string.delete_marker),false);
 	        }
 	        else
 	        {
@@ -678,52 +677,12 @@ public class WithinReachActivity extends FragmentActivity implements
 	        
 	        
 	        
-	        try 
-	        {
-				JSONObject jsonObject = new JSONObject(fullString);
-		
-=======
-	        fileInputStream.close();
 
-        }
-        catch (IOException e)
-        {
-        	e.printStackTrace();
-        	
-        }
-        
-        
-        LatLng circleLocation = null;
-        
-        if (marker != null)
-        {
-        	LatLng markerLocation = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
-        	circleLocation = markerLocation;
-            
-        	mMap.clear();
-        	
-        	marker = makeMapMarker(markerLocation,appRes.getString(R.string.delete_marker), false);
-        }
-        else
-        {
-        	// check if we have a current location yet
-        	if(mCurrentLocation != null){
-        		circleLocation = new LatLng(mCurrentLocation.getLatitude(), 
-        				                    mCurrentLocation.getLongitude());
-        	}
-        	// no location obtained...set to default
-        	else{ 
-        		circleLocation = PORTLAND;
-        	}
-        	mMap.clear();
-        }
-        
         
         
         try 
         {
 			JSONObject jsonObject = new JSONObject(fullString);
->>>>>>> 17204c37d56cc3d8778a6635f8a953ab1c41e76c
 	
 				
 				

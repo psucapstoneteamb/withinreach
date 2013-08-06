@@ -474,8 +474,8 @@ public class WithinReachActivity extends FragmentActivity implements
 	
     	switch(modeCode){
     	case 1: // walk
-				//overlayWalk = createTileOverlay(1, loc,WALK_Z);
-			Toast.makeText(this, "WALK not yet supported", Toast.LENGTH_LONG).show();
+    		overlayWalk = createTileOverlay(1, loc,WALK_Z);
+			//Toast.makeText(this, "WALK not yet supported", Toast.LENGTH_LONG).show();
 			break;
 			
     	case 2: //bike
@@ -483,7 +483,7 @@ public class WithinReachActivity extends FragmentActivity implements
     		break;
     		
     	case 3: //bike and walk
-    		//overlayWalk = createTileOverlay(1,loc,WALK_Z);
+    		overlayWalk = createTileOverlay(1,loc,WALK_Z);
     		overlayBiking = createTileOverlay(2,loc,BIKING_Z);
     		break;
     		
@@ -492,7 +492,7 @@ public class WithinReachActivity extends FragmentActivity implements
     		break;
     		
     	case 5: //transit and walking
-    		//overlayWalk = createTileOverlay(1,loc,WALK_Z);
+    		overlayWalk = createTileOverlay(1,loc,WALK_Z);
     		overlayTransit = createTileOverlay(4,loc,TRANSIT_Z);
     		break;
     		
@@ -502,7 +502,7 @@ public class WithinReachActivity extends FragmentActivity implements
     		break;
     		
     	case 7: //transit, walk, and bike
-    		//overlayWalk = createTileOverlay(1,loc,WALK_Z);
+    		overlayWalk = createTileOverlay(1,loc,WALK_Z);
     		overlayBiking = createTileOverlay(2,loc,BIKING_Z);
     		overlayTransit = createTileOverlay(4,loc,TRANSIT_Z);
     		break;
@@ -548,7 +548,7 @@ public class WithinReachActivity extends FragmentActivity implements
 //	                		+"clampInitialWait=600&fromPlace=" + loc.latitude + "%2C"
 //	                		+ loc.longitude + "&toPlace=0";
 
-	                		mode = "WALK";
+	                		mode = "BICYCLE%2CWALK";
 	                		style = "maskblue";
 	                		break;
 

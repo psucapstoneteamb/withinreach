@@ -577,6 +577,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	        
 	    	
 	        overlay = mMap.addTileOverlay(opts);
+	        
    	
         return overlay;
     }

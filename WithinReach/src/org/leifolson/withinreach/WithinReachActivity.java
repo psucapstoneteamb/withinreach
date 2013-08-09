@@ -411,7 +411,26 @@ public class WithinReachActivity extends FragmentActivity implements
 			return;
 		}
 		
-		new PlacesMgr(asyncHandler).execute(textView.getText().toString());
+		
+		if (mCurrentLocation == null && marker == null)
+		{
+			Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
+			return;
+		}
+		String[] params = new String[4];
+		params[0] = textView.getText().toString();
+		if (marker != null)
+		{
+			params[1] = Double.toString(marker.getPosition().latitude);
+			params[2] = Double.toString(marker.getPosition().longitude);
+		}
+		else
+		{
+			params[1] = Double.toString(mCurrentLocation.getLatitude());
+			params[2] = Double.toString(mCurrentLocation.getLongitude());
+		}
+		params[3] = Integer.toString(1000);
+		new PlacesMgr(asyncHandler).execute(params);
 		
 		
 	}

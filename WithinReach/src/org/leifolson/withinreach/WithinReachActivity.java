@@ -77,7 +77,8 @@ public class WithinReachActivity extends FragmentActivity implements
 	LocationListener,
 	LocationSource, 
 	OnMapLongClickListener,
-	OnInfoWindowClickListener{
+	OnInfoWindowClickListener
+	{
 	
 	// used as a handle to the map object
 	private GoogleMap mMap;
@@ -172,18 +173,25 @@ public class WithinReachActivity extends FragmentActivity implements
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) 
 			{
-				handlePlaces();
+				String input = s.toString();
+				if (input.matches("[a-zA-Z0-9]*"))
+				{
+					handlePlaces();
+				}
 				
+				else
+				{
+					return;
+				}
 			}
 			
 			
 		};
 		
 		textView = (TextView)findViewById(R.id.editText1);
+		
 
 		textView.addTextChangedListener(textWatcher);	
-
-		textView.addTextChangedListener(textWatcher);
 
 		placeMarkers = new Marker[10];
 		
@@ -343,7 +351,6 @@ public class WithinReachActivity extends FragmentActivity implements
 	public void handlePlaces() //this will be called by the search bar for locations to add
 	{
 		
-		System.out.println("TEXT IS" + textView.getText());
 		Handler asyncHandler = new Handler()
 		{
 		    public void handleMessage(Message msg){
@@ -360,7 +367,6 @@ public class WithinReachActivity extends FragmentActivity implements
 	            			{
 								JSONObject jsonObject = new JSONObject(str);
 								JSONArray jsonArray = jsonObject.getJSONArray("results");
-								System.out.println("json array length is " + jsonArray.length());
 								if (jsonArray.length() < 1)
 									break;
 								for (int i = 0; i < 10; ++i)
@@ -376,7 +382,6 @@ public class WithinReachActivity extends FragmentActivity implements
 									LatLng latLng = new LatLng(jsonElement.getJSONObject("geometry").getJSONObject("location").getDouble("lat"),
 											jsonElement.getJSONObject("geometry").getJSONObject("location").getDouble("lng"));
 									
-									System.out.println("latlng is " + latLng.latitude + " " + latLng.longitude);
 									
 									placeMarkers[i] = makeMapMarker(latLng, name, true);
 									
@@ -396,6 +401,15 @@ public class WithinReachActivity extends FragmentActivity implements
 		        }
 		    }
 		}; 
+		if (textView.getText().toString().equals(""))
+		{
+			for (int i = 0; i < 10; ++i)
+			{
+				if (placeMarkers[i] != null)
+					placeMarkers[i].remove();
+			}
+			return;
+		}
 		
 		new PlacesMgr(asyncHandler).execute(textView.getText().toString());
 		

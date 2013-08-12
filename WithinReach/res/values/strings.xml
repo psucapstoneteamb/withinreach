@@ -22,11 +22,9 @@
     <string name="license">License Information</string>
     <string name="init_seek_time">0 mins</string>
     <string name="action_refresh">REFRESH</string>
-<<<<<<< HEAD
     <string name="mode_descriptor_walk">Walking</string>
     <string name="mode_descriptor_bike">Biking</string>
     <string name="mode_descriptor_transit">Transit</string>
-=======
     <string name="license_info">
         Copyright (c) 2013, Haneen Abu-Khater, Alex Flyte, Kyle Greene, Vi Nguyen, Clinton Olson, and Hanrong Zhao \n
 All rights reserved.Redistribution and use in source and binary forms, with or without
@@ -47,13 +45,13 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     </string>
+    
     <string name="about_info">
         Within Reach \n\n
         Build: v1.1 \n\n
         Copyright (c) 2013, Haneen Abu-Khater, Alex Flyte, Kyle Greene, Vi Nguyen, Clinton Olson, and Hanrong Zhao
         
     </string>
->>>>>>> cae7e07b7db61fe0f5f1b760308134782c1e9ad8
 
 
 

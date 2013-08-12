@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:padding="10dip"
+    android:padding="@dimen/license_view_margin"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     >
@@ -9,8 +9,8 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dip"
-        android:alpha="1"
+        android:layout_marginTop="@dimen/license_view_margin"
+        android:alpha="90"
         android:text="@string/license_info"
     />
     

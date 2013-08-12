@@ -54,6 +54,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+
 public class WithinReachActivity extends FragmentActivity implements
 	LocationListener,
 	LocationSource, 
@@ -135,13 +136,38 @@ public class WithinReachActivity extends FragmentActivity implements
 		// get a location manager
 		mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
 		
+		textView = (TextView)findViewById(R.id.editText1);
+		
+
+			
+
+		placeMarkers = new Marker[10];
 		
 		textWatcher = new TextWatcher()
 		{
 
 			public void afterTextChanged(Editable s) 
 			{
-				// TODO Auto-generated method stub
+				String input = s.toString();
+				
+				if (s.toString().equals(""))
+				{
+						for (int i = 0; i < 10; ++i)
+						{
+							
+							if (placeMarkers[i] != null)
+							{
+								placeMarkers[i].remove();
+								
+							}
+								
+						}
+						return;
+				}
+				else if (input.matches("[a-zA-Z0-9]+"))
+				{
+					handlePlaces();
+				}
 				
 			}
 
@@ -154,27 +180,13 @@ public class WithinReachActivity extends FragmentActivity implements
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) 
 			{
-				String input = s.toString();
-				if (input.matches("[a-zA-Z0-9]*"))
-				{
-					handlePlaces();
-				}
 				
-				else
-				{
-					return;
-				}
 			}
 			
 			
 		};
 		
-		textView = (TextView)findViewById(R.id.editText1);
-		
-
-		textView.addTextChangedListener(textWatcher);	
-
-		placeMarkers = new Marker[10];
+		textView.addTextChangedListener(textWatcher);
 		
 		
 		// attempt to get a provider for the location manager
@@ -336,10 +348,11 @@ public class WithinReachActivity extends FragmentActivity implements
 		{
 		    public void handleMessage(Message msg){
 		        super.handleMessage(msg);
-		        //What did that async task say?
 		        switch (msg.what)
 		        {
 		            case 1:
+		            	if (textView.getText().toString().equals("")) //have to do this check because of multiple threads
+		            		break;
 	            		Bundle bundle = msg.getData();
 	            		String str = bundle.getString("PlacesJSON");
 	            		if (str != null)
@@ -372,25 +385,13 @@ public class WithinReachActivity extends FragmentActivity implements
 	            			{
 								e.printStackTrace();
 							}
-	            			
-	            			
-	            			
-	            			
-	            			
+	            						
 	            		}
 		                break;                      
 		        }
 		    }
 		}; 
-		if (textView.getText().toString().equals(""))
-		{
-			for (int i = 0; i < 10; ++i)
-			{
-				if (placeMarkers[i] != null)
-					placeMarkers[i].remove();
-			}
-			return;
-		}
+		
 		
 		
 		if (mCurrentLocation == null && marker == null)
@@ -400,6 +401,8 @@ public class WithinReachActivity extends FragmentActivity implements
 		}
 		String[] params = new String[4];
 		params[0] = textView.getText().toString();
+		
+		
 		if (marker != null)
 		{
 			params[1] = Double.toString(marker.getPosition().latitude);

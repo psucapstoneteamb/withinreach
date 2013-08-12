@@ -75,12 +75,11 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
-<<<<<<< HEAD
+
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.Window;
-=======
->>>>>>> 23e198f42e970b4313f5a414e8ff3d8acb4ca563
+
 import android.widget.TextView;
 import android.widget.Toast;
 

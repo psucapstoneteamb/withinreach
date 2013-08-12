@@ -98,12 +98,10 @@ public class MenuActivity extends Activity {
 	private ToggleButton bikeToggleButton;
 	private ToggleButton transitToggleButton;
 	private Button menuButton;
-<<<<<<< HEAD
 	private Button helpButton;
-=======
 	private Button licenseButton;
 	private Button aboutButton;
->>>>>>> c2ad4f0078c11800a9be4612afebd79fa09a67d7
+
 
 	// I can probably put some wrapper functions in here to abstract away
 	// all the details of setting up the listeners for UI elements
@@ -200,7 +198,7 @@ public class MenuActivity extends Activity {
 			}
 		});
 		
-<<<<<<< HEAD
+
 		//getting reference to the help button
 		helpButton = (Button) findViewById(R.id.help_menu_button);
 		helpButton.setOnClickListener(new View.OnClickListener(){
@@ -220,7 +218,7 @@ public class MenuActivity extends Activity {
 	public void helpMenu(){
 		Intent launchhelpMenu = new Intent(this,HelpActivity.class);
 		startActivity(launchhelpMenu);
-=======
+
 		
 	    final Dialog dialog = new Dialog(this);
 
@@ -259,7 +257,7 @@ public class MenuActivity extends Activity {
 				}
 				);
 		
->>>>>>> c2ad4f0078c11800a9be4612afebd79fa09a67d7
+
 	}
 	
 	@Override

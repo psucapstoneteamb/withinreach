@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-/* Author: Haneen Abu-Khater
- * Email: haneen.abukhater@gmail.com
- * Last Change: June 23, 2013
- * License:
- */
-=======
 /*
 Copyright (c) 2013, Haneen Abu-Khater, Alex Flyte, Kyle Greene, Vi Nguyen, Clinton Olson, and Hanrong Zhao
 All rights reserved.
@@ -31,7 +24,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
->>>>>>> c2ad4f0078c11800a9be4612afebd79fa09a67d7
 package org.leifolson.withinreach;
 
 import android.app.Activity;

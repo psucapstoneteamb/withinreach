@@ -90,12 +90,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. -->
         
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"  
-<<<<<<< HEAD
-            android:value="AIzaSyCtaF2iuqQXWca6mhNwr7eJ7qCe9Jnley8"/> <!-- Application Debug Key -->
-=======
             android:value="AIzaSyAox1kk5_7iB7pfaN2XA7lyhvKzihR0o-8"/> <!-- Application Debug Key -->
             <!-- android:value="AIzaSyDW7CzB2waFCAjYIgo6cfhRS1OZstzchf8"/> Kyle's-->
->>>>>>> 23e198f42e970b4313f5a414e8ff3d8acb4ca563
+			<!-- android:value="AIzaSyCtaF2iuqQXWca6mhNwr7eJ7qCe9Jnley8"/>  Erin's Key -->
             <!-- android:value="AIzaSyCrE5BVGY64zLgBjQK8BsiSRTwIIgrwbLI"/> Haneen-->
             <!-- android:value="AIzaSyCm4udZpw73SvJe_V_Ii7OKfA_HidUnQ_0"/> Alex's key -->
         	  

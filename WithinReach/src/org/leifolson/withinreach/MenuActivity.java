@@ -52,12 +52,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 //import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View.OnClickListener;
 //import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
@@ -66,6 +70,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+import android.widget.PopupWindow;
 
 public class MenuActivity extends Activity {
 	
@@ -93,6 +98,8 @@ public class MenuActivity extends Activity {
 	private ToggleButton bikeToggleButton;
 	private ToggleButton transitToggleButton;
 	private Button menuButton;
+	private Button licenseButton;
+	private Button aboutButton;
 
 	// I can probably put some wrapper functions in here to abstract away
 	// all the details of setting up the listeners for UI elements
@@ -188,6 +195,44 @@ public class MenuActivity extends Activity {
 				
 			}
 		});
+		
+		
+	    final Dialog dialog = new Dialog(this);
+
+	    licenseButton = (Button)findViewById(R.id.license_menu_button);
+	   
+		licenseButton.setOnClickListener(new View.OnClickListener() 
+		{
+			public void onClick(View v) 
+			{
+				LayoutInflater inflater = (LayoutInflater)
+					       getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				dialog.show();
+				dialog.setTitle("License Information");
+				dialog.setCancelable(true);
+				dialog.setContentView(inflater.inflate(R.layout.license_view, null, false));
+				
+			}
+		});
+		
+		
+		aboutButton = (Button)findViewById(R.id.about_menu_button);
+		
+		aboutButton.setOnClickListener(
+				new View.OnClickListener() 
+				{
+					public void onClick(View v) 
+					{
+						LayoutInflater inflater = (LayoutInflater)
+							       getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+						dialog.show();
+						dialog.setTitle("About Within Reach");
+						dialog.setCancelable(true);
+						dialog.setContentView(inflater.inflate(R.layout.about_view, null, false));
+						
+					}
+				}
+				);
 		
 	}
 	

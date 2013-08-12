@@ -70,7 +70,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. -->
             android:name="org.leifolson.withinreach.MenuActivity"
             android:label="@string/menu_title"
             android:launchMode="singleInstance"
-            android:configChanges="keyboardHidden|orientation" >
+            android:configChanges="keyboardHidden|orientation|screenSize" >
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -80,8 +80,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"  
             android:value="AIzaSyAox1kk5_7iB7pfaN2XA7lyhvKzihR0o-8"/> <!-- Application Debug Key -->
-            <!-- android:value="AIzaSyDW7CzB2waFCAjYIgo6cfhRS1OZstzchf8"/>  Kyle's-->
-            <!-- android:value="AIzaSyCrE5BVGY64zLgBjQK8BsiSRTwIIgrwbLI"/>  Haneen-->
+            <!-- android:value="AIzaSyDW7CzB2waFCAjYIgo6cfhRS1OZstzchf8"/> Kyle's-->
+            <!-- android:value="AIzaSyCrE5BVGY64zLgBjQK8BsiSRTwIIgrwbLI"/> Haneen-->
             <!-- android:value="AIzaSyCm4udZpw73SvJe_V_Ii7OKfA_HidUnQ_0"/> Alex's key -->
         	  
         

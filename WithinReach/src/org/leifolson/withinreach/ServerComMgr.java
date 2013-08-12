@@ -67,6 +67,7 @@ public class ServerComMgr extends AsyncTask<String, Void, String>
 		
 		
 		
+		
 		HttpClient client = new DefaultHttpClient();
 		HttpGet httpGet = new HttpGet(params[0]);
 		HttpResponse response;

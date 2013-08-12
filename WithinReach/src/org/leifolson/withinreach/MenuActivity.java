@@ -188,7 +188,7 @@ public class MenuActivity extends Activity {
 				dialog.show();
 				dialog.setTitle("License Information");
 				dialog.setCancelable(true);
-				dialog.setContentView(inflater.inflate(R.layout.license_view, null, false));
+				//dialog.setContentView(inflater.inflate(R.layout.license_view, null, false));
 				
 			}
 		});
@@ -206,7 +206,7 @@ public class MenuActivity extends Activity {
 						dialog.show();
 						dialog.setTitle("About Within Reach");
 						dialog.setCancelable(true);
-						dialog.setContentView(inflater.inflate(R.layout.about_view, null, false));
+						//dialog.setContentView(inflater.inflate(R.layout.about_view, null, false));
 						
 					}
 				}

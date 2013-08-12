@@ -69,6 +69,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnKeyListener;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -145,6 +146,9 @@ public class WithinReachActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		//
+		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 		
 		// used to access shared resources like strings, etc.
 		appRes = getResources();

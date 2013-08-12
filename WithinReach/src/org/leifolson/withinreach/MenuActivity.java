@@ -66,6 +66,7 @@ public class MenuActivity extends Activity {
 	private ToggleButton bikeToggleButton;
 	private ToggleButton transitToggleButton;
 	private Button menuButton;
+	private Button helpButton;
 
 	// I can probably put some wrapper functions in here to abstract away
 	// all the details of setting up the listeners for UI elements
@@ -156,6 +157,25 @@ public class MenuActivity extends Activity {
 			}
 		});
 		
+		//getting reference to the help button
+		helpButton = (Button) findViewById(R.id.help_menu_button);
+		helpButton.setOnClickListener(new View.OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+				//invokes the HelpActivity menu come up when help
+				//button is clicked
+				helpMenu();
+				
+			}
+			
+		});
+		
+	}
+	
+	public void helpMenu(){
+		Intent launchhelpMenu = new Intent(this,HelpActivity.class);
+		startActivity(launchhelpMenu);
 	}
 	
 	@Override

@@ -182,6 +182,16 @@ public class WithinReachActivity extends FragmentActivity implements
 		startActivity(launchMenu);
 	}
 
+	/**
+	 * launches the HelpActivity 
+	 * where the user can get facts and questions answered
+	 */
+	private void helpMenu(){
+		Intent launchhelpMenu = new Intent(this,HelpActivity.class);
+		startActivity(launchhelpMenu);
+		
+	}
+	
 	/***
 	 * this method inflates the menu UI when the user presses the hardware menu key
 	 * on their android device. 

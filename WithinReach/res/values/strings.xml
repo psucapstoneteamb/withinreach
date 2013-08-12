@@ -22,6 +22,9 @@
     <string name="license">License Information</string>
     <string name="init_seek_time">0 mins</string>
     <string name="action_refresh">REFRESH</string>
+    <string name="mode_descriptor_walk">Walking</string>
+    <string name="mode_descriptor_bike">Biking</string>
+    <string name="mode_descriptor_transit">Transit</string>
 
 
 

@@ -1,28 +1,70 @@
-<?xml version="1.0" encoding="utf-8"?> 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_vertical"
-    android:orientation="vertical"
-    tools:context=".WithinReachActivity" >
+    android:layout_height="match_parent"> 
+	<LinearLayout 
+    	android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:gravity="center_vertical"
+    	android:orientation="vertical"
+    	tools:context=".WithinReachActivity" >
 
-    <EditText
-        android:id="@+id/editText1"
-        android:layout_width="match_parent"
+	    <EditText
+	        android:id="@+id/editText1"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:ems="10" >
+	
+	        <requestFocus />
+	    </EditText>
+	
+		<fragment
+		    android:id="@+id/map"
+		    android:name="com.google.android.gms.maps.SupportMapFragment"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:layout_gravity="left" />
+
+	
+	</LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/map_legend"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:ems="10" >
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:padding="10dp">
+        
+        <ImageView
+            android:id="@+id/legend_walk_image"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:src="@drawable/walk"
+            android:background="@color/blue"
+            android:padding="@dimen/map_legend_margin"
+            android:contentDescription="@string/mode_descriptor_walk"/>        
+        <ImageView
+            android:id="@+id/legend_bike_image"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:src="@drawable/bike"
+            android:background="@color/green"
+            android:padding="@dimen/map_legend_margin"
+            android:contentDescription="@string/mode_descriptor_bike" />
+        <ImageView
+            android:id="@+id/legend_transit_image"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:src="@drawable/bus"
+            android:background="@color/red"
+            android:padding="@dimen/map_legend_margin"
+            android:contentDescription="@string/mode_descriptor_transit" />
+        
 
-        <requestFocus />
-    </EditText>
-
-	<fragment
-	    android:id="@+id/map"
-	    android:name="com.google.android.gms.maps.SupportMapFragment"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    android:layout_gravity="left" />
-
-</LinearLayout>
+    </LinearLayout>
+</FrameLayout>
 
 

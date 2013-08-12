@@ -1,8 +1,30 @@
 /* Author: Clinton Olson
  * Email: clint.olson2@gmail.com
  * Last Change: June 20, 2013
- * License: ???
- */
+ *
+Copyright (c) 2013, Haneen Abu-Khater, Alex Flyte, Kyle Greene, Vi Nguyen, Clinton Olson, and Hanrong Zhao
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
 
 /*** TODO
  *   1- implement all lifecycle methods
@@ -30,12 +52,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 //import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View.OnClickListener;
 //import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
@@ -44,6 +70,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+import android.widget.PopupWindow;
 
 public class MenuActivity extends Activity {
 	
@@ -52,11 +79,16 @@ public class MenuActivity extends Activity {
 	// or find a way to pass it back to the WithinReachActivity
 	// at a later time
 	// its possible we dont even need many of these
-	private int timeConstraint = 0;
+	private int timeConstraint = 15;
+	private int modeCode = 7;
 	private boolean walkToggled = true;
 	private boolean bikeToggled = true;
 	private boolean transitToggled = true;
 	private final int MAX_TIME = 90;
+	
+	//the lat/long will be passed from the WithinReachActivity
+	private double latitude = 0.0; 
+	private double longitude = 0.0;
 	
 	// the menu has the following UI elements
 	// these will most likely be changed to fragments at a later time
@@ -66,7 +98,12 @@ public class MenuActivity extends Activity {
 	private ToggleButton bikeToggleButton;
 	private ToggleButton transitToggleButton;
 	private Button menuButton;
+<<<<<<< HEAD
 	private Button helpButton;
+=======
+	private Button licenseButton;
+	private Button aboutButton;
+>>>>>>> c2ad4f0078c11800a9be4612afebd79fa09a67d7
 
 	// I can probably put some wrapper functions in here to abstract away
 	// all the details of setting up the listeners for UI elements
@@ -81,6 +118,12 @@ public class MenuActivity extends Activity {
 		
 		timeSeekBar.setMax(MAX_TIME);
 		
+		Bundle extras = getIntent().getExtras();
+		if (extras != null)
+		{
+			latitude = extras.getDouble("latitude");
+			longitude = extras.getDouble("longitude");
+		}
 		
 		// getting a reference to the toggle buttons
 		walkToggleButton = (ToggleButton)findViewById(R.id.toggle_button_walk);
@@ -157,6 +200,7 @@ public class MenuActivity extends Activity {
 			}
 		});
 		
+<<<<<<< HEAD
 		//getting reference to the help button
 		helpButton = (Button) findViewById(R.id.help_menu_button);
 		helpButton.setOnClickListener(new View.OnClickListener(){
@@ -176,6 +220,46 @@ public class MenuActivity extends Activity {
 	public void helpMenu(){
 		Intent launchhelpMenu = new Intent(this,HelpActivity.class);
 		startActivity(launchhelpMenu);
+=======
+		
+	    final Dialog dialog = new Dialog(this);
+
+	    licenseButton = (Button)findViewById(R.id.license_menu_button);
+	   
+		licenseButton.setOnClickListener(new View.OnClickListener() 
+		{
+			public void onClick(View v) 
+			{
+				LayoutInflater inflater = (LayoutInflater)
+					       getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				dialog.show();
+				dialog.setTitle("License Information");
+				dialog.setCancelable(true);
+				//dialog.setContentView(inflater.inflate(R.layout.license_view, null, false));
+				
+			}
+		});
+		
+		
+		aboutButton = (Button)findViewById(R.id.about_menu_button);
+		
+		aboutButton.setOnClickListener(
+				new View.OnClickListener() 
+				{
+					public void onClick(View v) 
+					{
+						LayoutInflater inflater = (LayoutInflater)
+							       getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+						dialog.show();
+						dialog.setTitle("About Within Reach");
+						dialog.setCancelable(true);
+						//dialog.setContentView(inflater.inflate(R.layout.about_view, null, false));
+						
+					}
+				}
+				);
+		
+>>>>>>> c2ad4f0078c11800a9be4612afebd79fa09a67d7
 	}
 	
 	@Override
@@ -233,104 +317,44 @@ public class MenuActivity extends Activity {
 		        }
 		    }
 		};  
-		
-		FileInputStream fileInputStream = null;
-		try
-		{
-			fileInputStream = openFileInput("settingsJson.txt");
-		} 
-		catch (FileNotFoundException e) 
-		{
-			e.printStackTrace();
-		}
-		
-		InputStreamReader inputStreamReader = new InputStreamReader ( fileInputStream ) ;
-        BufferedReader bufferedReader = new BufferedReader ( inputStreamReader ) ;
-        String stringReader;
-        String fullString = "";
-        try 
-        {
-	        while ((stringReader = bufferedReader.readLine()) != null)
-	        {
-	        	fullString += stringReader;
-	        }
-	        fileInputStream.close();
 
-        }
-        catch (IOException e)
-        {
-        	e.printStackTrace();
-        	
-        }
-        
-		try
+		modeCode = 0;
+		if (walkToggled)
+			modeCode += 1;
+		if (bikeToggled)
+			modeCode += 2;
+		if (transitToggled)
+			modeCode += 4;
+		
+		if (latitude == 0.0 && longitude == 0.0)
 		{
-			JSONObject settingsJson = new JSONObject(fullString);
-			double latitude = settingsJson.getDouble("lat");
-			double longitude = settingsJson.getDouble("long");
-			int time = 200;
-			
-			int mode_code = 0;
-			if (walkToggled)
-				mode_code += 1;
-			else
-				System.out.println("NOT CHECKED");
-			if (bikeToggled)
-				mode_code += 2;
-			if (transitToggled)
-				mode_code += 4;
-			
-			SeekBar timeSeekBar = (SeekBar) findViewById(R.id.time_seekbar);
-			int time_constraint = timeSeekBar.getProgress();
-			
-			settingsJson.put("constraint", time_constraint);
-			settingsJson.put("mode", mode_code);
+			returnToWithinReachActivity();
+		}
+		ServerInvoker invoker = new ServerInvoker(this, asyncHandler, latitude, longitude, modeCode, timeConstraint);
+		invoker.invokeServerComMgr();
+	}
 	
-			String url = "http://withinreach.herokuapp.com/json?";
-			url += ("lat=" + latitude);
-			url += ("&long=" + longitude);
-			url += ("&time=" + time);
-			url += ("&day=" + settingsJson.getInt("day"));
-			url += ("&month=" + settingsJson.getInt("month"));
-			url += ("&year=" + settingsJson.getInt("year"));
-			url += ("&mode_code=" + mode_code);
-			url += ("&constraint=" + time_constraint);
-			System.out.println(url);
-			
-			FileOutputStream fstream;
-			try 
-			{
-				fstream = openFileOutput("settingsJson.txt", Context.MODE_PRIVATE);
-
-				fstream.write(settingsJson.toString().getBytes());
-				
-				fstream.close();
-				
-			} 
-			catch (FileNotFoundException e) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			new ServerComMgr(this, asyncHandler).execute(url);
-		}
-		catch (JSONException e) 
+	public void onNewIntent(Intent t) 
+	{
+		Bundle extras = t.getExtras();
+		if (extras != null)
 		{
-			
-			
+			latitude = extras.getDouble("latitude");
+			longitude = extras.getDouble("longitude");
 		}
+		
 	}
 
 	public void returnToWithinReachActivity()
 	{
 		Intent launchWithinReach = new Intent(this, WithinReachActivity.class);
-		launchWithinReach.putExtra("serverCallDone", 1);
+		if (latitude == 0.0 && longitude == 0.0)
+			launchWithinReach.putExtra("serverCallDone", 0); //0 means fail/no location was given from main activity
+		else 
+			launchWithinReach.putExtra("serverCallDone", 1); //1 means success
+		
+		launchWithinReach.putExtra("timeConstraint", timeConstraint);
+		launchWithinReach.putExtra("modeCode", modeCode);
 		startActivity(launchWithinReach);
 	}
 }

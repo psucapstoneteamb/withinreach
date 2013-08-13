@@ -14,7 +14,6 @@
         android:editable="false"
         android:focusable="false"
         android:gravity="center"
-        android:isScrollContainer="true"
         android:text="Help Menu"
         android:textStyle="bold" >
 
@@ -25,7 +24,6 @@
         android:id="@+id/button1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:isScrollContainer="true"
         android:text="@string/quest1" />
 
     <EditText
@@ -34,14 +32,12 @@
         android:layout_height="wrap_content"
         android:editable="false"
         android:ems="10"
-        android:isScrollContainer="true"
         android:text="@string/answer1" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:isScrollContainer="true"
         android:text="@string/quest2" />
 
     <EditText
@@ -50,14 +46,12 @@
         android:layout_height="wrap_content"
         android:editable="false"
         android:ems="10"
-        android:isScrollContainer="true"
         android:text="@string/answer2" />
 
     <Button
         android:id="@+id/button3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:isScrollContainer="true"
         android:text="@string/quest3" />
 
     <EditText
@@ -66,7 +60,6 @@
         android:layout_height="wrap_content"
         android:editable="false"
         android:ems="10"
-        android:isScrollContainer="true"
         android:text="@string/answer3" />
 
     <Button

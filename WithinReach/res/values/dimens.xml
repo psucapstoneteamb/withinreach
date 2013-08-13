@@ -6,5 +6,8 @@
     <dimen name="menu_title_vertical_margin">5dp</dimen>
     <dimen name="menu_seekbar_vertical_margin">12dp</dimen>
     <dimen name="menu_seekbar_horizontal_margin">8dp</dimen>
+    <dimen name="map_legend_margin">3dp</dimen>
+    <dimen name="about_view_margin">10dip</dimen>
+    <dimen name="license_view_margin">10dip</dimen>
 
 </resources>

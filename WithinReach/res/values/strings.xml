@@ -23,9 +23,55 @@
     <string name="init_seek_time">0 mins</string>
     <string name="action_refresh">REFRESH</string>
 
+    
+    <string name= "quest1">What is the objective of Within Reach?</string>
+    <string name= "quest2">How to drop a pin?</string>
+    <string name= "quest3">Time Adjust</string>
+    <string name= "quest4">Transportation Modes</string>
+    <string name= "answer1">This Android app and an accompanied computational server which calculate and show to the user a reachable zone on the map given starting location and amount of travel time.</string>
+    <string name= "answer2">In order to drop a pin on the map, please long hold your desired location and a pin will appear</string>
+	<string name= "answer3">Adjust the time by navigating into the settings and selecting your desired time span.</string>
+	<string name= "answer4">There are three different transportation modes, a user is free to select one, two, or all three at one given time. To enable a transpostation mode, enter the settings menu and click on the desired mode</string>
+	
+	
+	
+
+    <string name="mode_descriptor_walk">Walking</string>
+    <string name="mode_descriptor_bike">Biking</string>
+    <string name="mode_descriptor_transit">Transit</string>
+    <string name="license_info">
+        Copyright (c) 2013, Haneen Abu-Khater, Alex Flyte, Kyle Greene, Vi Nguyen, Clinton Olson, and Hanrong Zhao \n
+All rights reserved.Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    </string>
+    
+    <string name="about_info">
+        Within Reach \n\n
+        Build: v1.1 \n\n
+        Copyright (c) 2013, Haneen Abu-Khater, Alex Flyte, Kyle Greene, Vi Nguyen, Clinton Olson, and Hanrong Zhao
+        
+    </string>
+
 
 
     <string name="delete_marker">Delete</string>
+    <string name="search_map">Search Map</string>
+
 
     
 

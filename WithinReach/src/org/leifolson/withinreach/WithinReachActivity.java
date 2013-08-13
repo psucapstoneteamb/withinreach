@@ -1,9 +1,33 @@
+/*
+Copyright (c) 2013, Haneen Abu-Khater, Alex Flyte, Kyle Greene, Vi Nguyen, Clinton Olson, and Hanrong Zhao
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
 package org.leifolson.withinreach;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -11,13 +35,8 @@ import java.net.URL;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +46,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -40,17 +58,9 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.android.gms.maps.model.UrlTileProvider;
 
-
-
-
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationListener;
-
-import android.location.Location;
-import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -60,25 +70,27 @@ import android.annotation.TargetApi;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import android.view.View;
 import android.view.View.OnKeyListener;
+import android.view.Window;
+
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 
 public class WithinReachActivity extends FragmentActivity implements
 	LocationListener,
 	LocationSource, 
 	OnMapLongClickListener,
-//	OnMarkerClickListener,
-	OnInfoWindowClickListener{
+	OnInfoWindowClickListener
+	{
 	
 	// used as a handle to the map object
 	private GoogleMap mMap;
@@ -96,10 +108,6 @@ public class WithinReachActivity extends FragmentActivity implements
 	private OnLocationChangedListener mListener;
 	private LocationManager mLocationManager;
 	private Location mCurrentLocation;
-//	private OnMapLongClickListener mLongClick;
-//	private OnMarkerClickListener mClickListener;
-//	private OnInfoWindowClickListener mWindow;
-
 	
 	//marker
 	private Marker marker;
@@ -123,20 +131,14 @@ public class WithinReachActivity extends FragmentActivity implements
     
     // provider for transit
     private TileOverlay overlayTransit;
-    //private TileProvider tileProviderTransit;
-    //private TileOverlayOptions optsTransit;
     private static int TRANSIT_Z = 6;
     
     // provider for biking
     private TileOverlay overlayBiking;
-    //private TileProvider tileProviderBiking;
-    //private TileOverlayOptions optsBiking;
     private static int BIKING_Z = 5;
     
     // provider for walking
     private TileOverlay overlayWalk;
-    //private TileProvider tileProviderWalk;
-    //private TileOverlayOptions optsWalk;
     private static int WALK_Z = 4;
     
     /* END TILE TEST CODE */
@@ -154,6 +156,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		
 		// used to access shared resources like strings, etc.
 		appRes = getResources();
@@ -164,13 +167,38 @@ public class WithinReachActivity extends FragmentActivity implements
 		// get a location manager
 		mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
 		
+		textView = (TextView)findViewById(R.id.editText1);
+		
+
+			
+
+		placeMarkers = new Marker[10];
 		
 		textWatcher = new TextWatcher()
 		{
 
 			public void afterTextChanged(Editable s) 
 			{
-				// TODO Auto-generated method stub
+				String input = s.toString();
+				
+				if (s.toString().equals(""))
+				{
+						for (int i = 0; i < 10; ++i)
+						{
+							
+							if (placeMarkers[i] != null)
+							{
+								placeMarkers[i].remove();
+								
+							}
+								
+						}
+						return;
+				}
+				else if (input.matches("[a-zA-Z0-9]+"))
+				{
+					handlePlaces();
+				}
 				
 			}
 
@@ -183,20 +211,13 @@ public class WithinReachActivity extends FragmentActivity implements
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) 
 			{
-				handlePlaces();
 				
 			}
 			
 			
 		};
 		
-		textView = (TextView)findViewById(R.id.editText1);
-
-		textView.addTextChangedListener(textWatcher);	
-
 		textView.addTextChangedListener(textWatcher);
-
-		placeMarkers = new Marker[10];
 		
 		
 		// attempt to get a provider for the location manager
@@ -300,6 +321,16 @@ public class WithinReachActivity extends FragmentActivity implements
 		startActivity(launchMenu);
 	}
 
+	/**
+	 * launches the HelpActivity 
+	 * where the user can get facts and questions answered
+	 */
+	private void helpMenu(){
+		Intent launchhelpMenu = new Intent(this,HelpActivity.class);
+		startActivity(launchhelpMenu);
+		
+	}
+	
 	/***
 	 * this method inflates the menu UI when the user presses the hardware menu key
 	 * on their android device. 
@@ -354,15 +385,15 @@ public class WithinReachActivity extends FragmentActivity implements
 	public void handlePlaces() //this will be called by the search bar for locations to add
 	{
 		
-		System.out.println("TEXT IS" + textView.getText());
 		Handler asyncHandler = new Handler()
 		{
 		    public void handleMessage(Message msg){
 		        super.handleMessage(msg);
-		        //What did that async task say?
 		        switch (msg.what)
 		        {
 		            case 1:
+		            	if (textView.getText().toString().equals("")) //have to do this check because of multiple threads
+		            		break;
 	            		Bundle bundle = msg.getData();
 	            		String str = bundle.getString("PlacesJSON");
 	            		if (str != null)
@@ -371,7 +402,6 @@ public class WithinReachActivity extends FragmentActivity implements
 	            			{
 								JSONObject jsonObject = new JSONObject(str);
 								JSONArray jsonArray = jsonObject.getJSONArray("results");
-								System.out.println("json array length is " + jsonArray.length());
 								if (jsonArray.length() < 1)
 									break;
 								for (int i = 0; i < 10; ++i)
@@ -387,7 +417,6 @@ public class WithinReachActivity extends FragmentActivity implements
 									LatLng latLng = new LatLng(jsonElement.getJSONObject("geometry").getJSONObject("location").getDouble("lat"),
 											jsonElement.getJSONObject("geometry").getJSONObject("location").getDouble("lng"));
 									
-									System.out.println("latlng is " + latLng.latitude + " " + latLng.longitude);
 									
 									placeMarkers[i] = makeMapMarker(latLng, name, true);
 									
@@ -397,18 +426,36 @@ public class WithinReachActivity extends FragmentActivity implements
 	            			{
 								e.printStackTrace();
 							}
-	            			
-	            			
-	            			
-	            			
-	            			
+	            						
 	            		}
 		                break;                      
 		        }
 		    }
 		}; 
 		
-		new PlacesMgr(asyncHandler).execute(textView.getText().toString());
+		
+		
+		if (mCurrentLocation == null && marker == null)
+		{
+			Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
+			return;
+		}
+		String[] params = new String[4];
+		params[0] = textView.getText().toString();
+		
+		
+		if (marker != null)
+		{
+			params[1] = Double.toString(marker.getPosition().latitude);
+			params[2] = Double.toString(marker.getPosition().longitude);
+		}
+		else
+		{
+			params[1] = Double.toString(mCurrentLocation.getLatitude());
+			params[2] = Double.toString(mCurrentLocation.getLongitude());
+		}
+		params[3] = Integer.toString(1000);
+		new PlacesMgr(asyncHandler).execute(params);
 		
 		
 	}
@@ -545,12 +592,6 @@ public class WithinReachActivity extends FragmentActivity implements
 	                try {
 	                	switch(travelMode){
 	                	case 1:
-	                		//s += 
-//	                		"?batch=true&layers=traveltime&styles=color30&time=2013-08-03T08%3A00%3A00&"
-//	                		+"mode=WALK&maxWalkDistance=4000&"
-//	                		+"clampInitialWait=600&fromPlace=" + loc.latitude + "%2C"
-//	                		+ loc.longitude + "&toPlace=0";
-
 	                		mode = "BICYCLE%2CWALK";
 	                		style = "maskblue";
 	                		break;
@@ -569,15 +610,16 @@ public class WithinReachActivity extends FragmentActivity implements
 	                	s +="?batch=true"
 	                		+"&layers=traveltime" 
 	                		+"&styles=" + style 
-	                		+"&time=" + day + "T08%3A00%3A00&"
-                			+"mode="+ mode 
+	                		+"&time=" + day + "T08%3A00%3A00"
+                			+"&mode="+ mode 
                 			+"&maxWalkDistance=4000"
-                			+"&timeconstraint=" + timeConstraint + "&"
-                			+"clampInitialWait=600&fromPlace=" + loc.latitude + "%2C"
-                			+ loc.longitude + "&toPlace=0";
+                			+"&timeconstraint=" + timeConstraint
+                			+"&clampInitialWait=600"
+                			+"&fromPlace=" + loc.latitude + "%2C"+ loc.longitude 
+                			+"&toPlace=0";
 	                	
 	                	System.out.println(s);
-	                     url = new URL(s);
+	                    url = new URL(s);
 	                } catch (MalformedURLException e) {
 	                    throw new AssertionError(e);
 	                }
@@ -593,6 +635,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	        
 	    	
 	        overlay = mMap.addTileOverlay(opts);
+	        
    	
         return overlay;
     }
@@ -885,12 +928,6 @@ public class WithinReachActivity extends FragmentActivity implements
 		}
 	}
 
-//	@Override
-//	public boolean onMarkerClick(Marker arg0) {
-//		// TODO Auto-generated method stub
-//		
-//		return false;
-//	}
 
 	@Override
 	// handle info window clicks by deleting the marker

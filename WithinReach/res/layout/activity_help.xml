@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" 
+    android:orientation="vertical"
     android:scrollbars="vertical" >
 
     <EditText
@@ -14,6 +14,7 @@
         android:editable="false"
         android:focusable="false"
         android:gravity="center"
+        android:isScrollContainer="true"
         android:text="Help Menu"
         android:textStyle="bold" >
 
@@ -24,6 +25,7 @@
         android:id="@+id/button1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:isScrollContainer="true"
         android:text="@string/quest1" />
 
     <EditText
@@ -32,12 +34,14 @@
         android:layout_height="wrap_content"
         android:editable="false"
         android:ems="10"
+        android:isScrollContainer="true"
         android:text="@string/answer1" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:isScrollContainer="true"
         android:text="@string/quest2" />
 
     <EditText
@@ -46,12 +50,14 @@
         android:layout_height="wrap_content"
         android:editable="false"
         android:ems="10"
+        android:isScrollContainer="true"
         android:text="@string/answer2" />
 
     <Button
         android:id="@+id/button3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:isScrollContainer="true"
         android:text="@string/quest3" />
 
     <EditText
@@ -60,6 +66,7 @@
         android:layout_height="wrap_content"
         android:editable="false"
         android:ems="10"
+        android:isScrollContainer="true"
         android:text="@string/answer3" />
 
     <Button
@@ -67,11 +74,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/quest4" />
+
     <EditText
-		android:id="@+id/editText5"
+        android:id="@+id/editText5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:editable="false"
         android:ems="10"
         android:text="@string/answer4" />
+
 </LinearLayout>

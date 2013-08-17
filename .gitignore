@@ -9,7 +9,18 @@ include/
 lib/
 .installed.cfg
 pip-log.txt
+<<<<<<< HEAD
 google-play-services_lib/.classpath
 google-play-services_lib/.project
 google-play-services_lib/README.txt
 google-play-services_lib/gen/com/google/android/gms/BuildConfig.java
+=======
+src/web_backend/webapp/sandbox/
+
+
+WithinReach/.classpath
+WithinReach/project.properties
+WithinReach/gen/
+WithinReach/lint.xml
+*.local
+>>>>>>> d332cecbc85aba366f9f1b8651bdb355687aa7c7

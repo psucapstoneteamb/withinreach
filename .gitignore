@@ -9,3 +9,7 @@ include/
 lib/
 .installed.cfg
 pip-log.txt
+google-play-services_lib/.classpath
+google-play-services_lib/.project
+google-play-services_lib/README.txt
+google-play-services_lib/gen/com/google/android/gms/BuildConfig.java

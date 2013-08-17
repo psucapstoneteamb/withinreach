@@ -35,7 +35,9 @@ import java.net.URL;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.json.JSONArray;
@@ -152,6 +154,12 @@ public class WithinReachActivity extends FragmentActivity implements
     //the time constraint and transportation mode code for making the server call
     private int modeCode;
     private int timeConstraint;
+    private GregorianCalendar calendar;
+	private int year;
+	private int monthOfYear;
+	private int dayOfMonth;
+	private int hourOfDay;
+	private int minute;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -168,8 +176,6 @@ public class WithinReachActivity extends FragmentActivity implements
 		mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
 		
 		textView = (TextView)findViewById(R.id.editText1);
-		
-
 			
 
 		placeMarkers = new Marker[10];
@@ -251,12 +257,15 @@ public class WithinReachActivity extends FragmentActivity implements
 		modeCode = 7; //initial transportation mode code for all modes selected 
 		
 		// set the starting location of the map
-		if(toggleOTPATiles){
-			//mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(GREENVILLE, 14.0f));
-			mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(PORTLAND, 14.0f));
-		}else{
-			mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(PORTLAND, 14.0f));	
-		}
+		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(PORTLAND, 14.0f));
+
+		
+		calendar = (GregorianCalendar)Calendar.getInstance();
+		dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+		monthOfYear = calendar.get(Calendar.MONTH);
+		year = calendar.get(Calendar.YEAR);
+		hourOfDay = calendar.get(Calendar.HOUR_OF_DAY); 
+		minute = calendar.get(Calendar.MINUTE);
 	}
 	
 	@Override
@@ -572,13 +581,7 @@ public class WithinReachActivity extends FragmentActivity implements
     }
     
     private TileOverlay createTileOverlay(final int travelMode, final LatLng loc, int zIdx){
-    	
-		
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = new Date();
-		final String day = dateFormat.format(date).toString();
-		
-    	
+		    	
     	TileOverlay overlay = null;
         	
 	        TileProvider tileProvider = new UrlTileProvider(256, 256) {
@@ -597,7 +600,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	                		break;
 
 	                	case 2:
-	                		mode = "BICYCLE"; //"WALK%2CBICYCLE";
+	                		mode = "BICYCLE";
 	                		style = "maskgreen";
 	                		break;
 	                		
@@ -610,7 +613,8 @@ public class WithinReachActivity extends FragmentActivity implements
 	                	s +="?batch=true"
 	                		+"&layers=traveltime" 
 	                		+"&styles=" + style 
-	                		+"&time=" + day + "T08%3A00%3A00"
+	                		+"&time=" + year + "-0" + (monthOfYear+1) + "-" + dayOfMonth 
+	                		+"T" + hourOfDay + "%3A00%3A00"
                 			+"&mode="+ mode 
                 			+"&maxWalkDistance=4000"
                 			+"&timeconstraint=" + timeConstraint
@@ -650,6 +654,11 @@ public class WithinReachActivity extends FragmentActivity implements
 			int serverDone = extras.getInt("serverCallDone");
 			timeConstraint = extras.getInt("timeConstraint");
 			modeCode = extras.getInt("modeCode");
+			year = extras.getInt("year");
+			monthOfYear = extras.getInt("month");
+			dayOfMonth = extras.getInt("day");
+			hourOfDay = extras.getInt("hour");
+			minute = extras.getInt("min");
 			if (serverDone == 1)
 			{
 				handleDataFile();		

@@ -55,6 +55,7 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
@@ -204,6 +205,7 @@ public class WithinReachActivity extends FragmentActivity implements
 				else if (input.matches("[a-zA-Z0-9]+"))
 				{
 					handlePlaces();
+					
 				}
 				
 			}
@@ -449,22 +451,24 @@ public class WithinReachActivity extends FragmentActivity implements
 			Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
 			return;
 		}
-		String[] params = new String[4];
-		params[0] = textView.getText().toString();
+		String[] params = new String[5];
 		
+		params[0] = Integer.toString(0); // 0 tells ServicesMgr that it's a Places request
+		
+		params[1] = textView.getText().toString();
 		
 		if (marker != null)
 		{
-			params[1] = Double.toString(marker.getPosition().latitude);
-			params[2] = Double.toString(marker.getPosition().longitude);
+			params[2] = Double.toString(marker.getPosition().latitude);
+			params[3] = Double.toString(marker.getPosition().longitude);
 		}
 		else
 		{
-			params[1] = Double.toString(mCurrentLocation.getLatitude());
-			params[2] = Double.toString(mCurrentLocation.getLongitude());
+			params[2] = Double.toString(mCurrentLocation.getLatitude());
+			params[3] = Double.toString(mCurrentLocation.getLongitude());
 		}
-		params[3] = Integer.toString(1000);
-		new PlacesMgr(asyncHandler).execute(params);
+		params[4] = Integer.toString(1000);
+		new ServicesMgr(asyncHandler).execute(params);
 		
 		
 	}

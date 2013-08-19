@@ -17,24 +17,31 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-public class PlacesMgr extends AsyncTask<String, Void, String>
+public class ServicesMgr extends AsyncTask<String, Void, String>
 {
 	Handler uiHandler;
 	
-	public PlacesMgr(Handler handler)
+	public ServicesMgr(Handler handler)
 	{
 		this.uiHandler = handler;
 	}
 
 	protected String doInBackground(String... searchTerms) 
-	{
+	{	
 		HttpClient client = new DefaultHttpClient();
+		String url = "";
 		
-		String url = "https://maps.googleapis.com/maps/api/place/search/json?";
-		url += "location=" + searchTerms[1] + "," + searchTerms[2];
-		url += "&radius=" + searchTerms[3];
-		url += "&keyword=" + searchTerms[0];
-		url += "&sensor=false&key=AIzaSyAAlYH3-CUofsc7dFG73vF-C3q8YQaK71k";
+		if (searchTerms[0].equals("0"))
+		{
+			url = "https://maps.googleapis.com/maps/api/place/search/json?";
+			url += "location=" + searchTerms[2] + "," + searchTerms[3];
+			url += "&radius=" + searchTerms[4];
+			url += "&keyword=" + searchTerms[1];
+			url += "&sensor=false&key=AIzaSyAAlYH3-CUofsc7dFG73vF-C3q8YQaK71k";
+			
+		}
+		
+		
 		
 		HttpGet httpGet = new HttpGet(url);
 		String result = null;

@@ -48,6 +48,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -83,6 +84,10 @@ import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.Window;
 
+import android.widget.Button;
+import android.widget.SlidingDrawer;
+import android.widget.SlidingDrawer.OnDrawerCloseListener;
+import android.widget.SlidingDrawer.OnDrawerOpenListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -92,9 +97,12 @@ public class WithinReachActivity extends FragmentActivity implements
 	LocationListener,
 	LocationSource, 
 	OnMapLongClickListener,
-	OnInfoWindowClickListener
+	OnInfoWindowClickListener, OnMarkerClickListener
 	{
-	
+	@SuppressWarnings("deprecation")
+	SlidingDrawer slidingDrawer;
+	Button slideButton,b1, b2,b3;
+
 	// used as a handle to the map object
 	private GoogleMap mMap;
 	
@@ -268,8 +276,34 @@ public class WithinReachActivity extends FragmentActivity implements
 		year = calendar.get(Calendar.YEAR);
 		hourOfDay = calendar.get(Calendar.HOUR_OF_DAY); 
 		minute = calendar.get(Calendar.MINUTE);
+		setSlidingDrawer();
 	}
 	
+	
+	
+	@SuppressWarnings("deprecation")
+	private void setSlidingDrawer() {
+		slideButton = (Button) findViewById(R.id.slideButton);
+		slidingDrawer = (SlidingDrawer) findViewById(R.id.SlidingDrawer);
+		b1 = (Button) findViewById(R.id.Button01);
+		b2 = (Button) findViewById(R.id.Button02);
+		b3 = (Button) findViewById(R.id.Button03);
+		slidingDrawer.setOnDrawerOpenListener(new OnDrawerOpenListener() {
+			@Override
+			public void onDrawerOpened() {
+				slideButton.setText("V");
+			}
+		});
+		slidingDrawer.setOnDrawerCloseListener(new OnDrawerCloseListener() {
+			@Override
+			public void onDrawerClosed() {
+				slideButton.setText("^");
+			}
+		});
+	}
+
+
+
 	@Override
 	protected void onStart(){
 		super.onStart();
@@ -453,7 +487,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		}
 		String[] params = new String[5];
 		
-		params[0] = Integer.toString(0); // 0 tells ServicesMgr that it's a Places request
+		params[0] = Integer.toString(0); // 0 tells ServicesMgr that it's a s request
 		
 		params[1] = textView.getText().toString();
 		
@@ -505,6 +539,7 @@ public class WithinReachActivity extends FragmentActivity implements
             if (mMap != null) {
                 setUpMap();
                 mMap.setOnMapLongClickListener(this);
+                mMap.setOnMarkerClickListener(this);
             }
             
             // set location source to track users location over time
@@ -971,6 +1006,17 @@ public class WithinReachActivity extends FragmentActivity implements
 			.title(title)
 			.draggable(draggable)
 			.icon(BitmapDescriptorFactory.defaultMarker(color)));
+	}
+
+	// handle clicks on placeMarkers, show place details
+	@Override
+	public boolean onMarkerClick(Marker m) {
+		if ((marker != null) && m.equals(marker)) {
+			return false; // not a placeMarker
+		}
+		
+		
+		return false; // let default behavior occurs
 	}
 
 	

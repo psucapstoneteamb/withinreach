@@ -25,18 +25,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.leifolson.withinreach;
 
-//import java.io.BufferedReader;
-//import java.io.FileInputStream;
-//import java.io.FileNotFoundException;
-//import java.io.IOException;
-//import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-//import java.text.DateFormat;
-//import java.text.SimpleDateFormat;
 import java.util.Calendar;
-//import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
@@ -51,7 +43,6 @@ import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-//import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -75,13 +66,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.content.Intent;
 import android.content.res.Resources;
-//import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
-
-//import android.view.View;
-//import android.view.View.OnKeyListener;
-//import android.view.Window;
 
 import android.widget.TextView;
 import android.widget.Toast;
@@ -98,33 +84,30 @@ public class WithinReachActivity extends FragmentActivity implements
 	// used as a handle to the map object
 	private GoogleMap mMap;
 	
-	//Search Bar
+	// Search Bar
 	private TextView textView;
 	
 	private TextWatcher textWatcher;
 	
 	private Marker placeMarkers[];
 	
-	// other private members
 	private OnLocationChangedListener mListener;
 	private LocationManager mLocationManager;
 	private Location mCurrentLocation;
 	
-	//marker
+	// map markers
 	private Marker marker;
 	
-	//application resources
+	// application resources
 	private Resources appRes;
 	
-	//provider flag
+	// provider flag
 	private boolean providerAvailable = false;
 	
-	/* TILE TEST CODE */
-	//private boolean toggleOTPATiles = true;
+	// url format for OTPA tile requests
 	private static final String OTPA_URL_FORMAT = 
 		"http://queue.its.pdx.edu:8080/opentripplanner-api-webapp/ws/tile/%d/%d/%d.png";
 	
-    
     // provider for transit
     private TileOverlay overlayTransit;
     private static int TRANSIT_Z = 6;
@@ -136,10 +119,8 @@ public class WithinReachActivity extends FragmentActivity implements
     // provider for walking
     private TileOverlay overlayWalk;
     private static int WALK_Z = 4;
-    
-    /* END TILE TEST CODE */
 	
-	// the start latitudes/longitudes define a starting location
+	// the start latitudes/longitudes define a starting map camera location
 	// of Portland, OR
 	private static final Double startLat = 45.5236;
 	private static final Double startLng = -122.6750;
@@ -153,7 +134,10 @@ public class WithinReachActivity extends FragmentActivity implements
 	private int monthOfYear;
 	private int dayOfMonth;
 	private int hourOfDay;
-	private int minute;
+	private int minute;		// currently minutes are ignored by the application
+	
+	
+	/***** ACTIVITY LIFECYCLE MANAGEMENT METHODS *****/
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -168,55 +152,20 @@ public class WithinReachActivity extends FragmentActivity implements
 		// get a location manager
 		mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
 		
+		// try to obtain a location provider
+		providerAvailable = getLocProvider();
+		
 		// search bar
 		textView = (TextView)findViewById(R.id.editText1);
 		calendar = (GregorianCalendar)Calendar.getInstance();
 		
+		// set default values for the application to use
 		setDefaults();
-			
+		
 		setUpSearchBarListener();
 
-
-		
-		
-//		// attempt to get a provider for the location manager
-//		if(mLocationManager != null){
-//			if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-//				mLocationManager.requestLocationUpdates(
-//						LocationManager.GPS_PROVIDER, 5000L, 5F, this);
-//				
-//				providerAvailable = true;
-//			}
-//			else if(mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-//				mLocationManager.requestLocationUpdates(
-//						LocationManager.NETWORK_PROVIDER, 5000L, 5F, this);
-//				
-//				providerAvailable = true;
-//			}
-//			else{
-//				// we were unable to obtain a provider
-//				Toast.makeText(this, R.string.error_no_provider, Toast.LENGTH_SHORT).show();
-//				providerAvailable = false;
-//			}
-//		}
-//		else{
-//			// something has gone wrong with loc manager
-//			Toast.makeText(this, R.string.error_fatal_loc_mgr, Toast.LENGTH_LONG).show();
-//		}
-		// try to obtain a location provider
-		providerAvailable = getLocProvider();
-		
 		// set up the map if necessary
 		setUpMapIfNeeded();
-		
-		//timeConstraint = 15; 	//initial time_constraint
-		//modeCode = 7; 			//initial transportation mode code for all modes selected 
-		
-		// set the starting location of the map
-		//mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(PORTLAND, 14.0f));
-
-		
-
 
 	}
 	
@@ -227,9 +176,6 @@ public class WithinReachActivity extends FragmentActivity implements
 		providerAvailable = getLocProvider();
 		
 		setUpMapIfNeeded();
-//		if(mMap != null){
-//			mMap.setMyLocationEnabled(true);
-//		}
 	}
 	
 	@Override
@@ -257,127 +203,10 @@ public class WithinReachActivity extends FragmentActivity implements
 		providerAvailable = getLocProvider();
 
 		setUpMapIfNeeded();
-//		if(mMap != null){
-//			mMap.setMyLocationEnabled(true);
-//		}
 	}
 	
-	private void setDefaults(){
-		timeConstraint = 15;
-		modeCode = 7;
-		dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-		monthOfYear = calendar.get(Calendar.MONTH);
-		year = calendar.get(Calendar.YEAR);
-		hourOfDay = calendar.get(Calendar.HOUR_OF_DAY); 
-		minute = calendar.get(Calendar.MINUTE);
-	}
-	
-	private void setUpSearchBarListener(){
-		placeMarkers = new Marker[10];
-		
-		textWatcher = new TextWatcher()
-		{
-			public void afterTextChanged(Editable s) 
-			{
-				String input = s.toString();
-				
-				if (s.toString().equals(""))
-				{
-						for (int i = 0; i < 10; ++i)
-						{					
-							if (placeMarkers[i] != null)
-							{
-								placeMarkers[i].remove();	
-							}				
-						}
-						return;
-				}
-				else if (input.matches("[a-zA-Z0-9]+"))
-				{
-					handlePlaces();
-				}		
-			}
 
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) 
-			{
-				// TODO Auto-generated method stub			
-			}
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) 
-			{}	
-		};
-		textView.addTextChangedListener(textWatcher);
-	}
-	
-	private boolean getLocProvider(){
-		// attempt to get a provider for the location manager
-		if(mLocationManager != null){
-			if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-				mLocationManager.requestLocationUpdates(
-						LocationManager.GPS_PROVIDER, 5000L, 5F, this);
-				
-				return true;
-			}
-			else if(mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-				mLocationManager.requestLocationUpdates(
-						LocationManager.NETWORK_PROVIDER, 5000L, 5F, this);
-				
-				return true;
-			}
-			else{
-				// we were unable to obtain a provider
-				Toast.makeText(this, R.string.error_no_provider, Toast.LENGTH_SHORT).show();
-				return false;
-			}
-		}
-		else{
-			// something has gone wrong with loc manager
-			Toast.makeText(this, R.string.error_fatal_loc_mgr, Toast.LENGTH_LONG).show();
-			return false;
-		}		
-	}
-	
-	/***
-	 *  launches the MenuActivity where the user can specify:
-	 *  time constraint
-	 *  transport mode
-	 *  day and time of search
-	 */
-	private void startMenu()
-	{
-		Intent launchMenu = new Intent(this,MenuActivity.class);
-//
-//		if (mCurrentLocation != null)
-//		{
-//			launchMenu.putExtra("latitude", mCurrentLocation.getLatitude());
-//			launchMenu.putExtra("longitude", mCurrentLocation.getLongitude());
-//		}
-//		else if (marker != null)
-//		{
-//			launchMenu.putExtra("latitude", marker.getPosition().latitude);
-//			launchMenu.putExtra("longitude", marker.getPosition().longitude);
-//		}
-//		else
-//		{
-//			//fail codes 0.0 will be handled in MenuActivity
-//			launchMenu.putExtra("latitude", 0.0); 
-//			launchMenu.putExtra("longitude", 0.0);
-//		}
-		startActivity(launchMenu);
-	}
-
-//	/**
-//	 * launches the HelpActivity 
-//	 * where the user can get facts and questions answered
-//	 */
-//	private void helpMenu(){
-//		Intent launchhelpMenu = new Intent(this,HelpActivity.class);
-//		startActivity(launchhelpMenu);	
-//	}
-	
-	/***
-	 * this method inflates the menu UI when the user presses the hardware menu key
+	/* this method inflates the menu UI when the user presses the hardware menu key
 	 * on their android device. 
 	 */
 	// designates that the code present is supported only on targets API 11 and later
@@ -397,8 +226,6 @@ public class WithinReachActivity extends FragmentActivity implements
 		return true;
 	}
 	
-
-	
 	// handles user selections from menu interface
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item){
@@ -411,29 +238,141 @@ public class WithinReachActivity extends FragmentActivity implements
 			startMenu();
 			return true;
 		}
-		if (item.getItemId() == R.id.action_refresh)
-		{
-			//invokeServerComMgr();
-//			if(toggleOTPATiles){
-				if (mCurrentLocation == null && marker == null){
-						Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
-				}else{
-//					removeTileProviders();
-//					LatLng locToUse = getLocToUse();
-//					setTileProviders(locToUse);
-					refreshOverlays();
-				}
-//			}
+		if (item.getItemId() == R.id.action_refresh){
+			
+			if (mCurrentLocation == null && marker == null){
+					Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
+			}else{
+				refreshOverlays();
+			}
 			return true;
 		}
 		else return false;
 	}
 	
+	/*  launches the MenuActivity where the user can specify:
+	 *  time constraint
+	 *  transport mode
+	 *  day and time of search
+	 */
+	private void startMenu()
+	{
+		Intent launchMenu = new Intent(this,MenuActivity.class);
+
+		startActivity(launchMenu);
+	}
 	
+    //This gets called from MenuActivity when it launches the WithinReachActivity
+	public void onNewIntent(Intent t) 
+	{
+		Bundle extras = t.getExtras();
+		if (extras != null)
+		{
+			timeConstraint = extras.getInt("timeConstraint");
+			modeCode = extras.getInt("modeCode");
+			year = extras.getInt("year");
+			monthOfYear = extras.getInt("month");
+			dayOfMonth = extras.getInt("day");
+			hourOfDay = extras.getInt("hour");
+			minute = extras.getInt("min");
+		}
+		refreshOverlays();
+	}
+	
+	
+	/*****  RELEVANT MAP AND MAP ELEMENT CODE *****/
+	
+    /* Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
+     * installed) and the map has not already been instantiated.. This will ensure that we only ever
+     * call {@link #setUpMap()} once when {@link #mMap} is not null.
+     * 
+     * If it isn't installed {@link SupportMapFragment} (and
+     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
+     * install/update the Google Play services APK on their device.
+     *
+     * A user can return to this FragmentActivity after following the prompt and correctly
+     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not have been
+     * completely destroyed during this process (it is likely that it would only be stopped or
+     * paused), {@link #onCreate(Bundle)} may not be called again so we should call this method in
+     * {@link #onResume()} to guarantee that it will be called.
+     */
+    private void setUpMapIfNeeded() {
+        // Do a null check to confirm that we have not already instantiated the map.
+        if (mMap == null) {
+            // Try to obtain the map from the SupportMapFragment.
+            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                    .getMap();
+            
+            // Check if we were successful in obtaining the map.
+            if (mMap != null) {
+                setUpMap();
+                mMap.setOnMapLongClickListener(this);
+            }
+            
+            // set location source to track users location over time
+            mMap.setLocationSource(this);
+        }
+    }
+
+    /* This is where we can add markers or lines, add listeners or move the camera.
+     * This should only be called once and when we are sure that {@link #mMap} is not null.
+     */
+    private void setUpMap() {
+    	mMap.setMyLocationEnabled(true);
+    	
+		// set the starting location of the map
+		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(PORTLAND, 14.0f));
+    }
+    
+	@Override
+	public void onMapLongClick(LatLng point) {
+
+		// if a marker has already been created then move to new position
+		if (marker != null){
+			marker.setPosition(point);
+		}
+		// otherwise create a new marker at the clicked on position
+		else
+		{
+			marker = makeMapMarker(point,appRes.getString(R.string.delete_marker), false);   
+		
+			// listen for info window clicks to delete marker
+			mMap.setOnInfoWindowClickListener(this);
+		}
+	}
+
+
+	@Override
+	// handle info window clicks by deleting the marker
+	public void onInfoWindowClick(Marker arg0) 
+	{	
+		if (arg0.equals(marker))
+		{
+			marker.remove();
+			marker = null;
+		}
+	}
+	
+	// returns a visible marker at the passed in position
+	// with the passed in title
+	private Marker makeMapMarker(LatLng point, String title, boolean isPlace)
+	{
+		float color = BitmapDescriptorFactory.HUE_RED;
+		if (isPlace == true)
+			color = BitmapDescriptorFactory.HUE_AZURE;
+		
+		boolean draggable = !isPlace; 
+		
+		return mMap.addMarker(new MarkerOptions()
+			.visible(true)
+			.position(point)
+			.title(title)
+			.draggable(draggable)
+			.icon(BitmapDescriptorFactory.defaultMarker(color)));
+	}
 	
 	public void handlePlaces() //this will be called by the search bar for locations to add
 	{
-		
 		Handler asyncHandler = new Handler()
 		{
 		    public void handleMessage(Message msg){
@@ -507,61 +446,86 @@ public class WithinReachActivity extends FragmentActivity implements
 		}
 		params[4] = Integer.toString(1000);
 		new ServicesMgr(asyncHandler).execute(params);
-		
-		
 	}
 	
 	
 	
+	/***** LOCATION PROVIDER AND MANAGEMENT METHODS *****/
 	
+	private boolean getLocProvider(){
+		// attempt to get a provider for the location manager
+		if(mLocationManager != null){
+			if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+				mLocationManager.requestLocationUpdates(
+						LocationManager.GPS_PROVIDER, 5000L, 5F, this);
+				
+				return true;
+			}
+			else if(mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+				mLocationManager.requestLocationUpdates(
+						LocationManager.NETWORK_PROVIDER, 5000L, 5F, this);
+				
+				return true;
+			}
+			else{
+				// we were unable to obtain a provider
+				Toast.makeText(this, R.string.error_no_provider, Toast.LENGTH_SHORT).show();
+				return false;
+			}
+		}
+		else{
+			// something has gone wrong with loc manager
+			Toast.makeText(this, R.string.error_fatal_loc_mgr, Toast.LENGTH_LONG).show();
+			return false;
+		}		
+	}
 	
-	
-	
-    /**
-     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
-     * <p>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not have been
-     * completely destroyed during this process (it is likely that it would only be stopped or
-     * paused), {@link #onCreate(Bundle)} may not be called again so we should call this method in
-     * {@link #onResume()} to guarantee that it will be called.
-     */
-    private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
-            
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                setUpMap();
-                mMap.setOnMapLongClickListener(this);
-            }
-            
-            // set location source to track users location over time
-            mMap.setLocationSource(this);
-            
-        }
-    }
+	@Override
+	public void onLocationChanged(Location location){
+		
+		mCurrentLocation = location;
+		
+		// update map camera to current location
+		if(mListener != null && mMap != null){
+			mListener.onLocationChanged(location);
+			mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(
+					location.getLatitude(),location.getLongitude())));
+		}
+	}
 
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera.
-     * <p>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
-    private void setUpMap() {
-    	mMap.setMyLocationEnabled(true);
-    	
-		// set the starting location of the map
-		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(PORTLAND, 14.0f));
-    }
+  
+
+	@Override
+	public void activate(OnLocationChangedListener listener) {
+		// TODO Auto-generated method stub
+		mListener = listener;
+	}
+
+	@Override
+	public void deactivate() {
+		// TODO Auto-generated method stub
+		mListener = null;
+	}
+	
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 
     private LatLng getLocToUse(){
     	if(marker != null){
@@ -574,10 +538,78 @@ public class WithinReachActivity extends FragmentActivity implements
     	}
     }
     
+
+    /***** ACTIVITY HELPER METHODS *****/
+	
+	private void setDefaults(){
+		timeConstraint = 15;
+		modeCode = 7;
+		dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+		monthOfYear = calendar.get(Calendar.MONTH);
+		year = calendar.get(Calendar.YEAR);
+		hourOfDay = calendar.get(Calendar.HOUR_OF_DAY); 
+		minute = calendar.get(Calendar.MINUTE);
+	}
+	
+	private void setUpSearchBarListener(){
+		placeMarkers = new Marker[10];
+		
+		textWatcher = new TextWatcher()
+		{
+			public void afterTextChanged(Editable s) 
+			{
+				String input = s.toString();
+				
+				if (s.toString().equals(""))
+				{
+						for (int i = 0; i < 10; ++i)
+						{					
+							if (placeMarkers[i] != null)
+							{
+								placeMarkers[i].remove();	
+							}				
+						}
+						return;
+				}
+				else if (input.matches("[a-zA-Z0-9]+"))
+				{
+					handlePlaces();
+				}		
+			}
+
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) 
+			{
+				// TODO Auto-generated method stub			
+			}
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) 
+			{}	
+		};
+		textView.addTextChangedListener(textWatcher);
+	}
+	
+
+
+
+	/***** TILE PROVIDER AND TILE MANAGEMENT METHODS *****/
+    
     private void refreshOverlays(){
 		removeTileProviders();
 		LatLng locToUse = getLocToUse();
 		setTileProviders(locToUse);
+    }
+    
+    private void removeTileProviders(){
+    	if(overlayWalk != null){
+    		overlayWalk.remove();
+    	}
+    	if(overlayBiking != null){
+    		overlayBiking.remove();
+    	}
+    	if(overlayTransit != null){
+    		overlayTransit.remove();
+    	}
     }
  
     private void setTileProviders(LatLng loc){
@@ -624,17 +656,6 @@ public class WithinReachActivity extends FragmentActivity implements
     	}
     }
     
-    private void removeTileProviders(){
-    	if(overlayWalk != null){
-    		overlayWalk.remove();
-    	}
-    	if(overlayBiking != null){
-    		overlayBiking.remove();
-    	}
-    	if(overlayTransit != null){
-    		overlayTransit.remove();
-    	}
-    }
     
     private TileOverlay createTileOverlay(final int travelMode, final LatLng loc, int zIdx){
 		    	
@@ -699,333 +720,6 @@ public class WithinReachActivity extends FragmentActivity implements
    	
         return overlay;
     }
- 
-	
-    //This gets called from MenuActivity when it launches the WithinReachActivity
-	public void onNewIntent(Intent t) 
-	{
-		Bundle extras = t.getExtras();
-		if (extras != null)
-		{
-			//int serverDone = extras.getInt("serverCallDone");
-			timeConstraint = extras.getInt("timeConstraint");
-			modeCode = extras.getInt("modeCode");
-			year = extras.getInt("year");
-			monthOfYear = extras.getInt("month");
-			dayOfMonth = extras.getInt("day");
-			hourOfDay = extras.getInt("hour");
-			minute = extras.getInt("min");
-//			if (serverDone == 1)
-//			{
-//				handleDataFile();		
-//			}
-//			else if (serverDone == 0)
-//			{
-//				Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
-//			}
-		}
-		refreshOverlays();
-		
-	}
-	
-//	public void handleDataFile()
-//	{
-//		if(!toggleOTPATiles){
-//			FileInputStream fileInputStream = null;
-//			try
-//			{
-//				fileInputStream = openFileInput("jsonResult.txt");
-//			} 
-//			catch (FileNotFoundException e) 
-//			{
-//				e.printStackTrace();
-//			}
-//			
-//			InputStreamReader inputStreamReader = new InputStreamReader ( fileInputStream ) ;
-//	        BufferedReader bufferedReader = new BufferedReader ( inputStreamReader ) ;
-//	        String stringReader;
-//	        String fullString = "";
-//	        try 
-//	        {
-//		        while ((stringReader = bufferedReader.readLine()) != null)
-//		        {
-//		        	fullString += stringReader;
-//		        }
-//		        fileInputStream.close();
-//	
-//	        }
-//
-//	        catch (IOException e)
-//	        {
-//	        	e.printStackTrace();
-//	        	
-//	        }
-//	        
-//	        
-//	        LatLng circleLocation = null;
-//	        
-//	        if (marker != null)
-//	        {
-//	        	LatLng markerLocation = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
-//	        	circleLocation = markerLocation;
-//	            
-//	        	mMap.clear();
-//	        	
-//	        	marker = makeMapMarker(markerLocation,appRes.getString(R.string.delete_marker),false);
-//	        }
-//	        else
-//	        {
-//	        	// check if we have a current location yet
-//	        	if(mCurrentLocation != null){
-//	        		circleLocation = new LatLng(mCurrentLocation.getLatitude(), 
-//	        				                    mCurrentLocation.getLongitude());
-//	        	}
-//	        	// no location obtained...set to default
-//	        	else{ 
-//	        		circleLocation = PORTLAND;
-//	        	}
-//	        	mMap.clear();
-//	        }
-//	        
-//	        
-//	        
-//
-//        
-//        
-//        try 
-//        {
-//			JSONObject jsonObject = new JSONObject(fullString);
-//	
-//				
-//				
-//				if (jsonObject.getJSONObject("result").has("4"))
-//				{
-//					double lat1 = jsonObject.getJSONObject("result").getJSONObject("4").getJSONArray("coordinate").getJSONObject(0).getDouble("lat");
-//					double long1 = jsonObject.getJSONObject("result").getJSONObject("4").getJSONArray("coordinate").getJSONObject(0).getDouble("long");
-//					
-//					double lat2 = jsonObject.getJSONObject("result").getJSONObject("4").getJSONArray("coordinate").getJSONObject(1).getDouble("lat");
-//					double long2 = jsonObject.getJSONObject("result").getJSONObject("4").getJSONArray("coordinate").getJSONObject(1).getDouble("long");
-//					
-//					double distance = distFrom(lat1, long1, lat2, long2);
-//	
-//					
-//					
-//					
-//					CircleOptions options = new CircleOptions();
-//			        
-//			        options.center(circleLocation);
-//			        options.radius(distance);
-//			        options.fillColor(0x50000000);
-//			        options.strokeColor(Color.TRANSPARENT);
-//			        
-//			        mMap.addCircle(options);
-//					
-//				}
-//				
-//				if (jsonObject.getJSONObject("result").has("2"))
-//				{
-//					double lat1 = jsonObject.getJSONObject("result").getJSONObject("2").getJSONArray("coordinate").getJSONObject(0).getDouble("lat");
-//					double long1 = jsonObject.getJSONObject("result").getJSONObject("2").getJSONArray("coordinate").getJSONObject(0).getDouble("long");
-//					
-//					double lat2 = jsonObject.getJSONObject("result").getJSONObject("2").getJSONArray("coordinate").getJSONObject(1).getDouble("lat");
-//					double long2 = jsonObject.getJSONObject("result").getJSONObject("2").getJSONArray("coordinate").getJSONObject(1).getDouble("long");
-//					
-//					double distance = distFrom(lat1, long1, lat2, long2);
-//		
-//					CircleOptions options = new CircleOptions();
-//			        options.center(circleLocation);
-//			        options.radius(distance);
-//			        options.fillColor(0x30ff0000);
-//			        options.strokeColor(Color.TRANSPARENT);
-//			        
-//			        mMap.addCircle(options);
-//				}
-//				
-//				if (jsonObject.getJSONObject("result").has("1"))
-//				{
-//					double lat1 = jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(0).getDouble("lat");
-//					double long1 = jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(0).getDouble("long");
-//					
-//					double lat2 = jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(1).getDouble("lat");
-//					double long2 = jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(1).getDouble("long");
-//					
-//					double distance = distFrom(lat1, long1, lat2, long2);
-//		
-//					
-//					CircleOptions options = new CircleOptions();
-//			        options.center(circleLocation);
-//			        options.radius(distance);
-//			        options.fillColor(0x60ffff00);
-//			        options.strokeColor(Color.TRANSPARENT);
-//	
-//			        mMap.addCircle(options);
-//					
-//				}		
-//			}
-//	        catch (JSONException e) 
-//			{
-//				e.printStackTrace();
-//			}
-//		}else{
-//			removeTileProviders();
-//			LatLng locToUse = getLocToUse();
-//			setTileProviders(locToUse);	
-//		}
-//	}
-	
-
-	@Override
-	public void onLocationChanged(Location location){
-		
-		mCurrentLocation = location;
-		
-		// update map camera to current location
-		if(mListener != null && mMap != null){
-			mListener.onLocationChanged(location);
-			mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(
-					location.getLatitude(),location.getLongitude())));
-		}
-	}
-
-  
-
-	@Override
-	public void activate(OnLocationChangedListener listener) {
-		// TODO Auto-generated method stub
-		mListener = listener;
-	}
-
-	@Override
-	public void deactivate() {
-		// TODO Auto-generated method stub
-		mListener = null;
-	}
-	
-
-	@Override
-	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-//	public  double distFrom(double lat1, double lng1, double lat2, double lng2)
-//	{
-//	    double earthRadius = 6378000;
-//	    double dLat = Math.toRadians(lat2-lat1);
-//	    double dLng = Math.toRadians(lng2-lng1);
-//	    double sindLat = Math.sin(dLat / 2);
-//	    double sindLng = Math.sin(dLng / 2);
-//	    double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
-//	            * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
-//	    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-//	    double dist = earthRadius * c;
-//	
-//	    return dist;
-//    }
-	
-//	public void invokeServerComMgr()
-//	{
-//			
-//		if (mCurrentLocation == null && marker == null)
-//		{
-//			Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
-//			return;
-//		}
-//		
-//		Handler asyncHandler = new Handler()
-//		{
-//		    public void handleMessage(Message msg){
-//		        super.handleMessage(msg);
-//		        //What did that async task say?
-//		        switch (msg.what)
-//		        {
-//		            case 1:
-//		                handleDataFile();
-//		                break;                      
-//		        }
-//		    }
-//		}; 
-//		double latitude = 0.0;
-//		double longitude = 0.0;
-//		if(marker != null)
-//		{
-//			latitude = marker.getPosition().latitude;
-//			longitude = marker.getPosition().longitude;
-//		}
-//		else
-//		{
-//			latitude = mCurrentLocation.getLatitude();
-//			longitude = mCurrentLocation.getLongitude();
-//		}
-//		ServerInvoker invoker = new ServerInvoker(this, asyncHandler, latitude, longitude, modeCode, timeConstraint);
-//		invoker.invokeServerComMgr();
-//				
-//	}
-
-	@Override
-	public void onMapLongClick(LatLng point) {
-
-
-		// if a marker has already been created then move to new position
-
-		if (marker != null){
-			marker.setPosition(point);
-		}
-		// otherwise create a new marker at the clicked on position
-		else
-		{
-			marker = makeMapMarker(point,appRes.getString(R.string.delete_marker), false);   
-		
-			// listen for info window clicks to delete marker
-
-			mMap.setOnInfoWindowClickListener(this);
-		}
-	}
-
-
-	@Override
-	// handle info window clicks by deleting the marker
-	public void onInfoWindowClick(Marker arg0) 
-	{
-		
-		if (arg0.equals(marker))
-		{
-			marker.remove();
-			marker = null;
-		}
-		
-	}
-	
-	// returns a visible marker at the passed in position
-	// with the passed in title
-	private Marker makeMapMarker(LatLng point, String title, boolean isPlace)
-	{
-		float color = BitmapDescriptorFactory.HUE_RED;
-		if (isPlace == true)
-			color = BitmapDescriptorFactory.HUE_AZURE;
-		
-		boolean draggable = !isPlace; 
-		
-		return mMap.addMarker(new MarkerOptions()
-			.visible(true)
-			.position(point)
-			.title(title)
-			.draggable(draggable)
-			.icon(BitmapDescriptorFactory.defaultMarker(color)));
-	}
-
-	
+ 	
 
 }

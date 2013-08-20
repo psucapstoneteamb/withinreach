@@ -22,15 +22,16 @@
     <string name="license">License Information</string>
     <string name="init_seek_time">0 mins</string>
     <string name="action_refresh">REFRESH</string>
-<<<<<<< HEAD
 	<string name= "help_title">Help Menu</string>
-=======
     <string name="set_date">Set Date</string>
     <string name="set_time">Set Time</string>
     <string name="set_date_time_title">Set Date and Time</string>
-
-
->>>>>>> ddccbf4a4d32025473751dd98af9b5ef14c9426b
+    <string name="mode_descriptor_walk">Walking</string>
+    <string name="mode_descriptor_bike">Biking</string>
+    <string name="mode_descriptor_transit">Transit</string>
+    <string name="delete_marker">Delete</string>
+    <string name="search_map">Search Map</string>
+    
     
     <string name= "quest1">What is the objective of Within Reach?</string>
     <string name= "quest2">How to drop a pin?</string>
@@ -44,9 +45,7 @@
 	
 	
 
-    <string name="mode_descriptor_walk">Walking</string>
-    <string name="mode_descriptor_bike">Biking</string>
-    <string name="mode_descriptor_transit">Transit</string>
+
     <string name="license_info">
         Copyright (c) 2013, Haneen Abu-Khater, Alex Flyte, Kyle Greene, Vi Nguyen, Clinton Olson, and Hanrong Zhao \n
 All rights reserved.Redistribution and use in source and binary forms, with or without
@@ -74,14 +73,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         Copyright (c) 2013, Haneen Abu-Khater, Alex Flyte, Kyle Greene, Vi Nguyen, Clinton Olson, and Hanrong Zhao
         
     </string>
-
-
-
-    <string name="delete_marker">Delete</string>
-    <string name="search_map">Search Map</string>
-
-
-    
 
     <!-- Error Messages -->
     <string name="error_fatal_loc_mgr">Fatal Error: Location Manager Error</string>

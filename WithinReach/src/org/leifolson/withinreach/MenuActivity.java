@@ -1,7 +1,4 @@
-/* Author: Clinton Olson
- * Email: clint.olson2@gmail.com
- * Last Change: June 20, 2013
- *
+/* 
 Copyright (c) 2013, Haneen Abu-Khater, Alex Flyte, Kyle Greene, Vi Nguyen, Clinton Olson, and Hanrong Zhao
 All rights reserved.
 
@@ -26,30 +23,11 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*** TODO
- *   1- implement all lifecycle methods
- *   2- implement UI elements as Fragments
- *   3- error checking
- *   4- state saving
- *   5- connection with ServerComMgr
- *   6- implement HelpActivity transition
- *   7- data storage/passing between activities
- */
 
 package org.leifolson.withinreach;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -59,14 +37,9 @@ import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
 import android.content.Intent;
-//import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View.OnClickListener;
-//import android.support.v4.app.FragmentActivity;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -76,7 +49,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
-import android.widget.PopupWindow;
 
 public class MenuActivity extends Activity {
 	
@@ -98,9 +70,6 @@ public class MenuActivity extends Activity {
 	private int hourOfDay;
 	private int minute;
 	
-	//the lat/long will be passed from the WithinReachActivity
-	private double latitude = 0.0; 
-	private double longitude = 0.0;
 	
 	// the menu has the following UI elements
 	// these will most likely be changed to fragments at a later time
@@ -117,6 +86,8 @@ public class MenuActivity extends Activity {
 	private Button setTimeButton;
 
 
+	/***** ACTIVITY LIFECYCLE MANAGEMENT METHODS *****/
+	
 	// I can probably put some wrapper functions in here to abstract away
 	// all the details of setting up the listeners for UI elements
 	@Override
@@ -139,25 +110,45 @@ public class MenuActivity extends Activity {
 		
 		calendar = (GregorianCalendar)Calendar.getInstance();
 		
+		// sets all default values for UI elements
 		setDefaults();
 		
+		// sets up listener methods for all UI buttons and other elements
 		setListeners();
 		
-//		Bundle extras = getIntent().getExtras();
-//		if (extras != null)
-//		{
-//			latitude = extras.getDouble("latitude");
-//			longitude = extras.getDouble("longitude");
-//		}
-		
 	}
 	
 	
-	public void helpMenu(){
-		Intent launchhelpMenu = new Intent(this,HelpActivity.class);
-		startActivity(launchhelpMenu);
+	public void startHelpMenuActivity(){
+		Intent launchHelpMenu = new Intent(this,HelpActivity.class);
+		startActivity(launchHelpMenu);
 		
 	}
+	
+	public void returnToWithinReachActivity()
+	{
+		Intent launchWithinReach = new Intent(this, WithinReachActivity.class);
+		
+		modeCode = 0;
+		if (walkToggled)
+			modeCode += 1;
+		if (bikeToggled)
+			modeCode += 2;
+		if (transitToggled)
+			modeCode += 4;
+		
+		launchWithinReach.putExtra("timeConstraint", timeConstraint);
+		launchWithinReach.putExtra("modeCode", modeCode);
+		launchWithinReach.putExtra("year", year);
+		launchWithinReach.putExtra("month", monthOfYear);
+		launchWithinReach.putExtra("day", dayOfMonth);
+		launchWithinReach.putExtra("hour", hourOfDay);
+		launchWithinReach.putExtra("min", minute);
+		
+		startActivity(launchWithinReach);
+	}
+	
+	/***** ACTIVITY HELPER METHODS *****/
 	
 	private void setDefaults(){
 		// set options to default values
@@ -175,6 +166,7 @@ public class MenuActivity extends Activity {
 		hourOfDay = calendar.get(Calendar.HOUR_OF_DAY); 
 		minute = calendar.get(Calendar.MINUTE);
 	}
+	
 	
 	private void setListeners(){
 		// setting up click listener for the seekbar
@@ -237,15 +229,14 @@ public class MenuActivity extends Activity {
 			}
 		});
 		
-
-
+		
 		helpButton.setOnClickListener(new View.OnClickListener(){
 
 			@Override
 			public void onClick(View arg0) {
 				//invokes the HelpActivity menu come up when help
 				//button is clicked
-				helpMenu();
+				startHelpMenuActivity();
 				
 			}
 			
@@ -267,8 +258,6 @@ public class MenuActivity extends Activity {
 				
 			}
 		});
-		
-		
 
 		
 		aboutButton.setOnClickListener(
@@ -339,111 +328,4 @@ public class MenuActivity extends Activity {
 				);
 	}
 	
-//	@Override
-//	protected void onStart(){
-//		super.onStart();	
-//	}
-//	
-//	@Override
-//	protected void onStop(){
-//		super.onStop();
-//	}
-//	
-//	@Override
-//	protected void onPause(){
-//		super.onPause();
-//	}
-//	
-//	@Override
-//	protected void onResume(){
-//		super.onResume();
-//	}
-	
-	
-//	@Override
-//	public void onConfigurationChanged(Configuration newConfig){
-//		super.onConfigurationChanged(newConfig);
-//		System.out.println("Config CHANGED *****");
-//		if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
-//			seekTime.setText(Integer.toString(timeSeekBar.getProgress()));
-//			System.out.println("Orientation land CHANGED *****");
-//		}
-//		
-//		if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-//			seekTime.setText(Integer.toString(timeSeekBar.getProgress()));
-//			System.out.println("Orientation port CHANGED *****");
-//		}
-//	}
-	
-	// when the user clicks the "Done!" button, this method will be called,
-	// launching the main WithinReach activity
-//	public void invokeServerComMgr(){
-//		//Setting up a handler to handle the server response. If the server gives back a message of 1, then this handler
-//		//will call 
-//		Handler asyncHandler = new Handler()
-//		{
-//		    public void handleMessage(Message msg){
-//		        super.handleMessage(msg);
-//		        //What did that async task say?
-//		        switch (msg.what)
-//		        {
-//		            case 1:
-//		                returnToWithinReachActivity();
-//		                break;                      
-//		        }
-//		    }
-//		};  
-//
-//		modeCode = 0;
-//		if (walkToggled)
-//			modeCode += 1;
-//		if (bikeToggled)
-//			modeCode += 2;
-//		if (transitToggled)
-//			modeCode += 4;
-//		
-//		if (latitude == 0.0 && longitude == 0.0)
-//		{
-//			returnToWithinReachActivity();
-//		}
-////		ServerInvoker invoker = new ServerInvoker(this, asyncHandler, latitude, longitude, modeCode, timeConstraint);
-////		invoker.invokeServerComMgr();
-//	}
-	
-//	public void onNewIntent(Intent t) 
-//	{
-//		Bundle extras = t.getExtras();
-//		if (extras != null)
-//		{
-//			latitude = extras.getDouble("latitude");
-//			longitude = extras.getDouble("longitude");
-//		}
-//		
-//	}
-
-	public void returnToWithinReachActivity()
-	{
-		Intent launchWithinReach = new Intent(this, WithinReachActivity.class);
-//		if (latitude == 0.0 && longitude == 0.0)
-//			launchWithinReach.putExtra("serverCallDone", 0); //0 means fail/no location was given from main activity
-//		else 
-//			launchWithinReach.putExtra("serverCallDone", 1); //1 means success
-		
-		modeCode = 0;
-		if (walkToggled)
-			modeCode += 1;
-		if (bikeToggled)
-			modeCode += 2;
-		if (transitToggled)
-			modeCode += 4;
-		
-		launchWithinReach.putExtra("timeConstraint", timeConstraint);
-		launchWithinReach.putExtra("modeCode", modeCode);
-		launchWithinReach.putExtra("year", year);
-		launchWithinReach.putExtra("month", monthOfYear);
-		launchWithinReach.putExtra("day", dayOfMonth);
-		launchWithinReach.putExtra("hour", hourOfDay);
-		launchWithinReach.putExtra("min", minute);
-		startActivity(launchWithinReach);
-	}
 }

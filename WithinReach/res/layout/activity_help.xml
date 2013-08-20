@@ -5,8 +5,8 @@
     android:orientation="vertical" 
     android:scrollbars="vertical" >
 
-    <EditText
-        android:id="@+id/editText1"
+    <TextView
+        android:id="@+id/help_menu_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/menu_title_vertical_margin"
@@ -14,11 +14,12 @@
         android:inputType="none"
         android:focusable="false"
         android:gravity="center"
-        android:text="Help Menu"
+        android:text="@string/help_title"
         android:textStyle="bold" >
 
         <requestFocus />
-    </EditText>
+    </TextView>
+
 <ScrollView 
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -27,14 +28,18 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
 		   <Button
-		       android:id="@+id/button1"
+		       android:id="@+id/help_objective"
 		       android:layout_width="fill_parent"
 		       android:layout_height="wrap_content"
-		       android:text="@string/quest1" />
+		       android:shadowColor="@color/blue"
+		       android:text="@string/quest1"
+		       android:gravity="center"
+		       android:textStyle="bold" />
 		
-		   <EditText
-		       android:id="@+id/editText2"
+		   <TextView
+		       android:id="@+id/answer_objective"
 		       android:layout_width="fill_parent"
 		       android:layout_height="wrap_content"
 		       android:editable="false"
@@ -42,13 +47,13 @@
 		       android:text="@string/answer1" />
 		
 		   <Button
-		       android:id="@+id/button2"
+		       android:id="@+id/pin_drop"
 		       android:layout_width="match_parent"
 		       android:layout_height="wrap_content"
 		       android:text="@string/quest2" />
 		
-		   <EditText
-		       android:id="@+id/editText3"
+		   <TextView
+		       android:id="@+id/answer_pin"
 		       android:layout_width="match_parent"
 		       android:layout_height="wrap_content"
 		       android:editable="false"
@@ -56,13 +61,13 @@
 		       android:text="@string/answer2" />
 		
 		   <Button
-		       android:id="@+id/button3"
+		       android:id="@+id/time_adjust"
 		       android:layout_width="match_parent"
 		       android:layout_height="wrap_content"
 		       android:text="@string/quest3" />
 		
-		   <EditText
-		       android:id="@+id/editText4"
+		   <TextView
+		       android:id="@+id/answer_time"
 		       android:layout_width="match_parent"
 		       android:layout_height="wrap_content"
 		       android:editable="false"
@@ -70,12 +75,12 @@
 		       android:text="@string/answer3" />
 		
 		   <Button
-		       android:id="@+id/button4"
+		       android:id="@+id/transp_mode"
 		       android:layout_width="match_parent"
 		       android:layout_height="wrap_content"
 		       android:text="@string/quest4" />
-		   <EditText
-			android:id="@+id/editText5"
+		   <TextView
+			android:id="@+id/answer_transp_mode"
 		       android:layout_width="match_parent"
 		       android:layout_height="wrap_content"
 		       android:editable="false"
@@ -83,4 +88,5 @@
 		       android:text="@string/answer4" />
     </LinearLayout>
     </ScrollView>
+
 </LinearLayout>

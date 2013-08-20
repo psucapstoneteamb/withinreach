@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/about_view_margin"
         android:alpha="90"
+        android:background="#ffffffff"
         android:text="@string/about_info"
     />
     

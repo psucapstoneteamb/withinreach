@@ -52,7 +52,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
 import android.content.Intent;
 //import android.content.res.Configuration;
@@ -67,8 +71,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.DatePicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.ToggleButton;
 import android.widget.PopupWindow;
 
@@ -85,6 +91,12 @@ public class MenuActivity extends Activity {
 	private boolean bikeToggled = true;
 	private boolean transitToggled = true;
 	private final int MAX_TIME = 90;
+	private GregorianCalendar calendar;
+	private int year;
+	private int monthOfYear;
+	private int dayOfMonth;
+	private int hourOfDay;
+	private int minute;
 	
 	//the lat/long will be passed from the WithinReachActivity
 	private double latitude = 0.0; 
@@ -101,6 +113,8 @@ public class MenuActivity extends Activity {
 	private Button helpButton;
 	private Button licenseButton;
 	private Button aboutButton;
+	private Button setDateButton;
+	private Button setTimeButton;
 
 
 	// I can probably put some wrapper functions in here to abstract away
@@ -135,6 +149,13 @@ public class MenuActivity extends Activity {
 		
 		timeSeekBar.setProgress(15);
 		seekTime.setText(Integer.toString(timeSeekBar.getProgress()));
+		
+		calendar = (GregorianCalendar)Calendar.getInstance();
+		dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+		monthOfYear = calendar.get(Calendar.MONTH);
+		year = calendar.get(Calendar.YEAR);
+		hourOfDay = calendar.get(Calendar.HOUR_OF_DAY); 
+		minute = calendar.get(Calendar.MINUTE);
 		
 		// setting up click listener for the seekbar
 		timeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
@@ -251,7 +272,62 @@ public class MenuActivity extends Activity {
 				}
 				);
 		
+		
+		setDateButton = (Button)findViewById(R.id.set_date_button);
+		
+		setDateButton.setOnClickListener(
+				new View.OnClickListener() 
+				{
+					public void onClick(View v) 
+					{
+						DatePickerDialog datePickerDialog = 
+							new DatePickerDialog(MenuActivity.this,
+									new OnDateSetListener(){
+
+								@Override
+								public void onDateSet(DatePicker view,
+										int year, int monthOfYear,
+										int dayOfMonth) {
+									MenuActivity.this.year = year;
+									MenuActivity.this.monthOfYear = monthOfYear;
+									MenuActivity.this.dayOfMonth = dayOfMonth;				
+								}
+							}, year, monthOfYear, dayOfMonth);
+						datePickerDialog.show();
+						
+					}
+				}
+				);
+		
+		setTimeButton = (Button)findViewById(R.id.set_time_button);
+		
+		setTimeButton.setOnClickListener(
+				new View.OnClickListener() 
+				{
+					public void onClick(View v) 
+					{						
+						TimePickerDialog timePickerDialog = 
+							new TimePickerDialog(MenuActivity.this,
+									new OnTimeSetListener(){
+
+								@Override
+								public void onTimeSet(TimePicker view,
+										int hourOfDay, int minute) {
+									MenuActivity.this.hourOfDay = hourOfDay;
+									MenuActivity.this.minute = minute;		
+								}
+							},hourOfDay
+							 ,minute
+							 ,false);
+						
+						timePickerDialog.show();
+						
+					}
+				}
+				);
+		
 	}
+	
 	
 	public void helpMenu(){
 		Intent launchhelpMenu = new Intent(this,HelpActivity.class);
@@ -259,26 +335,25 @@ public class MenuActivity extends Activity {
 		
 	}
 	
-	@Override
-	protected void onStart(){
-		super.onStart();
-		
-	}
-	
-	@Override
-	protected void onStop(){
-		super.onStop();
-	}
-	
-	@Override
-	protected void onPause(){
-		super.onPause();
-	}
-	
-	@Override
-	protected void onResume(){
-		super.onResume();
-	}
+//	@Override
+//	protected void onStart(){
+//		super.onStart();	
+//	}
+//	
+//	@Override
+//	protected void onStop(){
+//		super.onStop();
+//	}
+//	
+//	@Override
+//	protected void onPause(){
+//		super.onPause();
+//	}
+//	
+//	@Override
+//	protected void onResume(){
+//		super.onResume();
+//	}
 	
 	
 //	@Override
@@ -352,6 +427,11 @@ public class MenuActivity extends Activity {
 		
 		launchWithinReach.putExtra("timeConstraint", timeConstraint);
 		launchWithinReach.putExtra("modeCode", modeCode);
+		launchWithinReach.putExtra("year", year);
+		launchWithinReach.putExtra("month", monthOfYear);
+		launchWithinReach.putExtra("day", dayOfMonth);
+		launchWithinReach.putExtra("hour", hourOfDay);
+		launchWithinReach.putExtra("min", minute);
 		startActivity(launchWithinReach);
 	}
 }

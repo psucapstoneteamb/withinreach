@@ -25,18 +25,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package org.leifolson.withinreach;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+//import java.io.BufferedReader;
+//import java.io.FileInputStream;
+//import java.io.FileNotFoundException;
+//import java.io.IOException;
+//import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+//import java.text.DateFormat;
+//import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+//import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
@@ -51,7 +51,7 @@ import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
+//import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -74,13 +74,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
+//import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import android.view.View;
-import android.view.View.OnKeyListener;
-import android.view.Window;
+//import android.view.View;
+//import android.view.View.OnKeyListener;
+//import android.view.Window;
 
 import android.widget.TextView;
 import android.widget.Toast;
@@ -97,12 +97,10 @@ public class WithinReachActivity extends FragmentActivity implements
 	// used as a handle to the map object
 	private GoogleMap mMap;
 	
-	
 	//Search Bar
 	private TextView textView;
 	
 	private TextWatcher textWatcher;
-	
 	
 	private Marker placeMarkers[];
 	
@@ -121,15 +119,10 @@ public class WithinReachActivity extends FragmentActivity implements
 	private boolean providerAvailable = false;
 	
 	/* TILE TEST CODE */
-	private boolean toggleOTPATiles = true;
+	//private boolean toggleOTPATiles = true;
 	private static final String OTPA_URL_FORMAT = 
 		"http://queue.its.pdx.edu:8080/opentripplanner-api-webapp/ws/tile/%d/%d/%d.png";
-
-	private static final String GREENVILLE_URL_FORMAT = 
-		"http://trip.greenvilleopenmap.info/opentripplanner-api-webapp/ws/tile/%d/%d/%d.png";
 	
-	// test location for greenville
-    private static final LatLng GREENVILLE = new LatLng(34.828911, -82.369294);
     
     // provider for transit
     private TileOverlay overlayTransit;
@@ -165,7 +158,6 @@ public class WithinReachActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		
 		// used to access shared resources like strings, etc.
 		appRes = getResources();
 		
@@ -175,110 +167,75 @@ public class WithinReachActivity extends FragmentActivity implements
 		// get a location manager
 		mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
 		
+		// search bar
 		textView = (TextView)findViewById(R.id.editText1);
+		calendar = (GregorianCalendar)Calendar.getInstance();
+		
+		setDefaults();
 			
+		setUpSearchBarListener();
 
-		placeMarkers = new Marker[10];
-		
-		textWatcher = new TextWatcher()
-		{
 
-			public void afterTextChanged(Editable s) 
-			{
-				String input = s.toString();
-				
-				if (s.toString().equals(""))
-				{
-						for (int i = 0; i < 10; ++i)
-						{
-							
-							if (placeMarkers[i] != null)
-							{
-								placeMarkers[i].remove();
-								
-							}
-								
-						}
-						return;
-				}
-				else if (input.matches("[a-zA-Z0-9]+"))
-				{
-					handlePlaces();
-				}
-				
-			}
-
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) 
-			{
-				// TODO Auto-generated method stub
-				
-			}
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) 
-			{
-				
-			}
-			
-			
-		};
-		
-		textView.addTextChangedListener(textWatcher);
 		
 		
-		// attempt to get a provider for the location manager
-		if(mLocationManager != null){
-			if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-				mLocationManager.requestLocationUpdates(
-						LocationManager.GPS_PROVIDER, 5000L, 5F, this);
-				
-				providerAvailable = true;
-			}
-			else if(mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-				mLocationManager.requestLocationUpdates(
-						LocationManager.NETWORK_PROVIDER, 5000L, 5F, this);
-				
-				providerAvailable = true;
-			}
-			else{
-				// we were unable to obtain a provider
-				Toast.makeText(this, R.string.error_no_provider, Toast.LENGTH_SHORT).show();
-			}
-		}
-		else{
-			// something has gone wrong with loc manager
-			Toast.makeText(this, R.string.error_fatal_loc_mgr, Toast.LENGTH_LONG).show();
-		}
+//		// attempt to get a provider for the location manager
+//		if(mLocationManager != null){
+//			if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+//				mLocationManager.requestLocationUpdates(
+//						LocationManager.GPS_PROVIDER, 5000L, 5F, this);
+//				
+//				providerAvailable = true;
+//			}
+//			else if(mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+//				mLocationManager.requestLocationUpdates(
+//						LocationManager.NETWORK_PROVIDER, 5000L, 5F, this);
+//				
+//				providerAvailable = true;
+//			}
+//			else{
+//				// we were unable to obtain a provider
+//				Toast.makeText(this, R.string.error_no_provider, Toast.LENGTH_SHORT).show();
+//				providerAvailable = false;
+//			}
+//		}
+//		else{
+//			// something has gone wrong with loc manager
+//			Toast.makeText(this, R.string.error_fatal_loc_mgr, Toast.LENGTH_LONG).show();
+//		}
+		// try to obtain a location provider
+		providerAvailable = getLocProvider();
 		
 		// set up the map if necessary
 		setUpMapIfNeeded();
 		
-		timeConstraint = 15; //initial time_constraint
-		modeCode = 7; //initial transportation mode code for all modes selected 
+		//timeConstraint = 15; 	//initial time_constraint
+		//modeCode = 7; 			//initial transportation mode code for all modes selected 
 		
 		// set the starting location of the map
-		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(PORTLAND, 14.0f));
+		//mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(PORTLAND, 14.0f));
 
 		
-		calendar = (GregorianCalendar)Calendar.getInstance();
-		dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-		monthOfYear = calendar.get(Calendar.MONTH);
-		year = calendar.get(Calendar.YEAR);
-		hourOfDay = calendar.get(Calendar.HOUR_OF_DAY); 
-		minute = calendar.get(Calendar.MINUTE);
+
+
 	}
 	
 	@Override
 	protected void onStart(){
 		super.onStart();
 		
-		mMap.setMyLocationEnabled(true);
+		providerAvailable = getLocProvider();
 		
+		setUpMapIfNeeded();
+//		if(mMap != null){
+//			mMap.setMyLocationEnabled(true);
+//		}
 	}
 	
 	@Override
 	protected void onStop(){
-
+		if(mLocationManager != null){
+			mLocationManager.removeUpdates(this);
+		}
 		super.onStop();
 	}
 	
@@ -295,50 +252,128 @@ public class WithinReachActivity extends FragmentActivity implements
 	@Override
 	protected void onResume(){
 		super.onResume();
+		
+		providerAvailable = getLocProvider();
 
 		setUpMapIfNeeded();
-		if(mMap != null){
-			mMap.setMyLocationEnabled(true);
+//		if(mMap != null){
+//			mMap.setMyLocationEnabled(true);
+//		}
+	}
+	
+	private void setDefaults(){
+		timeConstraint = 15;
+		modeCode = 7;
+		dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+		monthOfYear = calendar.get(Calendar.MONTH);
+		year = calendar.get(Calendar.YEAR);
+		hourOfDay = calendar.get(Calendar.HOUR_OF_DAY); 
+		minute = calendar.get(Calendar.MINUTE);
+	}
+	
+	private void setUpSearchBarListener(){
+		placeMarkers = new Marker[10];
+		
+		textWatcher = new TextWatcher()
+		{
+			public void afterTextChanged(Editable s) 
+			{
+				String input = s.toString();
+				
+				if (s.toString().equals(""))
+				{
+						for (int i = 0; i < 10; ++i)
+						{					
+							if (placeMarkers[i] != null)
+							{
+								placeMarkers[i].remove();	
+							}				
+						}
+						return;
+				}
+				else if (input.matches("[a-zA-Z0-9]+"))
+				{
+					handlePlaces();
+				}		
+			}
+
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) 
+			{
+				// TODO Auto-generated method stub			
+			}
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) 
+			{}	
+		};
+		textView.addTextChangedListener(textWatcher);
+	}
+	
+	private boolean getLocProvider(){
+		// attempt to get a provider for the location manager
+		if(mLocationManager != null){
+			if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+				mLocationManager.requestLocationUpdates(
+						LocationManager.GPS_PROVIDER, 5000L, 5F, this);
+				
+				return true;
+			}
+			else if(mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+				mLocationManager.requestLocationUpdates(
+						LocationManager.NETWORK_PROVIDER, 5000L, 5F, this);
+				
+				return true;
+			}
+			else{
+				// we were unable to obtain a provider
+				Toast.makeText(this, R.string.error_no_provider, Toast.LENGTH_SHORT).show();
+				return false;
+			}
 		}
+		else{
+			// something has gone wrong with loc manager
+			Toast.makeText(this, R.string.error_fatal_loc_mgr, Toast.LENGTH_LONG).show();
+			return false;
+		}		
 	}
 	
 	/***
 	 *  launches the MenuActivity where the user can specify:
 	 *  time constraint
 	 *  transport mode
+	 *  day and time of search
 	 */
 	private void startMenu()
 	{
 		Intent launchMenu = new Intent(this,MenuActivity.class);
-
-		if (mCurrentLocation != null)
-		{
-			launchMenu.putExtra("latitude", mCurrentLocation.getLatitude());
-			launchMenu.putExtra("longitude", mCurrentLocation.getLongitude());
-		}
-		else if (marker != null)
-		{
-			launchMenu.putExtra("latitude", marker.getPosition().latitude);
-			launchMenu.putExtra("longitude", marker.getPosition().longitude);
-		}
-		else
-		{
-			//fail codes 0.0 will be handled in MenuActivity
-			launchMenu.putExtra("latitude", 0.0); 
-			launchMenu.putExtra("longitude", 0.0);
-		}
+//
+//		if (mCurrentLocation != null)
+//		{
+//			launchMenu.putExtra("latitude", mCurrentLocation.getLatitude());
+//			launchMenu.putExtra("longitude", mCurrentLocation.getLongitude());
+//		}
+//		else if (marker != null)
+//		{
+//			launchMenu.putExtra("latitude", marker.getPosition().latitude);
+//			launchMenu.putExtra("longitude", marker.getPosition().longitude);
+//		}
+//		else
+//		{
+//			//fail codes 0.0 will be handled in MenuActivity
+//			launchMenu.putExtra("latitude", 0.0); 
+//			launchMenu.putExtra("longitude", 0.0);
+//		}
 		startActivity(launchMenu);
 	}
 
-	/**
-	 * launches the HelpActivity 
-	 * where the user can get facts and questions answered
-	 */
-	private void helpMenu(){
-		Intent launchhelpMenu = new Intent(this,HelpActivity.class);
-		startActivity(launchhelpMenu);
-		
-	}
+//	/**
+//	 * launches the HelpActivity 
+//	 * where the user can get facts and questions answered
+//	 */
+//	private void helpMenu(){
+//		Intent launchhelpMenu = new Intent(this,HelpActivity.class);
+//		startActivity(launchhelpMenu);	
+//	}
 	
 	/***
 	 * this method inflates the menu UI when the user presses the hardware menu key
@@ -377,13 +412,17 @@ public class WithinReachActivity extends FragmentActivity implements
 		}
 		if (item.getItemId() == R.id.action_refresh)
 		{
-			invokeServerComMgr();
-			if(toggleOTPATiles){
-
-				removeTileProviders();
-				LatLng locToUse = getLocToUse();
-				setTileProviders(locToUse);
-			}
+			//invokeServerComMgr();
+//			if(toggleOTPATiles){
+				if (mCurrentLocation == null && marker == null){
+						Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
+				}else{
+//					removeTileProviders();
+//					LatLng locToUse = getLocToUse();
+//					setTileProviders(locToUse);
+					refreshOverlays();
+				}
+//			}
 			return true;
 		}
 		else return false;
@@ -516,6 +555,9 @@ public class WithinReachActivity extends FragmentActivity implements
      */
     private void setUpMap() {
     	mMap.setMyLocationEnabled(true);
+    	
+		// set the starting location of the map
+		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(PORTLAND, 14.0f));
     }
 
     private LatLng getLocToUse(){
@@ -524,47 +566,58 @@ public class WithinReachActivity extends FragmentActivity implements
     	}else if(mCurrentLocation != null){
     		return new LatLng(mCurrentLocation.getLatitude(),mCurrentLocation.getLongitude());
     	}else{
-    		return PORTLAND;
+    		//return PORTLAND;
+    		return new LatLng(0,0);
     	}
+    }
+    
+    private void refreshOverlays(){
+		removeTileProviders();
+		LatLng locToUse = getLocToUse();
+		setTileProviders(locToUse);
     }
  
     private void setTileProviders(LatLng loc){
-    	System.out.println("*** INSIDE setTileProviders ****");
+    	
+    	if(loc.latitude == 0 && loc.longitude ==0){
+			Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
+    	}else{
 	
-    	switch(modeCode){
-    	case 1: // walk
-    		overlayWalk = createTileOverlay(1, loc,WALK_Z);
-			//Toast.makeText(this, "WALK not yet supported", Toast.LENGTH_LONG).show();
-			break;
-			
-    	case 2: //bike
-    		overlayBiking = createTileOverlay(2,loc,BIKING_Z);
-    		break;
-    		
-    	case 3: //bike and walk
-    		overlayWalk = createTileOverlay(1,loc,WALK_Z);
-    		overlayBiking = createTileOverlay(2,loc,BIKING_Z);
-    		break;
-    		
-    	case 4: //transit
-    		overlayTransit = createTileOverlay(4,loc,TRANSIT_Z);
-    		break;
-    		
-    	case 5: //transit and walking
-    		overlayWalk = createTileOverlay(1,loc,WALK_Z);
-    		overlayTransit = createTileOverlay(4,loc,TRANSIT_Z);
-    		break;
-    		
-    	case 6: //transit and biking
-    		overlayBiking = createTileOverlay(2,loc,BIKING_Z);
-    		overlayTransit = createTileOverlay(4,loc,TRANSIT_Z);   		
-    		break;
-    		
-    	case 7: //transit, walk, and bike
-    		overlayWalk = createTileOverlay(1,loc,WALK_Z);
-    		overlayBiking = createTileOverlay(2,loc,BIKING_Z);
-    		overlayTransit = createTileOverlay(4,loc,TRANSIT_Z);
-    		break;
+	    	switch(modeCode){
+	    	case 1: // walk
+	    		overlayWalk = createTileOverlay(1, loc,WALK_Z);
+				//Toast.makeText(this, "WALK not yet supported", Toast.LENGTH_LONG).show();
+				break;
+				
+	    	case 2: //bike
+	    		overlayBiking = createTileOverlay(2,loc,BIKING_Z);
+	    		break;
+	    		
+	    	case 3: //bike and walk
+	    		overlayWalk = createTileOverlay(1,loc,WALK_Z);
+	    		overlayBiking = createTileOverlay(2,loc,BIKING_Z);
+	    		break;
+	    		
+	    	case 4: //transit
+	    		overlayTransit = createTileOverlay(4,loc,TRANSIT_Z);
+	    		break;
+	    		
+	    	case 5: //transit and walking
+	    		overlayWalk = createTileOverlay(1,loc,WALK_Z);
+	    		overlayTransit = createTileOverlay(4,loc,TRANSIT_Z);
+	    		break;
+	    		
+	    	case 6: //transit and biking
+	    		overlayBiking = createTileOverlay(2,loc,BIKING_Z);
+	    		overlayTransit = createTileOverlay(4,loc,TRANSIT_Z);   		
+	    		break;
+	    		
+	    	case 7: //transit, walk, and bike
+	    		overlayWalk = createTileOverlay(1,loc,WALK_Z);
+	    		overlayBiking = createTileOverlay(2,loc,BIKING_Z);
+	    		overlayTransit = createTileOverlay(4,loc,TRANSIT_Z);
+	    		break;
+	    	}
     	}
     }
     
@@ -614,7 +667,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	                		+"&layers=traveltime" 
 	                		+"&styles=" + style 
 	                		+"&time=" + year + "-0" + (monthOfYear+1) + "-" + dayOfMonth 
-	                		+"T" + hourOfDay + "%3A00%3A00"
+	                		+"T0" + hourOfDay + "%3A00%3A00"
                 			+"&mode="+ mode 
                 			+"&maxWalkDistance=4000"
                 			+"&timeconstraint=" + timeConstraint
@@ -651,7 +704,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		Bundle extras = t.getExtras();
 		if (extras != null)
 		{
-			int serverDone = extras.getInt("serverCallDone");
+			//int serverDone = extras.getInt("serverCallDone");
 			timeConstraint = extras.getInt("timeConstraint");
 			modeCode = extras.getInt("modeCode");
 			year = extras.getInt("year");
@@ -659,162 +712,163 @@ public class WithinReachActivity extends FragmentActivity implements
 			dayOfMonth = extras.getInt("day");
 			hourOfDay = extras.getInt("hour");
 			minute = extras.getInt("min");
-			if (serverDone == 1)
-			{
-				handleDataFile();		
-			}
-			else if (serverDone == 0)
-			{
-				Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
-			}
+//			if (serverDone == 1)
+//			{
+//				handleDataFile();		
+//			}
+//			else if (serverDone == 0)
+//			{
+//				Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
+//			}
 		}
+		refreshOverlays();
 		
 	}
 	
-	public void handleDataFile()
-	{
-		if(!toggleOTPATiles){
-			FileInputStream fileInputStream = null;
-			try
-			{
-				fileInputStream = openFileInput("jsonResult.txt");
-			} 
-			catch (FileNotFoundException e) 
-			{
-				e.printStackTrace();
-			}
-			
-			InputStreamReader inputStreamReader = new InputStreamReader ( fileInputStream ) ;
-	        BufferedReader bufferedReader = new BufferedReader ( inputStreamReader ) ;
-	        String stringReader;
-	        String fullString = "";
-	        try 
-	        {
-		        while ((stringReader = bufferedReader.readLine()) != null)
-		        {
-		        	fullString += stringReader;
-		        }
-		        fileInputStream.close();
-	
-	        }
-
-	        catch (IOException e)
-	        {
-	        	e.printStackTrace();
-	        	
-	        }
-	        
-	        
-	        LatLng circleLocation = null;
-	        
-	        if (marker != null)
-	        {
-	        	LatLng markerLocation = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
-	        	circleLocation = markerLocation;
-	            
-	        	mMap.clear();
-	        	
-	        	marker = makeMapMarker(markerLocation,appRes.getString(R.string.delete_marker),false);
-	        }
-	        else
-	        {
-	        	// check if we have a current location yet
-	        	if(mCurrentLocation != null){
-	        		circleLocation = new LatLng(mCurrentLocation.getLatitude(), 
-	        				                    mCurrentLocation.getLongitude());
-	        	}
-	        	// no location obtained...set to default
-	        	else{ 
-	        		circleLocation = PORTLAND;
-	        	}
-	        	mMap.clear();
-	        }
-	        
-	        
-	        
-
-        
-        
-        try 
-        {
-			JSONObject jsonObject = new JSONObject(fullString);
-	
-				
-				
-				if (jsonObject.getJSONObject("result").has("4"))
-				{
-					double lat1 = jsonObject.getJSONObject("result").getJSONObject("4").getJSONArray("coordinate").getJSONObject(0).getDouble("lat");
-					double long1 = jsonObject.getJSONObject("result").getJSONObject("4").getJSONArray("coordinate").getJSONObject(0).getDouble("long");
-					
-					double lat2 = jsonObject.getJSONObject("result").getJSONObject("4").getJSONArray("coordinate").getJSONObject(1).getDouble("lat");
-					double long2 = jsonObject.getJSONObject("result").getJSONObject("4").getJSONArray("coordinate").getJSONObject(1).getDouble("long");
-					
-					double distance = distFrom(lat1, long1, lat2, long2);
-	
-					
-					
-					
-					CircleOptions options = new CircleOptions();
-			        
-			        options.center(circleLocation);
-			        options.radius(distance);
-			        options.fillColor(0x50000000);
-			        options.strokeColor(Color.TRANSPARENT);
-			        
-			        mMap.addCircle(options);
-					
-				}
-				
-				if (jsonObject.getJSONObject("result").has("2"))
-				{
-					double lat1 = jsonObject.getJSONObject("result").getJSONObject("2").getJSONArray("coordinate").getJSONObject(0).getDouble("lat");
-					double long1 = jsonObject.getJSONObject("result").getJSONObject("2").getJSONArray("coordinate").getJSONObject(0).getDouble("long");
-					
-					double lat2 = jsonObject.getJSONObject("result").getJSONObject("2").getJSONArray("coordinate").getJSONObject(1).getDouble("lat");
-					double long2 = jsonObject.getJSONObject("result").getJSONObject("2").getJSONArray("coordinate").getJSONObject(1).getDouble("long");
-					
-					double distance = distFrom(lat1, long1, lat2, long2);
-		
-					CircleOptions options = new CircleOptions();
-			        options.center(circleLocation);
-			        options.radius(distance);
-			        options.fillColor(0x30ff0000);
-			        options.strokeColor(Color.TRANSPARENT);
-			        
-			        mMap.addCircle(options);
-				}
-				
-				if (jsonObject.getJSONObject("result").has("1"))
-				{
-					double lat1 = jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(0).getDouble("lat");
-					double long1 = jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(0).getDouble("long");
-					
-					double lat2 = jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(1).getDouble("lat");
-					double long2 = jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(1).getDouble("long");
-					
-					double distance = distFrom(lat1, long1, lat2, long2);
-		
-					
-					CircleOptions options = new CircleOptions();
-			        options.center(circleLocation);
-			        options.radius(distance);
-			        options.fillColor(0x60ffff00);
-			        options.strokeColor(Color.TRANSPARENT);
-	
-			        mMap.addCircle(options);
-					
-				}		
-			}
-	        catch (JSONException e) 
-			{
-				e.printStackTrace();
-			}
-		}else{
-			removeTileProviders();
-			LatLng locToUse = getLocToUse();
-			setTileProviders(locToUse);	
-		}
-	}
+//	public void handleDataFile()
+//	{
+//		if(!toggleOTPATiles){
+//			FileInputStream fileInputStream = null;
+//			try
+//			{
+//				fileInputStream = openFileInput("jsonResult.txt");
+//			} 
+//			catch (FileNotFoundException e) 
+//			{
+//				e.printStackTrace();
+//			}
+//			
+//			InputStreamReader inputStreamReader = new InputStreamReader ( fileInputStream ) ;
+//	        BufferedReader bufferedReader = new BufferedReader ( inputStreamReader ) ;
+//	        String stringReader;
+//	        String fullString = "";
+//	        try 
+//	        {
+//		        while ((stringReader = bufferedReader.readLine()) != null)
+//		        {
+//		        	fullString += stringReader;
+//		        }
+//		        fileInputStream.close();
+//	
+//	        }
+//
+//	        catch (IOException e)
+//	        {
+//	        	e.printStackTrace();
+//	        	
+//	        }
+//	        
+//	        
+//	        LatLng circleLocation = null;
+//	        
+//	        if (marker != null)
+//	        {
+//	        	LatLng markerLocation = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
+//	        	circleLocation = markerLocation;
+//	            
+//	        	mMap.clear();
+//	        	
+//	        	marker = makeMapMarker(markerLocation,appRes.getString(R.string.delete_marker),false);
+//	        }
+//	        else
+//	        {
+//	        	// check if we have a current location yet
+//	        	if(mCurrentLocation != null){
+//	        		circleLocation = new LatLng(mCurrentLocation.getLatitude(), 
+//	        				                    mCurrentLocation.getLongitude());
+//	        	}
+//	        	// no location obtained...set to default
+//	        	else{ 
+//	        		circleLocation = PORTLAND;
+//	        	}
+//	        	mMap.clear();
+//	        }
+//	        
+//	        
+//	        
+//
+//        
+//        
+//        try 
+//        {
+//			JSONObject jsonObject = new JSONObject(fullString);
+//	
+//				
+//				
+//				if (jsonObject.getJSONObject("result").has("4"))
+//				{
+//					double lat1 = jsonObject.getJSONObject("result").getJSONObject("4").getJSONArray("coordinate").getJSONObject(0).getDouble("lat");
+//					double long1 = jsonObject.getJSONObject("result").getJSONObject("4").getJSONArray("coordinate").getJSONObject(0).getDouble("long");
+//					
+//					double lat2 = jsonObject.getJSONObject("result").getJSONObject("4").getJSONArray("coordinate").getJSONObject(1).getDouble("lat");
+//					double long2 = jsonObject.getJSONObject("result").getJSONObject("4").getJSONArray("coordinate").getJSONObject(1).getDouble("long");
+//					
+//					double distance = distFrom(lat1, long1, lat2, long2);
+//	
+//					
+//					
+//					
+//					CircleOptions options = new CircleOptions();
+//			        
+//			        options.center(circleLocation);
+//			        options.radius(distance);
+//			        options.fillColor(0x50000000);
+//			        options.strokeColor(Color.TRANSPARENT);
+//			        
+//			        mMap.addCircle(options);
+//					
+//				}
+//				
+//				if (jsonObject.getJSONObject("result").has("2"))
+//				{
+//					double lat1 = jsonObject.getJSONObject("result").getJSONObject("2").getJSONArray("coordinate").getJSONObject(0).getDouble("lat");
+//					double long1 = jsonObject.getJSONObject("result").getJSONObject("2").getJSONArray("coordinate").getJSONObject(0).getDouble("long");
+//					
+//					double lat2 = jsonObject.getJSONObject("result").getJSONObject("2").getJSONArray("coordinate").getJSONObject(1).getDouble("lat");
+//					double long2 = jsonObject.getJSONObject("result").getJSONObject("2").getJSONArray("coordinate").getJSONObject(1).getDouble("long");
+//					
+//					double distance = distFrom(lat1, long1, lat2, long2);
+//		
+//					CircleOptions options = new CircleOptions();
+//			        options.center(circleLocation);
+//			        options.radius(distance);
+//			        options.fillColor(0x30ff0000);
+//			        options.strokeColor(Color.TRANSPARENT);
+//			        
+//			        mMap.addCircle(options);
+//				}
+//				
+//				if (jsonObject.getJSONObject("result").has("1"))
+//				{
+//					double lat1 = jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(0).getDouble("lat");
+//					double long1 = jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(0).getDouble("long");
+//					
+//					double lat2 = jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(1).getDouble("lat");
+//					double long2 = jsonObject.getJSONObject("result").getJSONObject("1").getJSONArray("coordinate").getJSONObject(1).getDouble("long");
+//					
+//					double distance = distFrom(lat1, long1, lat2, long2);
+//		
+//					
+//					CircleOptions options = new CircleOptions();
+//			        options.center(circleLocation);
+//			        options.radius(distance);
+//			        options.fillColor(0x60ffff00);
+//			        options.strokeColor(Color.TRANSPARENT);
+//	
+//			        mMap.addCircle(options);
+//					
+//				}		
+//			}
+//	        catch (JSONException e) 
+//			{
+//				e.printStackTrace();
+//			}
+//		}else{
+//			removeTileProviders();
+//			LatLng locToUse = getLocToUse();
+//			setTileProviders(locToUse);	
+//		}
+//	}
 	
 
 	@Override
@@ -863,59 +917,59 @@ public class WithinReachActivity extends FragmentActivity implements
 		
 	}
 	
-	public  double distFrom(double lat1, double lng1, double lat2, double lng2)
-	{
-	    double earthRadius = 6378000;
-	    double dLat = Math.toRadians(lat2-lat1);
-	    double dLng = Math.toRadians(lng2-lng1);
-	    double sindLat = Math.sin(dLat / 2);
-	    double sindLng = Math.sin(dLng / 2);
-	    double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
-	            * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
-	    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-	    double dist = earthRadius * c;
+//	public  double distFrom(double lat1, double lng1, double lat2, double lng2)
+//	{
+//	    double earthRadius = 6378000;
+//	    double dLat = Math.toRadians(lat2-lat1);
+//	    double dLng = Math.toRadians(lng2-lng1);
+//	    double sindLat = Math.sin(dLat / 2);
+//	    double sindLng = Math.sin(dLng / 2);
+//	    double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+//	            * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
+//	    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+//	    double dist = earthRadius * c;
+//	
+//	    return dist;
+//    }
 	
-	    return dist;
-    }
-	
-	public void invokeServerComMgr()
-	{
-			
-		if (mCurrentLocation == null && marker == null)
-		{
-			Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
-			return;
-		}
-		
-		Handler asyncHandler = new Handler()
-		{
-		    public void handleMessage(Message msg){
-		        super.handleMessage(msg);
-		        //What did that async task say?
-		        switch (msg.what)
-		        {
-		            case 1:
-		                handleDataFile();
-		                break;                      
-		        }
-		    }
-		}; 
-		double latitude = 0.0;
-		double longitude = 0.0;
-		if(marker != null)
-		{
-			latitude = marker.getPosition().latitude;
-			longitude = marker.getPosition().longitude;
-		}
-		else
-		{
-			latitude = mCurrentLocation.getLatitude();
-			longitude = mCurrentLocation.getLongitude();
-		}
-		ServerInvoker invoker = new ServerInvoker(this, asyncHandler, latitude, longitude, modeCode, timeConstraint);
-		invoker.invokeServerComMgr();
-				
-	}
+//	public void invokeServerComMgr()
+//	{
+//			
+//		if (mCurrentLocation == null && marker == null)
+//		{
+//			Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
+//			return;
+//		}
+//		
+//		Handler asyncHandler = new Handler()
+//		{
+//		    public void handleMessage(Message msg){
+//		        super.handleMessage(msg);
+//		        //What did that async task say?
+//		        switch (msg.what)
+//		        {
+//		            case 1:
+//		                handleDataFile();
+//		                break;                      
+//		        }
+//		    }
+//		}; 
+//		double latitude = 0.0;
+//		double longitude = 0.0;
+//		if(marker != null)
+//		{
+//			latitude = marker.getPosition().latitude;
+//			longitude = marker.getPosition().longitude;
+//		}
+//		else
+//		{
+//			latitude = mCurrentLocation.getLatitude();
+//			longitude = mCurrentLocation.getLongitude();
+//		}
+//		ServerInvoker invoker = new ServerInvoker(this, asyncHandler, latitude, longitude, modeCode, timeConstraint);
+//		invoker.invokeServerComMgr();
+//				
+//	}
 
 	@Override
 	public void onMapLongClick(LatLng point) {
@@ -931,7 +985,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		{
 			marker = makeMapMarker(point,appRes.getString(R.string.delete_marker), false);   
 		
-		// listen for info window clicks to delete marker
+			// listen for info window clicks to delete marker
 
 			mMap.setOnInfoWindowClickListener(this);
 		}

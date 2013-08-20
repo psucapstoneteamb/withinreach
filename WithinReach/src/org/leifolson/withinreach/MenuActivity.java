@@ -109,7 +109,7 @@ public class MenuActivity extends Activity {
 	private ToggleButton walkToggleButton;
 	private ToggleButton bikeToggleButton;
 	private ToggleButton transitToggleButton;
-	private Button menuButton;
+	private Button doneButton;
 	private Button helpButton;
 	private Button licenseButton;
 	private Button aboutButton;
@@ -124,25 +124,44 @@ public class MenuActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_menu);
 		
-		// getting a reference to the seekbar and its corresponding textview
+		// get references to menu interface elements
 		seekTime = (TextView)findViewById(R.id.time_text);
 		timeSeekBar = (SeekBar)findViewById(R.id.time_seekbar);
-		
-		timeSeekBar.setMax(MAX_TIME);
-		
-		Bundle extras = getIntent().getExtras();
-		if (extras != null)
-		{
-			latitude = extras.getDouble("latitude");
-			longitude = extras.getDouble("longitude");
-		}
-		
-		// getting a reference to the toggle buttons
 		walkToggleButton = (ToggleButton)findViewById(R.id.toggle_button_walk);
 		bikeToggleButton = (ToggleButton)findViewById(R.id.toggle_button_bike);
 		transitToggleButton = (ToggleButton)findViewById(R.id.toggle_button_transit);
+		doneButton = (Button) findViewById(R.id.menu_done_button);
+		helpButton = (Button) findViewById(R.id.help_menu_button);
+	    licenseButton = (Button)findViewById(R.id.license_menu_button);
+		aboutButton = (Button)findViewById(R.id.about_menu_button);
+		setDateButton = (Button)findViewById(R.id.set_date_button);
+		setTimeButton = (Button)findViewById(R.id.set_time_button);
 		
+		calendar = (GregorianCalendar)Calendar.getInstance();
+		
+		setDefaults();
+		
+		setListeners();
+		
+//		Bundle extras = getIntent().getExtras();
+//		if (extras != null)
+//		{
+//			latitude = extras.getDouble("latitude");
+//			longitude = extras.getDouble("longitude");
+//		}
+		
+	}
+	
+	
+	public void helpMenu(){
+		Intent launchhelpMenu = new Intent(this,HelpActivity.class);
+		startActivity(launchhelpMenu);
+		
+	}
+	
+	private void setDefaults(){
 		// set options to default values
+		timeSeekBar.setMax(MAX_TIME);
 		walkToggleButton.setChecked(true);
 		bikeToggleButton.setChecked(true);
 		transitToggleButton.setChecked(true);
@@ -150,13 +169,14 @@ public class MenuActivity extends Activity {
 		timeSeekBar.setProgress(15);
 		seekTime.setText(Integer.toString(timeSeekBar.getProgress()));
 		
-		calendar = (GregorianCalendar)Calendar.getInstance();
 		dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 		monthOfYear = calendar.get(Calendar.MONTH);
 		year = calendar.get(Calendar.YEAR);
 		hourOfDay = calendar.get(Calendar.HOUR_OF_DAY); 
 		minute = calendar.get(Calendar.MINUTE);
-		
+	}
+	
+	private void setListeners(){
 		// setting up click listener for the seekbar
 		timeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser){
@@ -201,27 +221,24 @@ public class MenuActivity extends Activity {
 			}
 		});
 		
-		// getting a reference to the done button
-		menuButton = (Button) findViewById(R.id.menu_done_button);
+
 		
 		// setting up the onclick listener to handle the button click
 		// this is just a way to launch the WithinReachActivity for now
-		menuButton.setOnClickListener(new View.OnClickListener() {
+		doneButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View view) {
 				// takes us back to the WithinReachActivity
-				// will need to do some communication with the server before
-				// invoking the WithinReachActivity
 				
-				invokeServerComMgr();
+				//invokeServerComMgr();
+				returnToWithinReachActivity();
 				
 			}
 		});
 		
 
-		//getting reference to the help button
-		helpButton = (Button) findViewById(R.id.help_menu_button);
+
 		helpButton.setOnClickListener(new View.OnClickListener(){
 
 			@Override
@@ -236,8 +253,6 @@ public class MenuActivity extends Activity {
 		
 		
 	    final Dialog dialog = new Dialog(this);
-
-	    licenseButton = (Button)findViewById(R.id.license_menu_button);
 	   
 		licenseButton.setOnClickListener(new View.OnClickListener() 
 		{
@@ -254,7 +269,7 @@ public class MenuActivity extends Activity {
 		});
 		
 		
-		aboutButton = (Button)findViewById(R.id.about_menu_button);
+
 		
 		aboutButton.setOnClickListener(
 				new View.OnClickListener() 
@@ -272,8 +287,6 @@ public class MenuActivity extends Activity {
 				}
 				);
 		
-		
-		setDateButton = (Button)findViewById(R.id.set_date_button);
 		
 		setDateButton.setOnClickListener(
 				new View.OnClickListener() 
@@ -299,7 +312,6 @@ public class MenuActivity extends Activity {
 				}
 				);
 		
-		setTimeButton = (Button)findViewById(R.id.set_time_button);
 		
 		setTimeButton.setOnClickListener(
 				new View.OnClickListener() 
@@ -325,14 +337,6 @@ public class MenuActivity extends Activity {
 					}
 				}
 				);
-		
-	}
-	
-	
-	public void helpMenu(){
-		Intent launchhelpMenu = new Intent(this,HelpActivity.class);
-		startActivity(launchhelpMenu);
-		
 	}
 	
 //	@Override
@@ -373,23 +377,58 @@ public class MenuActivity extends Activity {
 	
 	// when the user clicks the "Done!" button, this method will be called,
 	// launching the main WithinReach activity
-	public void invokeServerComMgr(){
-		//Setting up a handler to handle the server response. If the server gives back a message of 1, then this handler
-		//will call 
-		Handler asyncHandler = new Handler()
-		{
-		    public void handleMessage(Message msg){
-		        super.handleMessage(msg);
-		        //What did that async task say?
-		        switch (msg.what)
-		        {
-		            case 1:
-		                returnToWithinReachActivity();
-		                break;                      
-		        }
-		    }
-		};  
+//	public void invokeServerComMgr(){
+//		//Setting up a handler to handle the server response. If the server gives back a message of 1, then this handler
+//		//will call 
+//		Handler asyncHandler = new Handler()
+//		{
+//		    public void handleMessage(Message msg){
+//		        super.handleMessage(msg);
+//		        //What did that async task say?
+//		        switch (msg.what)
+//		        {
+//		            case 1:
+//		                returnToWithinReachActivity();
+//		                break;                      
+//		        }
+//		    }
+//		};  
+//
+//		modeCode = 0;
+//		if (walkToggled)
+//			modeCode += 1;
+//		if (bikeToggled)
+//			modeCode += 2;
+//		if (transitToggled)
+//			modeCode += 4;
+//		
+//		if (latitude == 0.0 && longitude == 0.0)
+//		{
+//			returnToWithinReachActivity();
+//		}
+////		ServerInvoker invoker = new ServerInvoker(this, asyncHandler, latitude, longitude, modeCode, timeConstraint);
+////		invoker.invokeServerComMgr();
+//	}
+	
+//	public void onNewIntent(Intent t) 
+//	{
+//		Bundle extras = t.getExtras();
+//		if (extras != null)
+//		{
+//			latitude = extras.getDouble("latitude");
+//			longitude = extras.getDouble("longitude");
+//		}
+//		
+//	}
 
+	public void returnToWithinReachActivity()
+	{
+		Intent launchWithinReach = new Intent(this, WithinReachActivity.class);
+//		if (latitude == 0.0 && longitude == 0.0)
+//			launchWithinReach.putExtra("serverCallDone", 0); //0 means fail/no location was given from main activity
+//		else 
+//			launchWithinReach.putExtra("serverCallDone", 1); //1 means success
+		
 		modeCode = 0;
 		if (walkToggled)
 			modeCode += 1;
@@ -397,33 +436,6 @@ public class MenuActivity extends Activity {
 			modeCode += 2;
 		if (transitToggled)
 			modeCode += 4;
-		
-		if (latitude == 0.0 && longitude == 0.0)
-		{
-			returnToWithinReachActivity();
-		}
-		ServerInvoker invoker = new ServerInvoker(this, asyncHandler, latitude, longitude, modeCode, timeConstraint);
-		invoker.invokeServerComMgr();
-	}
-	
-	public void onNewIntent(Intent t) 
-	{
-		Bundle extras = t.getExtras();
-		if (extras != null)
-		{
-			latitude = extras.getDouble("latitude");
-			longitude = extras.getDouble("longitude");
-		}
-		
-	}
-
-	public void returnToWithinReachActivity()
-	{
-		Intent launchWithinReach = new Intent(this, WithinReachActivity.class);
-		if (latitude == 0.0 && longitude == 0.0)
-			launchWithinReach.putExtra("serverCallDone", 0); //0 means fail/no location was given from main activity
-		else 
-			launchWithinReach.putExtra("serverCallDone", 1); //1 means success
 		
 		launchWithinReach.putExtra("timeConstraint", timeConstraint);
 		launchWithinReach.putExtra("modeCode", modeCode);

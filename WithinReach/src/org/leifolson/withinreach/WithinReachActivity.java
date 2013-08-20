@@ -157,8 +157,8 @@ public class WithinReachActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		//
-		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+		// WHY IS THIS IN HERE???
+		//getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 		
 		// used to access shared resources like strings, etc.
 		appRes = getResources();

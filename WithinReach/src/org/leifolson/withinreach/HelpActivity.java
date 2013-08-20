@@ -45,7 +45,7 @@ public class HelpActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_help);
 		
-		Question1Button = (Button) findViewById(R.id.button1);
+		Question1Button = (Button) findViewById(R.id.help_objective);
 		Question1Button.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -55,7 +55,7 @@ public class HelpActivity extends Activity {
 			}
 		});
 		
-		Question2Button = (Button) findViewById(R.id.button2);
+		Question2Button = (Button) findViewById(R.id.pin_drop);
 		Question2Button.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -65,7 +65,7 @@ public class HelpActivity extends Activity {
 			}
 		});
 		
-		Question3Button = (Button) findViewById(R.id.button3);
+		Question3Button = (Button) findViewById(R.id.time_adjust);
 		Question3Button.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -75,7 +75,7 @@ public class HelpActivity extends Activity {
 			}
 		});
 		
-		Question4Button = (Button) findViewById(R.id.button4);
+		Question4Button = (Button) findViewById(R.id.transp_mode);
 		Question4Button.setOnClickListener(new View.OnClickListener() {
 			
 			@Override

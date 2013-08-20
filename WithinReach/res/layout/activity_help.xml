@@ -1,79 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" 
     android:scrollbars="vertical" >
 
-    <EditText
-        android:id="@+id/editText1"
+    <TextView
+        android:id="@+id/help_menu_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/menu_title_vertical_margin"
         android:layout_marginTop="@dimen/menu_title_vertical_margin"
-        android:editable="false"
+        android:inputType="none"
         android:focusable="false"
         android:gravity="center"
-        android:text="Help Menu"
+        android:text="@string/help_title"
         android:textStyle="bold" >
 
         <requestFocus />
-    </EditText>
+    </TextView>
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/quest1" />
+<ScrollView 
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:editable="false"
-        android:ems="10"
-        android:text="@string/answer1" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/quest2" />
-
-    <EditText
-        android:id="@+id/editText3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:editable="false"
-        android:ems="10"
-        android:text="@string/answer2" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/quest3" />
-
-    <EditText
-        android:id="@+id/editText4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:editable="false"
-        android:ems="10"
-        android:text="@string/answer3" />
-
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/quest4" />
-
-    <EditText
-        android:id="@+id/editText5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:editable="false"
-        android:ems="10"
-        android:text="@string/answer4" />
+		   <Button
+		       android:id="@+id/help_objective"
+		       android:layout_width="fill_parent"
+		       android:layout_height="wrap_content"
+		       android:shadowColor="@color/blue"
+		       android:text="@string/quest1"
+		       android:gravity="center"
+		       android:textStyle="bold" />
+		
+		   <TextView
+		       android:id="@+id/answer_objective"
+		       android:layout_width="fill_parent"
+		       android:layout_height="wrap_content"
+		       android:editable="false"
+		       android:ems="10"
+		       android:text="@string/answer1" />
+		
+		   <Button
+		       android:id="@+id/pin_drop"
+		       android:layout_width="match_parent"
+		       android:layout_height="wrap_content"
+		       android:text="@string/quest2" />
+		
+		   <TextView
+		       android:id="@+id/answer_pin"
+		       android:layout_width="match_parent"
+		       android:layout_height="wrap_content"
+		       android:editable="false"
+		       android:ems="10"
+		       android:text="@string/answer2" />
+		
+		   <Button
+		       android:id="@+id/time_adjust"
+		       android:layout_width="match_parent"
+		       android:layout_height="wrap_content"
+		       android:text="@string/quest3" />
+		
+		   <TextView
+		       android:id="@+id/answer_time"
+		       android:layout_width="match_parent"
+		       android:layout_height="wrap_content"
+		       android:editable="false"
+		       android:ems="10"
+		       android:text="@string/answer3" />
+		
+		   <Button
+		       android:id="@+id/transp_mode"
+		       android:layout_width="match_parent"
+		       android:layout_height="wrap_content"
+		       android:text="@string/quest4" />
+		   <TextView
+			android:id="@+id/answer_transp_mode"
+		       android:layout_width="match_parent"
+		       android:layout_height="wrap_content"
+		       android:editable="false"
+		       android:ems="10"
+		       android:text="@string/answer4" />
+    </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

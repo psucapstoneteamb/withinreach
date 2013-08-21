@@ -28,8 +28,10 @@ package org.leifolson.withinreach;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 import org.json.JSONArray;
@@ -46,6 +48,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
@@ -66,6 +69,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -97,6 +101,9 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 	// map markers
 	private Marker marker;
+	
+	// list of lines for directions
+	private List<Polyline> polyline;
 	
 	// application resources
 	private Resources appRes;
@@ -148,6 +155,9 @@ public class WithinReachActivity extends FragmentActivity implements
 		
 		// inflate the UI
 		setContentView(R.layout.activity_within_reach);
+		
+		
+		polyline = new ArrayList<Polyline>();
 		
 		// get a location manager
 		mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
@@ -351,6 +361,13 @@ public class WithinReachActivity extends FragmentActivity implements
 			marker.remove();
 			marker = null;
 		}
+		
+		else
+		{
+			handleDirections(arg0.getPosition());
+			
+		}
+		
 	}
 	
 	// returns a visible marker at the passed in position
@@ -560,6 +577,13 @@ public class WithinReachActivity extends FragmentActivity implements
 			{
 				String input = s.toString();
 				
+				// if places search changes, remove any directions lines
+				for (int i = 0; i < polyline.size(); ++i)
+				{
+					polyline.get(i).remove();
+					polyline.remove(i);
+				}
+				
 				if (s.toString().equals(""))
 				{
 						for (int i = 0; i < 10; ++i)
@@ -657,6 +681,114 @@ public class WithinReachActivity extends FragmentActivity implements
     }
     
     
+    private void handleDirections(LatLng destination)
+    {
+    	for (int i = 0; i < polyline.size(); ++i)
+    	{
+    		polyline.get(i).remove();
+    		polyline.remove(i);
+    	}
+    	Handler asyncHandler = new Handler()
+		{
+		    public void handleMessage(Message msg)
+		    {
+		        super.handleMessage(msg);
+		        switch(msg.what)
+		        {
+			        case 1:
+			        	
+			        	Bundle bundle = msg.getData();
+	            		String str = bundle.getString("DirectionsJSON");
+	            		if (str != null)
+	            		{
+	            			try 
+	            			{
+								JSONObject jsonObject = new JSONObject(str);
+								JSONArray jsonArray = jsonObject.getJSONArray("routes");
+								if (jsonArray.length() < 1)
+								{
+									break; 
+								}
+								
+								JSONArray jsonObj = jsonArray.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONArray("steps");
+								
+								String polyline = jsonArray.getJSONObject(0).getJSONObject("overview_polyline").getString("points");
+								System.out.println("points are " + polyline);
+								
+								List<LatLng> smoothPoints = decodePoly(polyline);
+								
+								
+								for (int i = 1; i < smoothPoints.size(); ++i)
+								{
+									PolylineOptions options = new PolylineOptions();
+									options.add(smoothPoints.get(i-1), smoothPoints.get(i));
+									options.color(0x770000ff);
+									options.width(5);
+									
+									drawLine(options);
+									//mMap.addPolyline(options);
+								}
+								
+								break;
+
+							} 
+	            			catch (JSONException e) 
+	            			{
+								e.printStackTrace();
+							}
+	            						
+	            		}
+			        	
+			        	
+			        	
+			        	
+			        	break;
+		        }
+		        
+		    }
+	    };
+		
+		String[] params = new String[5];
+		params[0] = "1"; // 1 tells ServicesMgr it's a Directions call
+		
+		if (marker != null)
+		{
+			//starting location
+			params[1] = Double.toString(marker.getPosition().latitude); 
+			params[2] = Double.toString(marker.getPosition().longitude);
+		}
+		else if (mCurrentLocation != null)
+		{
+			//starting location
+			params[1] = Double.toString(mCurrentLocation.getLatitude()); 
+			params[2] = Double.toString(mCurrentLocation.getLongitude());
+		}
+		else
+		{
+			Toast.makeText(this, R.string.no_location_message, Toast.LENGTH_LONG).show();
+		}
+		//ending location
+		params[3] = Double.toString(destination.latitude); 
+		params[4] = Double.toString(destination.longitude);
+		
+		new ServicesMgr(asyncHandler).execute(params);
+
+    	
+    }
+    
+    private void drawLine(PolylineOptions lineOptions)
+    {
+    	if (lineOptions == null)
+    	{
+    		System.out.println("NULL OPTIONS");
+    		return;
+    	}
+    	this.polyline.add(mMap.addPolyline(lineOptions));
+    	
+    }
+    
+    
+    
     private TileOverlay createTileOverlay(final int travelMode, final LatLng loc, int zIdx){
 		    	
     	TileOverlay overlay = null;
@@ -722,4 +854,45 @@ public class WithinReachActivity extends FragmentActivity implements
     }
  	
 
+    
+    
+    private List<LatLng> decodePoly(String encoded) 
+    {
+    	List<LatLng> poly = new ArrayList<LatLng>();
+        int index = 0, len = encoded.length();
+        int lat = 0, lng = 0;
+ 
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+ 
+            shift = 0;
+            result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+ 
+            LatLng p = new LatLng((((double) lat / 1E5)),
+                        (((double) lng / 1E5)));
+            poly.add(p);
+        }
+ 
+        return poly;
+    }
+    
+    
+    
 }
+
+
+

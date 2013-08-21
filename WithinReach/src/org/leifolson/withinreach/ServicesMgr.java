@@ -20,16 +20,21 @@ import android.os.Message;
 public class ServicesMgr extends AsyncTask<String, Void, String>
 {
 	Handler uiHandler;
+	String service;
 	
 	public ServicesMgr(Handler handler)
 	{
 		this.uiHandler = handler;
+		service = "";
 	}
 
 	protected String doInBackground(String... searchTerms) 
 	{	
 		HttpClient client = new DefaultHttpClient();
 		String url = "";
+		
+		 service = searchTerms[0]; //0 = Places, 1 = Directions
+		
 		
 		if (searchTerms[0].equals("0"))
 		{
@@ -41,6 +46,13 @@ public class ServicesMgr extends AsyncTask<String, Void, String>
 			
 		}
 		
+		else if (searchTerms[0].equals("1"))
+		{
+			url = "http://maps.googleapis.com/maps/api/directions/json?";
+			url += "origin=" + searchTerms[1] + "," + searchTerms[2];
+			url += "&destination=" + searchTerms[3] + "," + searchTerms[4] + "&sensor=false";
+			
+		}
 		
 		
 		HttpGet httpGet = new HttpGet(url);
@@ -79,7 +91,10 @@ public class ServicesMgr extends AsyncTask<String, Void, String>
 	protected void onPostExecute(String str)
 	{
 		Bundle bundle = new Bundle();
-		bundle.putString("PlacesJSON", str);
+		if (service.equals("0"))
+			bundle.putString("PlacesJSON", str);
+		else if (service.equals("1"))
+			bundle.putString("DirectionsJSON", str);
 		Message msg = Message.obtain();
 		msg.setData(bundle);
         msg.what = 1; //sending 1 means server call is done

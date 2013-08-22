@@ -22,4 +22,5 @@ WithinReach/.classpath
 WithinReach/project.properties
 WithinReach/gen/
 WithinReach/lint.xml
+WithinReach/AndroidManifest.xml
 *.local

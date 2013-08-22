@@ -71,7 +71,7 @@ public class MenuActivity extends Activity {
 	private int dayOfMonth;
 	private int hourOfDay;
 	private int minute;
-	private final int MILLI_PER_DAY = 86400000;
+	private final long MILLI_PER_DAY = 86400000;
 	
 	
 	// the menu has the following UI elements
@@ -302,9 +302,11 @@ public class MenuActivity extends Activity {
 						if(Build.VERSION.SDK_INT >= 11){
 							long offset = calendar.get(Calendar.ZONE_OFFSET) + 
 											calendar.get(Calendar.DST_OFFSET);
-							long currTime = (calendar.getTimeInMillis() + offset) % MILLI_PER_DAY;
+							long currTime = (calendar.getTimeInMillis() + offset);
 							long min = 18 * MILLI_PER_DAY;
 							long max = 42 * MILLI_PER_DAY;
+							System.out.println("Min:" + min);
+							System.out.println("Max:" + max);
 							DatePicker dp = datePickerDialog.getDatePicker();
 							dp.setMinDate(currTime - min);
 							dp.setMaxDate(currTime + max);

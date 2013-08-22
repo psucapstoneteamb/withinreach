@@ -158,8 +158,6 @@ public class WithinReachActivity extends FragmentActivity implements
 		// inflate the UI
 		setContentView(R.layout.activity_within_reach);
 		
-		
-		
 		polyline = new ArrayList<Polyline>();
 		
 		// get a location manager
@@ -692,11 +690,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	    	}
     	}
     }
-    
-    
-
-    
-    
+     
     
     private TileOverlay createTileOverlay(final int travelMode, final LatLng loc, int zIdx){
 		    	

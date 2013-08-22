@@ -49,6 +49,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.TileOverlay;
@@ -313,7 +314,6 @@ public class WithinReachActivity extends FragmentActivity implements
             // Try to obtain the map from the SupportMapFragment.
             mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
-            
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 setUpMap();
@@ -792,18 +792,16 @@ public class WithinReachActivity extends FragmentActivity implements
 
 								List<LatLng> smoothPoints = decodePoly(polyline);
 								
-								
+								PolylineOptions options = new PolylineOptions();
 								for (int i = 0; i < smoothPoints.size()-1; ++i)
 								{
-
-									PolylineOptions options = new PolylineOptions();
-									options.add(smoothPoints.get(i), smoothPoints.get(i+1));
-									options.color(0x770000ff);
+									options.add(smoothPoints.get(i));
+									options.color(0x440000ff);
 									options.width(5);
-									
-									drawLine(options);
-									//mMap.addPolyline(options);
+									options.geodesic(true);
+
 								}
+								drawLine(options);
 								
 							} 
 	            			catch (JSONException e) 
@@ -860,6 +858,7 @@ public class WithinReachActivity extends FragmentActivity implements
     		return;
     	}
     	this.polyline.add(mMap.addPolyline(lineOptions));
+    	mMap.addPolyline(lineOptions);
     	
     }
     

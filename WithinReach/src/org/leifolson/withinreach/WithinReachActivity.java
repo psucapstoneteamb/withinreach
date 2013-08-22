@@ -42,6 +42,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -82,7 +83,8 @@ public class WithinReachActivity extends FragmentActivity implements
 	LocationListener,
 	LocationSource, 
 	OnMapLongClickListener,
-	OnInfoWindowClickListener
+	OnInfoWindowClickListener,
+	OnMarkerDragListener
 	{
 	
 	// used as a handle to the map object
@@ -155,6 +157,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		
 		// inflate the UI
 		setContentView(R.layout.activity_within_reach);
+		
 		
 		
 		polyline = new ArrayList<Polyline>();
@@ -321,6 +324,7 @@ public class WithinReachActivity extends FragmentActivity implements
             
             // set location source to track users location over time
             mMap.setLocationSource(this);
+            
         }
     }
 
@@ -332,11 +336,20 @@ public class WithinReachActivity extends FragmentActivity implements
     	
 		// set the starting location of the map
 		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(PORTLAND, 14.0f));
+		
+		mMap.setOnMarkerDragListener(this);
     }
     
 	@Override
 	public void onMapLongClick(LatLng point) {
-
+		
+		//remove old directions lines
+		for (int i = 0; i < polyline.size(); ++i)
+		{
+			polyline.get(i).remove();
+		}
+		polyline.clear();
+		
 		// if a marker has already been created then move to new position
 		if (marker != null){
 			marker.setPosition(point);
@@ -581,8 +594,8 @@ public class WithinReachActivity extends FragmentActivity implements
 				for (int i = 0; i < polyline.size(); ++i)
 				{
 					polyline.get(i).remove();
-					polyline.remove(i);
 				}
+				polyline.clear();
 				
 				if (s.toString().equals(""))
 				{
@@ -756,8 +769,9 @@ public class WithinReachActivity extends FragmentActivity implements
     	for (int i = 0; i < polyline.size(); ++i)
     	{
     		polyline.get(i).remove();
-    		polyline.remove(i);
     	}
+    	polyline.clear();
+    	
     	Handler asyncHandler = new Handler()
 		{
 		    public void handleMessage(Message msg)
@@ -783,15 +797,15 @@ public class WithinReachActivity extends FragmentActivity implements
 								JSONArray jsonObj = jsonArray.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONArray("steps");
 								
 								String polyline = jsonArray.getJSONObject(0).getJSONObject("overview_polyline").getString("points");
-								System.out.println("points are " + polyline);
-								
+
 								List<LatLng> smoothPoints = decodePoly(polyline);
 								
 								
-								for (int i = 1; i < smoothPoints.size(); ++i)
+								for (int i = 0; i < smoothPoints.size()-1; ++i)
 								{
+
 									PolylineOptions options = new PolylineOptions();
-									options.add(smoothPoints.get(i-1), smoothPoints.get(i));
+									options.add(smoothPoints.get(i), smoothPoints.get(i+1));
 									options.color(0x770000ff);
 									options.width(5);
 									
@@ -799,8 +813,6 @@ public class WithinReachActivity extends FragmentActivity implements
 									//mMap.addPolyline(options);
 								}
 								
-								break;
-
 							} 
 	            			catch (JSONException e) 
 	            			{
@@ -845,6 +857,8 @@ public class WithinReachActivity extends FragmentActivity implements
 
     	
     }
+    
+
     
     private void drawLine(PolylineOptions lineOptions)
     {
@@ -891,6 +905,34 @@ public class WithinReachActivity extends FragmentActivity implements
  
         return poly;
     }
+
+	@Override
+	public void onMarkerDrag(Marker arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onMarkerDragEnd(Marker arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	//Used for removing old directions lines if they're present.
+	//May update to when marker is dragged, directions line updates on the fly.
+	public void onMarkerDragStart(Marker arg0) 
+	{
+		if (polyline.size() > 0)
+		{
+			for (Polyline line : polyline)
+			{
+			    line.remove();
+			}
+			polyline.clear();
+		}
+		
+	}
     
     
     

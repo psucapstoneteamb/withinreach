@@ -29,6 +29,7 @@ package org.leifolson.withinreach;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -37,6 +38,7 @@ import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 
@@ -69,6 +71,7 @@ public class MenuActivity extends Activity {
 	private int dayOfMonth;
 	private int hourOfDay;
 	private int minute;
+	private final long MILLI_PER_DAY = 86400000;
 	
 	
 	// the menu has the following UI elements
@@ -167,7 +170,8 @@ public class MenuActivity extends Activity {
 		minute = calendar.get(Calendar.MINUTE);
 	}
 	
-	
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setListeners(){
 		// setting up click listener for the seekbar
 		timeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
@@ -276,7 +280,7 @@ public class MenuActivity extends Activity {
 				}
 				);
 		
-		
+
 		setDateButton.setOnClickListener(
 				new View.OnClickListener() 
 				{
@@ -295,6 +299,18 @@ public class MenuActivity extends Activity {
 									MenuActivity.this.dayOfMonth = dayOfMonth;				
 								}
 							}, year, monthOfYear, dayOfMonth);
+						if(Build.VERSION.SDK_INT >= 11){
+							long offset = calendar.get(Calendar.ZONE_OFFSET) + 
+											calendar.get(Calendar.DST_OFFSET);
+							long currTime = (calendar.getTimeInMillis() + offset);
+							long min = 18 * MILLI_PER_DAY;
+							long max = 42 * MILLI_PER_DAY;
+							System.out.println("Min:" + min);
+							System.out.println("Max:" + max);
+							DatePicker dp = datePickerDialog.getDatePicker();
+							dp.setMinDate(currTime - min);
+							dp.setMaxDate(currTime + max);
+						}
 						datePickerDialog.show();
 						
 					}

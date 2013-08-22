@@ -320,6 +320,7 @@ public class WithinReachActivity extends FragmentActivity implements
             if (mMap != null) {
                 setUpMap();
                 mMap.setOnMapLongClickListener(this);
+                mMap.setOnInfoWindowClickListener(this);
             }
             
             // set location source to track users location over time
@@ -358,9 +359,6 @@ public class WithinReachActivity extends FragmentActivity implements
 		else
 		{
 			marker = makeMapMarker(point,appRes.getString(R.string.delete_marker), false);   
-		
-			// listen for info window clicks to delete marker
-			mMap.setOnInfoWindowClickListener(this);
 		}
 	}
 

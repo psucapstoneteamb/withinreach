@@ -227,7 +227,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		getMenuInflater().inflate(R.menu.within_reach, menu);
 		
 		// make this menu item available in the action bar if API supports it
-		if(Build.VERSION.SDK_INT>11){
+		if(Build.VERSION.SDK_INT >= 11){
 			MenuItem settingsItem = menu.findItem(R.id.action_settings);
 			settingsItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 			MenuItem refreshItem = menu.findItem(R.id.action_refresh);
@@ -681,6 +681,76 @@ public class WithinReachActivity extends FragmentActivity implements
     }
     
     
+
+    
+    
+    
+    private TileOverlay createTileOverlay(final int travelMode, final LatLng loc, int zIdx){
+		    	
+    	TileOverlay overlay = null;
+        	
+	        TileProvider tileProvider = new UrlTileProvider(256, 256) {
+	            @Override
+	            public synchronized URL getTileUrl(int x, int y, int zoom) {
+	
+	                String s = String.format(Locale.US, OTPA_URL_FORMAT, zoom, x, y);
+	                String mode = "";
+	                String style = "";
+	                URL url = null;
+	                try {
+	                	switch(travelMode){
+	                	case 1:
+	                		mode = "BICYCLE%2CWALK";
+	                		style = "maskblue";
+	                		break;
+
+	                	case 2:
+	                		mode = "BICYCLE";
+	                		style = "maskgreen";
+	                		break;
+	                		
+	                	case 4:
+	                		mode = "TRANSIT%2CWALK";
+	                		style = "maskred";
+	                		break;
+	                	}
+	                	
+	                	s +="?batch=true"
+	                		+"&layers=traveltime" 
+	                		+"&styles=" + style 
+	                		+"&time=" + year + "-0" + (monthOfYear+1) + "-0" + dayOfMonth 
+	                		+"T0" + hourOfDay + "%3A00%3A00"
+                			+"&mode="+ mode 
+                			+"&maxWalkDistance=4000"
+                			+"&timeconstraint=" + timeConstraint
+                			+"&clampInitialWait=600"
+                			+"&fromPlace=" + loc.latitude + "%2C"+ loc.longitude 
+                			+"&toPlace=0";
+	                	
+	                	System.out.println(s);
+	                    url = new URL(s);
+	                } catch (MalformedURLException e) {
+	                    throw new AssertionError(e);
+	                }
+	            	System.out.println(url);
+	                return url;
+	            }
+	        };
+	        
+	        TileOverlayOptions opts = new TileOverlayOptions();
+	        opts.tileProvider(tileProvider);
+	        opts.zIndex(zIdx);
+	        opts.visible(true);
+	        
+	    	
+	        overlay = mMap.addTileOverlay(opts);
+	        
+   	
+        return overlay;
+    }
+ 	
+
+    
     private void handleDirections(LatLng destination)
     {
     	for (int i = 0; i < polyline.size(); ++i)
@@ -786,74 +856,6 @@ public class WithinReachActivity extends FragmentActivity implements
     	this.polyline.add(mMap.addPolyline(lineOptions));
     	
     }
-    
-    
-    
-    private TileOverlay createTileOverlay(final int travelMode, final LatLng loc, int zIdx){
-		    	
-    	TileOverlay overlay = null;
-        	
-	        TileProvider tileProvider = new UrlTileProvider(256, 256) {
-	            @Override
-	            public synchronized URL getTileUrl(int x, int y, int zoom) {
-	
-	                String s = String.format(Locale.US, OTPA_URL_FORMAT, zoom, x, y);
-	                String mode = "";
-	                String style = "";
-	                URL url = null;
-	                try {
-	                	switch(travelMode){
-	                	case 1:
-	                		mode = "BICYCLE%2CWALK";
-	                		style = "maskblue";
-	                		break;
-
-	                	case 2:
-	                		mode = "BICYCLE";
-	                		style = "maskgreen";
-	                		break;
-	                		
-	                	case 4:
-	                		mode = "TRANSIT%2CWALK";
-	                		style = "maskred";
-	                		break;
-	                	}
-	                	
-	                	s +="?batch=true"
-	                		+"&layers=traveltime" 
-	                		+"&styles=" + style 
-	                		+"&time=" + year + "-0" + (monthOfYear+1) + "-" + dayOfMonth 
-	                		+"T0" + hourOfDay + "%3A00%3A00"
-                			+"&mode="+ mode 
-                			+"&maxWalkDistance=4000"
-                			+"&timeconstraint=" + timeConstraint
-                			+"&clampInitialWait=600"
-                			+"&fromPlace=" + loc.latitude + "%2C"+ loc.longitude 
-                			+"&toPlace=0";
-	                	
-	                	System.out.println(s);
-	                    url = new URL(s);
-	                } catch (MalformedURLException e) {
-	                    throw new AssertionError(e);
-	                }
-	            	System.out.println(url);
-	                return url;
-	            }
-	        };
-	        
-	        TileOverlayOptions opts = new TileOverlayOptions();
-	        opts.tileProvider(tileProvider);
-	        opts.zIndex(zIdx);
-	        opts.visible(true);
-	        
-	    	
-	        overlay = mMap.addTileOverlay(opts);
-	        
-   	
-        return overlay;
-    }
- 	
-
     
     
     private List<LatLng> decodePoly(String encoded) 

@@ -68,18 +68,23 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -91,8 +96,8 @@ public class WithinReachActivity extends FragmentActivity implements
 	OnMapLongClickListener,
 	OnInfoWindowClickListener,
 	OnMarkerDragListener,
-	OnMarkerClickListener,
-	OnClickListener
+	OnMarkerClickListener//,
+	//OnClickListener
 	{
 	
 	// used as a handle to the map object
@@ -154,11 +159,15 @@ public class WithinReachActivity extends FragmentActivity implements
 	private int hourOfDay;
 	private int minute;		// currently minutes are ignored by the application
 	
-	private Button slideButton, closePlaceButton;
+	private Button slideButton; //, closePlaceButton;
 	private TextView place_tel;
 	private TextView place_name;
 	private TextView place_rating;
 	private TextView place_vicinity;
+	private String pName;
+	private String pTel;
+	private String pRating;
+	private String pVicinity;
 	
 	/***** ACTIVITY LIFECYCLE MANAGEMENT METHODS *****/
 	
@@ -184,6 +193,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		textView = (TextView)findViewById(R.id.editText1);
 		calendar = (GregorianCalendar)Calendar.getInstance();
 		
+		
 		// set default values for the application to use
 		setDefaults();
 		
@@ -196,13 +206,42 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 	private void setUpSlider() {
 		slideButton=(Button)findViewById(R.id.slideButton);
-		slideButton.setOnClickListener(this);
-		closePlaceButton=(Button)findViewById(R.id.closePlaceButton);
-		closePlaceButton.setOnClickListener(this);
-		place_name = (TextView) findViewById(R.id.place_name);
-		place_tel = (TextView) findViewById(R.id.place_tel);
-		place_rating = (TextView) findViewById(R.id.place_rating);
-		place_vicinity = (TextView) findViewById(R.id.place_vicinity);
+		//slideButton.setOnClickListener(this);
+		//closePlaceButton=(Button)findViewById(R.id.closePlaceButton);
+		//closePlaceButton.setOnClickListener(this);
+//		place_name = (TextView) findViewById(R.id.place_name);
+//		place_tel = (TextView) findViewById(R.id.place_tel);
+//		place_rating = (TextView) findViewById(R.id.place_rating);
+//		place_vicinity = (TextView) findViewById(R.id.place_vicinity);		
+//		
+		//System.out.println(place_name.toString() + "**********");
+		
+	    final Dialog dialog = new Dialog(this);
+		   
+		slideButton.setOnClickListener(new View.OnClickListener() 
+		{
+			public void onClick(View v) 
+			{
+				LayoutInflater inflater = (LayoutInflater)
+					       getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				
+				dialog.setTitle("Information");
+				dialog.setCancelable(true);
+				dialog.setContentView(inflater.inflate(R.layout.places_view, null, false));
+				place_name = (TextView)dialog.findViewById(R.id.place_name);
+				place_tel = (TextView) dialog.findViewById(R.id.place_tel);
+				place_rating = (TextView) dialog.findViewById(R.id.place_rating);
+				place_vicinity = (TextView) dialog.findViewById(R.id.place_vicinity);	
+				slideButton.setText(pName + " info");
+				place_name.setText(pName);
+				place_tel.setText(pTel);
+				place_rating.setText("rating: " + pRating);
+				place_vicinity.setText(pVicinity);
+				dialog.show();
+				
+			}
+		});
+		
 	}
 
 	@Override
@@ -401,7 +440,6 @@ public class WithinReachActivity extends FragmentActivity implements
 		else
 		{
 			handleDirections(arg0.getPosition());
-			
 		}
 		
 	}
@@ -423,7 +461,8 @@ public class WithinReachActivity extends FragmentActivity implements
 		if (title.equals("Delete"))
 			newMarker.title(title);
 		else
-			newMarker.title("  ➤");
+			//newMarker.title("  ➤");  // what is this all about?
+			newMarker.title(title);
 		return mMap.addMarker(newMarker);
 	}
 	
@@ -504,6 +543,111 @@ public class WithinReachActivity extends FragmentActivity implements
 		params[4] = Integer.toString(1000);
 		new ServicesMgr(asyncHandler).execute(params);
 	}
+	
+	
+	// handle clicks on placeMarkers, show place details
+	@Override
+	public boolean onMarkerClick(Marker m) {
+		if ((marker != null) && m.equals(marker)) {
+			return false; // not a placeMarker
+		}
+		String ref = "";
+		for (int i = 0; i < 10; ++i) {
+			int delim = placeRefs[i].indexOf(';');
+			if (m.getId().equals(placeRefs[i].substring(0, delim))) {
+				ref = placeRefs[i].substring(delim+1);
+				break;
+			}
+		}
+		handlePlaceDetail(ref);
+		
+		findViewById(R.id.place_overview).setVisibility(View.VISIBLE);
+		
+		return false; // let default behavior occurs
+	}
+    
+	public void handlePlaceDetail(String ref) //this will be called to provide place details
+	{
+
+		Handler asyncHandler = new Handler()
+		{
+		    public void handleMessage(Message msg){
+		        super.handleMessage(msg);
+
+				switch (msg.what) {
+				case 1:
+
+					// if (textView.getText().toString().equals("")) //have to
+					// do this check because of multiple threads
+					// break;
+//					place_name.setText("(no name***)");
+//					place_tel.setText("(no phone)");
+//					place_rating.setText("(no rating)");
+//					place_vicinity.setText("(no address)");
+
+					Bundle bundle = msg.getData();
+					String str = bundle.getString("PlaceDetailJSON");
+					if (str != null) {
+						try {
+							JSONObject fullObject = new JSONObject(str);
+							if (!fullObject.getString("status").equals("OK"))
+								return;
+							JSONObject jsonObject = fullObject.getJSONObject("result");
+							try {
+								//place_name.setText(jsonObject.getString("name"));
+								pName = jsonObject.getString("name");
+								//slideButton.setText(jsonObject.getString("name")+" info");
+								slideButton.setText(pName + " info");
+							} catch (JSONException e) {}
+							try {
+								//place_tel.setText(jsonObject.getString("formatted_phone_number"));
+								pTel = jsonObject.getString("formatted_phone_number");
+							} catch (JSONException e) {}
+							try {
+								//place_rating.setText(jsonObject.getString("rating") + " stars");
+								pRating = jsonObject.getString("rating");
+							} catch (JSONException e) {}
+							try {
+								//place_vicinity.setText(jsonObject.getString("vicinity"));
+								pVicinity = jsonObject.getString("vicinity");
+							} catch (JSONException e) {}
+							
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+
+					}
+					break;
+				}
+		    }
+		}; 
+				
+		
+		String[] params = new String[2];
+		params[0] = Integer.toString(2); // 2 tells ServicesMgr that it's a Place Details request
+		params[1] = ref;
+		new ServicesMgr(asyncHandler).execute(params);
+	}
+	
+
+//
+//	@Override
+//	public void onClick(View v) {
+//		switch (v.getId()) {
+//        case R.id.slideButton: {
+//        	findViewById(R.id.place_detail).setVisibility(0);
+//        	findViewById(R.id.place_close).setVisibility(0);
+//        	break;
+//        }
+//        case R.id.closePlaceButton: {
+//        	findViewById(R.id.place_detail).setVisibility(View.GONE);
+//        	findViewById(R.id.place_close).setVisibility(View.GONE);
+//        	break;
+//        }
+//
+//		}
+//		
+//	}
 	
 	
 	
@@ -956,103 +1100,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		
 	}
 
-	// handle clicks on placeMarkers, show place details
-	@Override
-	public boolean onMarkerClick(Marker m) {
-		if ((marker != null) && m.equals(marker)) {
-			return false; // not a placeMarker
-		}
-		String ref = "";
-		for (int i = 0; i < 10; ++i) {
-			int delim = placeRefs[i].indexOf(';');
-			if (m.getId().equals(placeRefs[i].substring(0, delim))) {
-				ref = placeRefs[i].substring(delim+1);
-				break;
-			}
-		}
-		handlePlaceDetail(ref);
-		
-		findViewById(R.id.place_overview).setVisibility(View.VISIBLE);
-		return false; // let default behavior occurs
-	}
-    
-	public void handlePlaceDetail(String ref) //this will be called to provide place details
-	{
 
-
-		Handler asyncHandler = new Handler()
-		{
-		    public void handleMessage(Message msg){
-		        super.handleMessage(msg);
-
-				switch (msg.what) {
-				case 1:
-
-					// if (textView.getText().toString().equals("")) //have to
-					// do this check because of multiple threads
-					// break;
-					place_name.setText("(no name)");
-					place_tel.setText("(no phone)");
-					place_rating.setText("(no rating)");
-					place_vicinity.setText("(no address)");
-
-					Bundle bundle = msg.getData();
-					String str = bundle.getString("PlaceDetailJSON");
-					if (str != null) {
-						try {
-							JSONObject fullObject = new JSONObject(str);
-							if (!fullObject.getString("status").equals("OK"))
-								return;
-							JSONObject jsonObject = fullObject.getJSONObject("result");
-							try {
-								place_name.setText(jsonObject.getString("name"));
-								slideButton.setText(jsonObject.getString("name"));
-							} catch (JSONException e) {}
-							try {
-								place_tel.setText(jsonObject.getString("formatted_phone_number"));
-							} catch (JSONException e) {}
-							try {
-								place_rating.setText(jsonObject.getString("rating") + " stars");
-							} catch (JSONException e) {}
-							try {
-								place_vicinity.setText(jsonObject.getString("vicinity"));
-							} catch (JSONException e) {}
-							
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-
-					}
-					break;
-				}
-		    }
-		}; 
-		
-		
-		
-		String[] params = new String[2];
-		params[0] = Integer.toString(2); // 2 tells ServicesMgr that it's a Place Details request
-		params[1] = ref;
-		new ServicesMgr(asyncHandler).execute(params);
-	}
-
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-        case R.id.slideButton: {
-        	findViewById(R.id.place_detail).setVisibility(0);
-        	findViewById(R.id.place_close).setVisibility(0);
-        	break;
-        }
-        case R.id.closePlaceButton: {
-        	findViewById(R.id.place_detail).setVisibility(View.GONE);
-        	findViewById(R.id.place_close).setVisibility(View.GONE);
-        	break;
-        }
-
-		}
-		
-	}
     
 }
 

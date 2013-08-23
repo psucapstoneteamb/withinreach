@@ -796,7 +796,7 @@ public class WithinReachActivity extends FragmentActivity implements
 								for (int i = 0; i < smoothPoints.size()-1; ++i)
 								{
 									options.add(smoothPoints.get(i));
-									options.color(0x440000ff);
+									options.color(0x770000ff);
 									options.width(5);
 									options.geodesic(true);
 
@@ -858,7 +858,6 @@ public class WithinReachActivity extends FragmentActivity implements
     		return;
     	}
     	this.polyline.add(mMap.addPolyline(lineOptions));
-    	mMap.addPolyline(lineOptions);
     	
     }
     

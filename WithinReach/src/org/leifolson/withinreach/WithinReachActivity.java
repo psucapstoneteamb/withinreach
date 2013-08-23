@@ -76,6 +76,7 @@ import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 
 import android.widget.Button;
 import android.widget.TextView;
@@ -89,7 +90,8 @@ public class WithinReachActivity extends FragmentActivity implements
 	OnMapLongClickListener,
 	OnInfoWindowClickListener,
 	OnMarkerDragListener,
-	OnMarkerClickListener
+	OnMarkerClickListener,
+	OnClickListener
 	{
 	
 	// used as a handle to the map object
@@ -151,7 +153,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	private int hourOfDay;
 	private int minute;		// currently minutes are ignored by the application
 	
-	private Button slideButton;
+	private Button slideButton, closePlaceButton;
 	private TextView place_tel;
 	private TextView place_name;
 	private TextView place_rating;
@@ -193,6 +195,9 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 	private void setUpSlider() {
 		slideButton=(Button)findViewById(R.id.slideButton);
+		slideButton.setOnClickListener(this);
+		closePlaceButton=(Button)findViewById(R.id.closePlaceButton);
+		closePlaceButton.setOnClickListener(this);
 		place_name = (TextView) findViewById(R.id.place_name);
 		place_tel = (TextView) findViewById(R.id.place_tel);
 		place_rating = (TextView) findViewById(R.id.place_rating);
@@ -357,6 +362,8 @@ public class WithinReachActivity extends FragmentActivity implements
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapLongClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
+        mMap.getUiSettings().setZoomControlsEnabled(false);
+
     }
     
 	@Override
@@ -407,14 +414,17 @@ public class WithinReachActivity extends FragmentActivity implements
 		if (isPlace == true)
 			color = BitmapDescriptorFactory.HUE_AZURE;
 		
-		boolean draggable = !isPlace; 
-		
-		return mMap.addMarker(new MarkerOptions()
+		boolean draggable = !isPlace;
+		MarkerOptions newMarker = new MarkerOptions()
 			.visible(true)
 			.position(point)
-			.title("  ➤")
 			.draggable(draggable)
-			.icon(BitmapDescriptorFactory.defaultMarker(color)));
+			.icon(BitmapDescriptorFactory.defaultMarker(color));
+		if (title.equals("Delete"))
+			newMarker.title(title);
+		else
+			newMarker.title("  ➤");
+		return mMap.addMarker(newMarker);
 	}
 	
 	public void handlePlaces() //this will be called by the search bar for locations to add
@@ -1026,6 +1036,24 @@ public class WithinReachActivity extends FragmentActivity implements
 		params[0] = Integer.toString(2); // 2 tells ServicesMgr that it's a Place Details request
 		params[1] = ref;
 		new ServicesMgr(asyncHandler).execute(params);
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+        case R.id.slideButton: {
+        	findViewById(R.id.place_detail).setVisibility(0);
+        	findViewById(R.id.place_close).setVisibility(0);
+        	break;
+        }
+        case R.id.closePlaceButton: {
+        	findViewById(R.id.place_detail).setVisibility(View.GONE);
+        	findViewById(R.id.place_close).setVisibility(View.GONE);
+        	break;
+        }
+
+		}
+		
 	}
     
 }

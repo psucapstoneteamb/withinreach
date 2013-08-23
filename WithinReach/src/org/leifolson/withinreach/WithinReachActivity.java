@@ -412,7 +412,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		return mMap.addMarker(new MarkerOptions()
 			.visible(true)
 			.position(point)
-			.title("➤")
+			.title("  ➤")
 			.draggable(draggable)
 			.icon(BitmapDescriptorFactory.defaultMarker(color)));
 	}
@@ -1004,7 +1004,7 @@ public class WithinReachActivity extends FragmentActivity implements
 								place_tel.setText(jsonObject.getString("formatted_phone_number"));
 							} catch (JSONException e) {}
 							try {
-								place_rating.setText(jsonObject.getString("rating"));
+								place_rating.setText(jsonObject.getString("rating") + " stars");
 							} catch (JSONException e) {}
 							try {
 								place_vicinity.setText(jsonObject.getString("vicinity"));

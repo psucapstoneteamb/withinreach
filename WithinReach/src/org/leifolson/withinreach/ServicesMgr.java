@@ -33,7 +33,7 @@ public class ServicesMgr extends AsyncTask<String, Void, String>
 		HttpClient client = new DefaultHttpClient();
 		String url = "";
 		
-		 service = searchTerms[0]; //0 = Places, 1 = Directions
+		service = searchTerms[0]; //0 = Places, 1 = Directions, 2 = Place detail
 		
 		
 		if (searchTerms[0].equals("0"))
@@ -52,6 +52,13 @@ public class ServicesMgr extends AsyncTask<String, Void, String>
 			url += "origin=" + searchTerms[1] + "," + searchTerms[2];
 			url += "&destination=" + searchTerms[3] + "," + searchTerms[4] + "&sensor=false";
 			
+		}
+		
+		else if (searchTerms[0].equals("2"))
+		{
+			url = "https://maps.googleapis.com/maps/api/place/details/json?";
+			url += "reference=" + searchTerms[1];
+			url += "&sensor=false&key=AIzaSyAAlYH3-CUofsc7dFG73vF-C3q8YQaK71k";
 		}
 		
 		
@@ -95,6 +102,8 @@ public class ServicesMgr extends AsyncTask<String, Void, String>
 			bundle.putString("PlacesJSON", str);
 		else if (service.equals("1"))
 			bundle.putString("DirectionsJSON", str);
+		else if (service.equals("2"))
+			bundle.putString("PlaceDetailJSON", str);
 		Message msg = Message.obtain();
 		msg.setData(bundle);
         msg.what = 1; //sending 1 means server call is done

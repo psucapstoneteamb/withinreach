@@ -42,10 +42,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -74,7 +76,10 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -85,7 +90,9 @@ public class WithinReachActivity extends FragmentActivity implements
 	LocationSource, 
 	OnMapLongClickListener,
 	OnInfoWindowClickListener,
-	OnMarkerDragListener
+	OnMarkerDragListener,
+	OnMarkerClickListener,
+	OnClickListener
 	{
 	
 	// used as a handle to the map object
@@ -97,6 +104,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	private TextWatcher textWatcher;
 	
 	private Marker placeMarkers[];
+	private String placeRefs[];
 	
 	private OnLocationChangedListener mListener;
 	private LocationManager mLocationManager;
@@ -146,6 +154,11 @@ public class WithinReachActivity extends FragmentActivity implements
 	private int hourOfDay;
 	private int minute;		// currently minutes are ignored by the application
 	
+	private Button slideButton, closePlaceButton;
+	private TextView place_tel;
+	private TextView place_name;
+	private TextView place_rating;
+	private TextView place_vicinity;
 	
 	/***** ACTIVITY LIFECYCLE MANAGEMENT METHODS *****/
 	
@@ -178,9 +191,20 @@ public class WithinReachActivity extends FragmentActivity implements
 
 		// set up the map if necessary
 		setUpMapIfNeeded();
-
+		setUpSlider();
 	}
 	
+	private void setUpSlider() {
+		slideButton=(Button)findViewById(R.id.slideButton);
+		slideButton.setOnClickListener(this);
+		closePlaceButton=(Button)findViewById(R.id.closePlaceButton);
+		closePlaceButton.setOnClickListener(this);
+		place_name = (TextView) findViewById(R.id.place_name);
+		place_tel = (TextView) findViewById(R.id.place_tel);
+		place_rating = (TextView) findViewById(R.id.place_rating);
+		place_vicinity = (TextView) findViewById(R.id.place_vicinity);
+	}
+
 	@Override
 	protected void onStart(){
 		super.onStart();
@@ -317,8 +341,6 @@ public class WithinReachActivity extends FragmentActivity implements
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 setUpMap();
-                mMap.setOnMapLongClickListener(this);
-                mMap.setOnInfoWindowClickListener(this);
             }
             
             // set location source to track users location over time
@@ -337,6 +359,11 @@ public class WithinReachActivity extends FragmentActivity implements
 		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(PORTLAND, 14.0f));
 		
 		mMap.setOnMarkerDragListener(this);
+        mMap.setOnMarkerClickListener(this);
+        mMap.setOnMapLongClickListener(this);
+        mMap.setOnInfoWindowClickListener(this);
+        mMap.getUiSettings().setZoomControlsEnabled(false);
+
     }
     
 	@Override
@@ -387,14 +414,17 @@ public class WithinReachActivity extends FragmentActivity implements
 		if (isPlace == true)
 			color = BitmapDescriptorFactory.HUE_AZURE;
 		
-		boolean draggable = !isPlace; 
-		
-		return mMap.addMarker(new MarkerOptions()
+		boolean draggable = !isPlace;
+		MarkerOptions newMarker = new MarkerOptions()
 			.visible(true)
 			.position(point)
-			.title(title)
 			.draggable(draggable)
-			.icon(BitmapDescriptorFactory.defaultMarker(color)));
+			.icon(BitmapDescriptorFactory.defaultMarker(color));
+		if (title.equals("Delete"))
+			newMarker.title(title);
+		else
+			newMarker.title("  ➤");
+		return mMap.addMarker(newMarker);
 	}
 	
 	public void handlePlaces() //this will be called by the search bar for locations to add
@@ -433,6 +463,7 @@ public class WithinReachActivity extends FragmentActivity implements
 									
 									
 									placeMarkers[i] = makeMapMarker(latLng, name, true);
+									placeRefs[i] = placeMarkers[i].getId() + ";" + jsonElement.getString("reference");
 									
 								}
 							} 
@@ -579,6 +610,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 	private void setUpSearchBarListener(){
 		placeMarkers = new Marker[10];
+		placeRefs = new String[10];
 		
 		textWatcher = new TextWatcher()
 		{
@@ -923,8 +955,104 @@ public class WithinReachActivity extends FragmentActivity implements
 		}
 		
 	}
+
+	// handle clicks on placeMarkers, show place details
+	@Override
+	public boolean onMarkerClick(Marker m) {
+		if ((marker != null) && m.equals(marker)) {
+			return false; // not a placeMarker
+		}
+		String ref = "";
+		for (int i = 0; i < 10; ++i) {
+			int delim = placeRefs[i].indexOf(';');
+			if (m.getId().equals(placeRefs[i].substring(0, delim))) {
+				ref = placeRefs[i].substring(delim+1);
+				break;
+			}
+		}
+		handlePlaceDetail(ref);
+		
+		findViewById(R.id.place_overview).setVisibility(View.VISIBLE);
+		return false; // let default behavior occurs
+	}
     
-    
+	public void handlePlaceDetail(String ref) //this will be called to provide place details
+	{
+
+
+		Handler asyncHandler = new Handler()
+		{
+		    public void handleMessage(Message msg){
+		        super.handleMessage(msg);
+
+				switch (msg.what) {
+				case 1:
+
+					// if (textView.getText().toString().equals("")) //have to
+					// do this check because of multiple threads
+					// break;
+					place_name.setText("(no name)");
+					place_tel.setText("(no phone)");
+					place_rating.setText("(no rating)");
+					place_vicinity.setText("(no address)");
+
+					Bundle bundle = msg.getData();
+					String str = bundle.getString("PlaceDetailJSON");
+					if (str != null) {
+						try {
+							JSONObject fullObject = new JSONObject(str);
+							if (!fullObject.getString("status").equals("OK"))
+								return;
+							JSONObject jsonObject = fullObject.getJSONObject("result");
+							try {
+								place_name.setText(jsonObject.getString("name"));
+								slideButton.setText(jsonObject.getString("name"));
+							} catch (JSONException e) {}
+							try {
+								place_tel.setText(jsonObject.getString("formatted_phone_number"));
+							} catch (JSONException e) {}
+							try {
+								place_rating.setText(jsonObject.getString("rating") + " stars");
+							} catch (JSONException e) {}
+							try {
+								place_vicinity.setText(jsonObject.getString("vicinity"));
+							} catch (JSONException e) {}
+							
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+
+					}
+					break;
+				}
+		    }
+		}; 
+		
+		
+		
+		String[] params = new String[2];
+		params[0] = Integer.toString(2); // 2 tells ServicesMgr that it's a Place Details request
+		params[1] = ref;
+		new ServicesMgr(asyncHandler).execute(params);
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+        case R.id.slideButton: {
+        	findViewById(R.id.place_detail).setVisibility(0);
+        	findViewById(R.id.place_close).setVisibility(0);
+        	break;
+        }
+        case R.id.closePlaceButton: {
+        	findViewById(R.id.place_detail).setVisibility(View.GONE);
+        	findViewById(R.id.place_close).setVisibility(View.GONE);
+        	break;
+        }
+
+		}
+		
+	}
     
 }
 

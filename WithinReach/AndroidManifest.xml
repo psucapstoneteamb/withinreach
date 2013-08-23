@@ -69,7 +69,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. -->
         <activity
             android:name="org.leifolson.withinreach.MenuActivity"
             android:label="@string/menu_title"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
            
             android:configChanges="keyboardHidden|orientation|screenSize" >
             <intent-filter>

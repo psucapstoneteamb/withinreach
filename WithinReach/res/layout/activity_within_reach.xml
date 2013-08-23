@@ -5,70 +5,125 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     tools:context=".WithinReachActivity" >
-     
-    
-	<LinearLayout 
-    	android:layout_width="match_parent"
-    	android:layout_height="match_parent"
-    	android:orientation="vertical">
 
-	    <EditText
-	        android:id="@+id/editText1"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:ems="10" 
-	        android:hint="@string/search_map"
-	        android:maxLines="1"
-	        android:scrollHorizontally="true">
-	        <requestFocus />
-	    </EditText>
-	
-		<fragment
-		    android:id="@+id/map"
-		    android:name="com.google.android.gms.maps.SupportMapFragment"
-		    android:layout_width="fill_parent"
-		    android:layout_height="fill_parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
-	
-	</LinearLayout>
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/search_map"
+            android:maxLines="1"
+            android:scrollHorizontally="true" >
 
+            <requestFocus />
+        </EditText>
 
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/map_legend"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_gravity="bottom"
-        android:padding="10dp">
-        
+        android:orientation="horizontal"
+        android:padding="10dp" >
+
         <ImageView
             android:id="@+id/legend_walk_image"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:src="@drawable/walk"
             android:background="@color/blue"
+            android:contentDescription="@string/mode_descriptor_walk"
             android:padding="@dimen/map_legend_margin"
-            android:contentDescription="@string/mode_descriptor_walk"/>        
+            android:src="@drawable/walk" />
+
         <ImageView
             android:id="@+id/legend_bike_image"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:src="@drawable/bike"
             android:background="@color/green"
+            android:contentDescription="@string/mode_descriptor_bike"
             android:padding="@dimen/map_legend_margin"
-            android:contentDescription="@string/mode_descriptor_bike" />
+            android:src="@drawable/bike" />
+
         <ImageView
             android:id="@+id/legend_transit_image"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:src="@drawable/bus"
             android:background="@color/red"
+            android:contentDescription="@string/mode_descriptor_transit"
             android:padding="@dimen/map_legend_margin"
-            android:contentDescription="@string/mode_descriptor_transit" />
-        
-
+            android:src="@drawable/bus" />
     </LinearLayout>
+
+    <SlidingDrawer
+        android:id="@+id/place_overview"
+        android:layout_width="fill_parent"
+        android:layout_height="150dp"
+        android:layout_gravity="bottom"
+        android:content="@+id/contentLayout"
+        android:handle="@+id/slideButton"
+        android:orientation="vertical"
+        android:padding="5dp"
+        >
+        <Button
+            android:id="@+id/slideButton"
+            android:layout_marginRight="60dp"
+            android:layout_width="fill_parent"
+            android:layout_height="70dp"
+            android:gravity="left|center_vertical"
+            android:textColor="#340736"
+            android:paddingLeft="15dp"
+            android:background="@android:color/white"
+            >
+        </Button>
+        <Button
+            android:id="@+id/closeSlideButton"
+            android:layout_width="45dp"
+            android:layout_height="70dp"
+            android:gravity="right"
+            android:background="@android:color/darker_gray"
+            android:text="X"
+            >
+        </Button>
+        <LinearLayout
+            android:id="@+id/contentLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="0dp" >
+
+            <TextView
+                android:id="@+id/place_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(no name)" />
+            <TextView
+                android:id="@+id/place_tel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(no phone)" />
+            <TextView
+                android:id="@+id/place_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(no rating)" />
+            <TextView
+                android:id="@+id/place_vicinity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(no address)" />
+        </LinearLayout>
+    </SlidingDrawer>
+
 </FrameLayout>
-
-

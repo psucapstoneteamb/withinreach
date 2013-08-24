@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -51,7 +53,30 @@ public class ServicesMgr extends AsyncTask<String, Void, String>
 			url = "http://maps.googleapis.com/maps/api/directions/json?";
 			url += "origin=" + searchTerms[1] + "," + searchTerms[2];
 			url += "&destination=" + searchTerms[3] + "," + searchTerms[4] + "&sensor=false";
+			url += "&mode=";
+			int modeCode = Integer.parseInt(searchTerms[5]);
 			
+			if (modeCode == 1 || modeCode == 3 || modeCode == 5 || modeCode == 7)
+			{
+				url += "walking,";
+			}
+			if (modeCode == 2 || modeCode == 3 || modeCode == 6 || modeCode == 7)
+			{
+				url += "bicycling,";
+			}
+			if (modeCode == 4 || modeCode == 5 || modeCode == 6 || modeCode == 7)
+			{
+				url += "transit";
+				Calendar calendar = Calendar.getInstance();
+				Date date = calendar.getTime();
+				System.out.println("date is " + (date.getTime()/1000));
+				url += "&departure_time=" + (date.getTime()/1000);
+			}
+			//remove ending comma if there, otherwise it defaults to driving
+			if (url.endsWith(","))
+			{
+				url = url.substring(0, url.length()-1);
+			}
 		}
 		
 		else if (searchTerms[0].equals("2"))

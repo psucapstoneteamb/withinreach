@@ -47,11 +47,9 @@ import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.TileOverlay;
@@ -68,23 +66,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.annotation.TargetApi;
-import android.app.Dialog;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -96,8 +87,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	OnMapLongClickListener,
 	OnInfoWindowClickListener,
 	OnMarkerDragListener,
-	OnMarkerClickListener//,
-	//OnClickListener
+	OnMarkerClickListener
 	{
 	
 	// used as a handle to the map object
@@ -107,9 +97,6 @@ public class WithinReachActivity extends FragmentActivity implements
 	private TextView textView;
 	
 	private TextWatcher textWatcher;
-	
-	
-	
 	
 	private Marker placeMarkers[];
 	private String placeRefs[];
@@ -207,65 +194,11 @@ public class WithinReachActivity extends FragmentActivity implements
 
 		// set up the map if necessary
 		setUpMapIfNeeded();
-		setUpSlider();
+		
+		// prepares the google places window UI elements
+		setUpPlacesElements();
 	}
 	
-	private void setUpSlider() {
-		showDirectionsButton=(Button)findViewById(R.id.show_directions_button);
-		//slideButton.setOnClickListener(this);
-		closePlaceInfoButton=(Button)findViewById(R.id.close_place_info_button);
-		//closePlaceButton.setOnClickListener(this);
-		place_name = (TextView) findViewById(R.id.place_name);
-		place_tel = (TextView) findViewById(R.id.place_tel);
-		place_rating = (TextView) findViewById(R.id.place_rating);
-		place_vicinity = (TextView) findViewById(R.id.place_vicinity);		
-		
-		//System.out.println(place_name.toString() + "**********");
-		
-//	    final Dialog dialog = new Dialog(this);
-//		   
-//		slideButton.setOnClickListener(new View.OnClickListener() 
-//		{
-//			public void onClick(View v) 
-//			{
-//				LayoutInflater inflater = (LayoutInflater)
-//					       getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//				
-//				dialog.setTitle("Information");
-//				dialog.setCancelable(true);
-//				dialog.setContentView(inflater.inflate(R.layout.places_view, null, false));
-//				place_name = (TextView)dialog.findViewById(R.id.place_name);
-//				place_tel = (TextView) dialog.findViewById(R.id.place_tel);
-//				place_rating = (TextView) dialog.findViewById(R.id.place_rating);
-//				place_vicinity = (TextView) dialog.findViewById(R.id.place_vicinity);	
-//				slideButton.setText(pName + " info");
-//				place_name.setText(pName);
-//				place_tel.setText(pTel);
-//				place_rating.setText("rating: " + pRating);
-//				place_vicinity.setText(pVicinity);
-//				dialog.show();
-//				
-//			}
-//		});
-		
-		closePlaceInfoButton.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View view) {
-				findViewById(R.id.place_layout).setVisibility(View.GONE);
-				place_info_shown = false;
-			}
-		});
-		
-		showDirectionsButton.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View view) {
-				handleDirections(placeMarkerPos);
-			}
-		});
-		
-	}
 
 	@Override
 	protected void onStart(){
@@ -462,16 +395,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		
 		else
 		{
-			//handleDirections(arg0.getPosition());
-			String ref = "";
-			for (int i = 0; i < 10; ++i) {
-				int delim = placeRefs[i].indexOf(';');
-				if (arg0.getId().equals(placeRefs[i].substring(0, delim))) {
-					ref = placeRefs[i].substring(delim+1);
-					break;
-				}
-			}
-			handlePlaceDetail(ref);
+			handlePlaceDetail(getPlaceMarkerRef(arg0));
 			
 			if(!place_info_shown){
 				findViewById(R.id.place_layout).setVisibility(View.VISIBLE);
@@ -480,6 +404,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		}
 		
 	}
+	
 	
 	// returns a visible marker at the passed in position
 	// with the passed in title
@@ -495,12 +420,36 @@ public class WithinReachActivity extends FragmentActivity implements
 			.position(point)
 			.draggable(draggable)
 			.icon(BitmapDescriptorFactory.defaultMarker(color));
-		if (title.equals("Delete"))
-			newMarker.title(title);
-		else
-			//newMarker.title("  ➤");  // what is this all about?
+
 			newMarker.title(title);
 		return mMap.addMarker(newMarker);
+	}
+	
+	private void setUpPlacesElements() {
+		showDirectionsButton = (Button)findViewById(R.id.show_directions_button);
+		closePlaceInfoButton = (Button)findViewById(R.id.close_place_info_button);
+		place_name = (TextView) findViewById(R.id.place_name);
+		place_tel = (TextView) findViewById(R.id.place_tel);
+		place_rating = (TextView) findViewById(R.id.place_rating);
+		place_vicinity = (TextView) findViewById(R.id.place_vicinity);		
+		
+		closePlaceInfoButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View view) {
+				findViewById(R.id.place_layout).setVisibility(View.GONE);
+				place_info_shown = false;
+			}
+		});
+		
+		showDirectionsButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View view) {
+				handleDirections(placeMarkerPos);
+			}
+		});
+		
 	}
 	
 	public void handlePlaces() //this will be called by the search bar for locations to add
@@ -596,20 +545,15 @@ public class WithinReachActivity extends FragmentActivity implements
 		if ((marker != null) && m.equals(marker)) {
 			return false; // not a placeMarker
 		}
-//		String ref = "";
-//		for (int i = 0; i < 10; ++i) {
-//			int delim = placeRefs[i].indexOf(';');
-//			if (m.getId().equals(placeRefs[i].substring(0, delim))) {
-//				ref = placeRefs[i].substring(delim+1);
-//				break;
-//			}
-//		}
-//		handlePlaceDetail(ref);
-//		
-//		findViewById(R.id.place_overview).setVisibility(View.VISIBLE);
 
 		placeMarkerPos = m.getPosition();
 		
+		handlePlaceDetail(getPlaceMarkerRef(m));
+
+		return false; // let default behavior occurs
+	}
+    
+	private String getPlaceMarkerRef(Marker m){
 		String ref = "";
 		for (int i = 0; i < 10; ++i) {
 			int delim = placeRefs[i].indexOf(';');
@@ -618,14 +562,11 @@ public class WithinReachActivity extends FragmentActivity implements
 				break;
 			}
 		}
-		handlePlaceDetail(ref);
-
-		return false; // let default behavior occurs
+		return ref;
 	}
-    
+	
 	public void handlePlaceDetail(String ref) //this will be called to provide place details
 	{
-
 		Handler asyncHandler = new Handler()
 		{
 		    public void handleMessage(Message msg){
@@ -633,14 +574,6 @@ public class WithinReachActivity extends FragmentActivity implements
 
 				switch (msg.what) {
 				case 1:
-
-					// if (textView.getText().toString().equals("")) //have to
-					// do this check because of multiple threads
-					// break;
-//					place_name.setText("(no name***)");
-//					place_tel.setText("(no phone)");
-//					place_rating.setText("(no rating)");
-//					place_vicinity.setText("(no address)");
 
 					Bundle bundle = msg.getData();
 					String str = bundle.getString("PlaceDetailJSON");
@@ -650,23 +583,11 @@ public class WithinReachActivity extends FragmentActivity implements
 							if (!fullObject.getString("status").equals("OK"))
 								return;
 							JSONObject jsonObject = fullObject.getJSONObject("result");
-							try {
-								place_name.setText(jsonObject.getString("name"));
-								//pName = jsonObject.getString("name");
-								//slideButton.setText(pName + " info");
-							} catch (JSONException e) {}
-							try {
-								place_tel.setText(jsonObject.getString("formatted_phone_number"));
-								//pTel = jsonObject.getString("formatted_phone_number");
-							} catch (JSONException e) {}
-							try {
-								place_rating.setText(jsonObject.getString("rating") + " stars");
-								//pRating = jsonObject.getString("rating");
-							} catch (JSONException e) {}
-							try {
-								place_vicinity.setText(jsonObject.getString("vicinity"));
-								//pVicinity = jsonObject.getString("vicinity");
-							} catch (JSONException e) {}
+
+							place_name.setText(jsonObject.getString("name"));
+							place_tel.setText(jsonObject.getString("formatted_phone_number"));
+							place_rating.setText(jsonObject.getString("rating") + " stars");
+							place_vicinity.setText(jsonObject.getString("vicinity"));
 							
 						} catch (JSONException e) {
 							e.printStackTrace();
@@ -685,49 +606,32 @@ public class WithinReachActivity extends FragmentActivity implements
 		new ServicesMgr(asyncHandler).execute(params);
 	}
 	
-
-//
-//	@Override
-//	public void onClick(View v) {
-//		switch (v.getId()) {
-//        case R.id.slideButton: {
-//        	findViewById(R.id.place_detail).setVisibility(0);
-//        	findViewById(R.id.place_close).setVisibility(0);
-//        	break;
-//        }
-//        case R.id.closePlaceButton: {
-//        	findViewById(R.id.place_detail).setVisibility(View.GONE);
-//        	findViewById(R.id.place_close).setVisibility(View.GONE);
-//        	break;
-//        }
-//
-//		}
-//		
-//	}
-	
 	
 	
 	/***** LOCATION PROVIDER AND MANAGEMENT METHODS *****/
 	
 	private boolean getLocProvider(){
+		
+		boolean providerObtained = false;
+		
 		// attempt to get a provider for the location manager
 		if(mLocationManager != null){
 			if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 				mLocationManager.requestLocationUpdates(
 						LocationManager.GPS_PROVIDER, 5000L, 5F, this);
 				
-				return true;
+				providerObtained = true;
 			}
-			else if(mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+			if(mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
 				mLocationManager.requestLocationUpdates(
 						LocationManager.NETWORK_PROVIDER, 5000L, 5F, this);
 				
-				return true;
+				providerObtained = true;
 			}
-			else{
+			if(!providerObtained){
 				// we were unable to obtain a provider
 				Toast.makeText(this, R.string.error_no_provider, Toast.LENGTH_SHORT).show();
-				return false;
+				return providerObtained;
 			}
 		}
 		else{
@@ -735,6 +639,7 @@ public class WithinReachActivity extends FragmentActivity implements
 			Toast.makeText(this, R.string.error_fatal_loc_mgr, Toast.LENGTH_LONG).show();
 			return false;
 		}		
+		return providerObtained;
 	}
 	
 	@Override
@@ -1051,14 +956,9 @@ public class WithinReachActivity extends FragmentActivity implements
 								e.printStackTrace();
 							}
 	            						
-	            		}
-			        	
-			        	
-			        	
-			        	
+	            		}			        	
 			        	break;
 		        }
-		        
 		    }
 	    };
 		

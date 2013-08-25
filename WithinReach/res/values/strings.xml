@@ -31,6 +31,14 @@
     <string name="delete_marker">Delete</string>
     <string name="search_map">Search Map</string>
     
+    <!-- Place View Defaults -->
+    <string name="default_name">No Name</string>
+    <string name="default_phone">No Phone Number</string>
+    <string name="default_rating">No Rating</string>
+    <string name="default_address">No Address</string>
+    <string name="direction_btn_txt">Directions</string>
+    <string name="close_btn_txt">Close</string>
+    
     
     <string name= "quest1">What is the objective of Within Reach?</string>
     <string name= "quest2">How to drop a pin?</string>

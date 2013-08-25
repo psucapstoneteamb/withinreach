@@ -108,8 +108,12 @@ public class WithinReachActivity extends FragmentActivity implements
 	
 	private TextWatcher textWatcher;
 	
+	
+	
+	
 	private Marker placeMarkers[];
 	private String placeRefs[];
+	private int placeMarkersSize = 10;
 	
 	private OnLocationChangedListener mListener;
 	private LocationManager mLocationManager;
@@ -170,6 +174,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	private boolean place_info_shown;
 	private LatLng placeMarkerPos;
 	
+
 	/***** ACTIVITY LIFECYCLE MANAGEMENT METHODS *****/
 	
 	@Override
@@ -519,7 +524,7 @@ public class WithinReachActivity extends FragmentActivity implements
 								JSONArray jsonArray = jsonObject.getJSONArray("results");
 								if (jsonArray.length() < 1)
 									break;
-								for (int i = 0; i < 10; ++i)
+								for (int i = 0; i < placeMarkersSize; ++i)
 								{
 									if (placeMarkers[i] != null)
 										placeMarkers[i].remove();
@@ -572,7 +577,15 @@ public class WithinReachActivity extends FragmentActivity implements
 			params[2] = Double.toString(mCurrentLocation.getLatitude());
 			params[3] = Double.toString(mCurrentLocation.getLongitude());
 		}
-		params[4] = Integer.toString(1000);
+		
+		int placesRadius;
+		// crudely allow for 1km if <= 10mins, and 2km if more than 10min. This should suffice for anywhere near downtown
+		if (timeConstraint <= 10)
+			placesRadius = 1000;
+		else
+			placesRadius = 2000;
+		
+		params[4] = Integer.toString(placesRadius);
 		new ServicesMgr(asyncHandler).execute(params);
 	}
 	
@@ -797,14 +810,21 @@ public class WithinReachActivity extends FragmentActivity implements
 	}
 	
 	private void setUpSearchBarListener(){
-		placeMarkers = new Marker[10];
-		placeRefs = new String[10];
+		placeMarkers = new Marker[placeMarkersSize];
+		placeRefs = new String[placeMarkersSize];
 		
 		textWatcher = new TextWatcher()
 		{
 			public void afterTextChanged(Editable s) 
 			{
 				String input = s.toString();
+				
+				for(int i = s.length(); i > 0; i--)
+				{
+	                if(s.subSequence(i-1, i).toString().equals("\n"))
+	                     s.replace(i-1, i, "");
+
+	            }
 				
 				// if places search changes, remove any directions lines
 				for (int i = 0; i < polyline.size(); ++i)
@@ -815,7 +835,7 @@ public class WithinReachActivity extends FragmentActivity implements
 				
 				if (s.toString().equals(""))
 				{
-						for (int i = 0; i < 10; ++i)
+						for (int i = 0; i < placeMarkersSize; ++i)
 						{					
 							if (placeMarkers[i] != null)
 							{
@@ -837,7 +857,9 @@ public class WithinReachActivity extends FragmentActivity implements
 			}
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) 
-			{}	
+			{
+				
+			}	
 		};
 		textView.addTextChangedListener(textWatcher);
 	}
@@ -1040,7 +1062,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		    }
 	    };
 		
-		String[] params = new String[5];
+		String[] params = new String[6];
 		params[0] = "1"; // 1 tells ServicesMgr it's a Directions call
 		
 		if (marker != null)
@@ -1063,6 +1085,8 @@ public class WithinReachActivity extends FragmentActivity implements
 		params[3] = Double.toString(destination.latitude); 
 		params[4] = Double.toString(destination.longitude);
 		
+		//pass mode code for directions travel modes
+		params[5] = Integer.toString(modeCode);
 		new ServicesMgr(asyncHandler).execute(params);
 
     	

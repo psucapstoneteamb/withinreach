@@ -101,6 +101,24 @@
                 android:editable="false"
                 android:ems="10"
                 android:text="@string/answer4" />
+            
+             <TextView
+                android:id="@+id/help_quest5"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:background="@color/blue"
+                android:text=""
+                android:textSize="@dimen/activity_horizontal_margin"
+		        android:textStyle="bold"
+		        android:gravity="center" />
+            
+            <TextView
+                android:id="@+id/answer_transp_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:editable="false"
+                android:ems="10"
+                android:text="@string/answer4" />
         </LinearLayout>
 
     </ScrollView>

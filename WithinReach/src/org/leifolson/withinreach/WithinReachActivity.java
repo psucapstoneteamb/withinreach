@@ -131,6 +131,9 @@ public class WithinReachActivity extends FragmentActivity implements
 	private static final String OTPA_URL_FORMAT = 
 		"http://queue.its.pdx.edu:8080/opentripplanner-api-webapp/ws/tile/%d/%d/%d.png";
 	
+	private static final String OTPA_URL_FORMAT2 = 
+		"http://withinreach.cs.pdx.edu:8080/opentripplanner-api-webapp/ws/tile/%d/%d/%d.png";	
+	
     // provider for transit
     private TileOverlay overlayTransit;
     private static int TRANSIT_Z = 6;
@@ -159,15 +162,13 @@ public class WithinReachActivity extends FragmentActivity implements
 	private int hourOfDay;
 	private int minute;		// currently minutes are ignored by the application
 	
-	private Button slideButton; //, closePlaceButton;
+	private Button showDirectionsButton, closePlaceInfoButton;
 	private TextView place_tel;
 	private TextView place_name;
 	private TextView place_rating;
 	private TextView place_vicinity;
-	private String pName;
-	private String pTel;
-	private String pRating;
-	private String pVicinity;
+	private boolean place_info_shown;
+	private LatLng placeMarkerPos;
 	
 	/***** ACTIVITY LIFECYCLE MANAGEMENT METHODS *****/
 	
@@ -205,40 +206,57 @@ public class WithinReachActivity extends FragmentActivity implements
 	}
 	
 	private void setUpSlider() {
-		slideButton=(Button)findViewById(R.id.slideButton);
+		showDirectionsButton=(Button)findViewById(R.id.show_directions_button);
 		//slideButton.setOnClickListener(this);
-		//closePlaceButton=(Button)findViewById(R.id.closePlaceButton);
+		closePlaceInfoButton=(Button)findViewById(R.id.close_place_info_button);
 		//closePlaceButton.setOnClickListener(this);
-//		place_name = (TextView) findViewById(R.id.place_name);
-//		place_tel = (TextView) findViewById(R.id.place_tel);
-//		place_rating = (TextView) findViewById(R.id.place_rating);
-//		place_vicinity = (TextView) findViewById(R.id.place_vicinity);		
-//		
+		place_name = (TextView) findViewById(R.id.place_name);
+		place_tel = (TextView) findViewById(R.id.place_tel);
+		place_rating = (TextView) findViewById(R.id.place_rating);
+		place_vicinity = (TextView) findViewById(R.id.place_vicinity);		
+		
 		//System.out.println(place_name.toString() + "**********");
 		
-	    final Dialog dialog = new Dialog(this);
-		   
-		slideButton.setOnClickListener(new View.OnClickListener() 
-		{
-			public void onClick(View v) 
-			{
-				LayoutInflater inflater = (LayoutInflater)
-					       getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				
-				dialog.setTitle("Information");
-				dialog.setCancelable(true);
-				dialog.setContentView(inflater.inflate(R.layout.places_view, null, false));
-				place_name = (TextView)dialog.findViewById(R.id.place_name);
-				place_tel = (TextView) dialog.findViewById(R.id.place_tel);
-				place_rating = (TextView) dialog.findViewById(R.id.place_rating);
-				place_vicinity = (TextView) dialog.findViewById(R.id.place_vicinity);	
-				slideButton.setText(pName + " info");
-				place_name.setText(pName);
-				place_tel.setText(pTel);
-				place_rating.setText("rating: " + pRating);
-				place_vicinity.setText(pVicinity);
-				dialog.show();
-				
+//	    final Dialog dialog = new Dialog(this);
+//		   
+//		slideButton.setOnClickListener(new View.OnClickListener() 
+//		{
+//			public void onClick(View v) 
+//			{
+//				LayoutInflater inflater = (LayoutInflater)
+//					       getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//				
+//				dialog.setTitle("Information");
+//				dialog.setCancelable(true);
+//				dialog.setContentView(inflater.inflate(R.layout.places_view, null, false));
+//				place_name = (TextView)dialog.findViewById(R.id.place_name);
+//				place_tel = (TextView) dialog.findViewById(R.id.place_tel);
+//				place_rating = (TextView) dialog.findViewById(R.id.place_rating);
+//				place_vicinity = (TextView) dialog.findViewById(R.id.place_vicinity);	
+//				slideButton.setText(pName + " info");
+//				place_name.setText(pName);
+//				place_tel.setText(pTel);
+//				place_rating.setText("rating: " + pRating);
+//				place_vicinity.setText(pVicinity);
+//				dialog.show();
+//				
+//			}
+//		});
+		
+		closePlaceInfoButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View view) {
+				findViewById(R.id.place_layout).setVisibility(View.GONE);
+				place_info_shown = false;
+			}
+		});
+		
+		showDirectionsButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View view) {
+				handleDirections(placeMarkerPos);
 			}
 		});
 		
@@ -439,7 +457,21 @@ public class WithinReachActivity extends FragmentActivity implements
 		
 		else
 		{
-			handleDirections(arg0.getPosition());
+			//handleDirections(arg0.getPosition());
+			String ref = "";
+			for (int i = 0; i < 10; ++i) {
+				int delim = placeRefs[i].indexOf(';');
+				if (arg0.getId().equals(placeRefs[i].substring(0, delim))) {
+					ref = placeRefs[i].substring(delim+1);
+					break;
+				}
+			}
+			handlePlaceDetail(ref);
+			
+			if(!place_info_shown){
+				findViewById(R.id.place_layout).setVisibility(View.VISIBLE);
+				place_info_shown = true;
+			}
 		}
 		
 	}
@@ -551,6 +583,20 @@ public class WithinReachActivity extends FragmentActivity implements
 		if ((marker != null) && m.equals(marker)) {
 			return false; // not a placeMarker
 		}
+//		String ref = "";
+//		for (int i = 0; i < 10; ++i) {
+//			int delim = placeRefs[i].indexOf(';');
+//			if (m.getId().equals(placeRefs[i].substring(0, delim))) {
+//				ref = placeRefs[i].substring(delim+1);
+//				break;
+//			}
+//		}
+//		handlePlaceDetail(ref);
+//		
+//		findViewById(R.id.place_overview).setVisibility(View.VISIBLE);
+
+		placeMarkerPos = m.getPosition();
+		
 		String ref = "";
 		for (int i = 0; i < 10; ++i) {
 			int delim = placeRefs[i].indexOf(';');
@@ -560,9 +606,7 @@ public class WithinReachActivity extends FragmentActivity implements
 			}
 		}
 		handlePlaceDetail(ref);
-		
-		findViewById(R.id.place_overview).setVisibility(View.VISIBLE);
-		
+
 		return false; // let default behavior occurs
 	}
     
@@ -594,22 +638,21 @@ public class WithinReachActivity extends FragmentActivity implements
 								return;
 							JSONObject jsonObject = fullObject.getJSONObject("result");
 							try {
-								//place_name.setText(jsonObject.getString("name"));
-								pName = jsonObject.getString("name");
-								//slideButton.setText(jsonObject.getString("name")+" info");
-								slideButton.setText(pName + " info");
+								place_name.setText(jsonObject.getString("name"));
+								//pName = jsonObject.getString("name");
+								//slideButton.setText(pName + " info");
 							} catch (JSONException e) {}
 							try {
-								//place_tel.setText(jsonObject.getString("formatted_phone_number"));
-								pTel = jsonObject.getString("formatted_phone_number");
+								place_tel.setText(jsonObject.getString("formatted_phone_number"));
+								//pTel = jsonObject.getString("formatted_phone_number");
 							} catch (JSONException e) {}
 							try {
-								//place_rating.setText(jsonObject.getString("rating") + " stars");
-								pRating = jsonObject.getString("rating");
+								place_rating.setText(jsonObject.getString("rating") + " stars");
+								//pRating = jsonObject.getString("rating");
 							} catch (JSONException e) {}
 							try {
-								//place_vicinity.setText(jsonObject.getString("vicinity"));
-								pVicinity = jsonObject.getString("vicinity");
+								place_vicinity.setText(jsonObject.getString("vicinity"));
+								//pVicinity = jsonObject.getString("vicinity");
 							} catch (JSONException e) {}
 							
 						} catch (JSONException e) {
@@ -750,6 +793,7 @@ public class WithinReachActivity extends FragmentActivity implements
 		year = calendar.get(Calendar.YEAR);
 		hourOfDay = calendar.get(Calendar.HOUR_OF_DAY); 
 		minute = calendar.get(Calendar.MINUTE);
+		place_info_shown = false;
 	}
 	
 	private void setUpSearchBarListener(){

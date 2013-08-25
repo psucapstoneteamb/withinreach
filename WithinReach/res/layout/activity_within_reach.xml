@@ -65,7 +65,7 @@
             android:padding="@dimen/map_legend_margin"
             android:src="@drawable/bus" />
     </LinearLayout>
-
+<!-- 
     <LinearLayout
         android:id="@+id/place_overview"
         android:layout_width="fill_parent"
@@ -87,21 +87,34 @@
             android:paddingLeft="15dp"
             android:paddingTop="0dp"
             android:textColor="#091f92"
-            android:textStyle="bold" />
-                   <!-- android:background="#FFFFDB"-->
+            android:textStyle="bold"
+            android:background="#FFFFDB"/>
     </LinearLayout>
-<!--  
+    
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="86dp"
+        android:layout_gravity="bottom"
+        android:background="#FFFFDB"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+
+        <ScrollView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+            
     <LinearLayout
         android:id="@+id/place_detail"
-        android:layout_marginRight="30dp"
-        android:layout_width="match_parent"
-        android:layout_height="86dp"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_gravity="bottom"
         android:background="#FFFFDB"
         android:orientation="vertical"
         android:paddingLeft="5dp"
         android:paddingTop="0dp"
-        android:visibility="gone" 
+        android:visibility="visible"
         >
 
         <TextView
@@ -136,27 +149,134 @@
             android:paddingLeft="15dp"
             android:text="(no address)"
             android:textSize="15sp" />
+        
     </LinearLayout>
-    
-    <LinearLayout
-        android:id="@+id/place_close"
-        android:layout_width="30dp"
-        android:layout_height="86dp"
-        android:layout_gravity="bottom|right"
-        android:background="#FFFFDB"
+    </ScrollView>
+
+        <LinearLayout
+            android:id="@+id/place_close"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#FFFFDB"
+            android:minWidth="30dp"
+            android:orientation="vertical"
+            android:visibility="visible" >
+
+            <Button
+                android:id="@+id/closePlaceButton"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/ic_delete" />
+        </LinearLayout>
+
+    </LinearLayout>
+ -->
+     <LinearLayout
+        android:id="@+id/place_overview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:orientation="vertical"
-        android:visibility="gone"
-        >
+        android:paddingBottom="5dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="0dp"
+        android:visibility="gone">
 
         <Button
-            android:id="@+id/closePlaceButton"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:padding="0dp"
-            android:text="x" />
+            android:id="@+id/slideButton"
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="15dp"
+            android:paddingTop="0dp"
+            android:textColor="#091f92"
+            android:textStyle="bold"
+            android:background="#FFFFDB"/>
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:id="@+id/place_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#FFFFDB"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+            
+	    <LinearLayout
+	        android:id="@+id/place_detail"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="bottom"
+	        android:background="#FFFFDB"
+	        android:orientation="vertical"
+	        android:visibility="visible"
+	        >
+	
+	        <TextView
+	            android:id="@+id/place_name"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:paddingLeft="15dp"
+	            android:text="(no name)"
+	            android:textSize="15sp"
+	            android:textStyle="bold" />
+	
+	        <TextView
+	            android:id="@+id/place_tel"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:paddingLeft="15dp"
+	            android:text="(no phone)"
+	            android:textSize="15sp" />
+	
+	        <TextView
+	            android:id="@+id/place_rating"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:paddingLeft="15dp"
+	            android:text="(no rating)"
+	            android:textSize="15sp" />
+	
+	        <TextView
+	            android:id="@+id/place_vicinity"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:paddingLeft="15dp"
+	            android:text="(no address)"
+	            android:textSize="15sp" />
+	        
+	    </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/place_close"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFDB"
+            android:orientation="horizontal"
+            android:visibility="visible" >
+
+            <Button 
+                android:id="@+id/show_directions_button"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Directions"/>
+                        
+            <Button
+                android:id="@+id/close_place_info_button"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Close" />
+        </LinearLayout>
 
     </LinearLayout>
-    -->
 
 </FrameLayout>

@@ -22,25 +22,23 @@
     <string name="license">License Information</string>
     <string name="init_seek_time">0 mins</string>
     <string name="action_refresh">REFRESH</string>
-<<<<<<< HEAD
 	<string name= "help_title">Help Menu</string>
-=======
     <string name="set_date">Set Date</string>
     <string name="set_time">Set Time</string>
     <string name="set_date_time_title">Set Date and Time</string>
 
 
->>>>>>> ddccbf4a4d32025473751dd98af9b5ef14c9426b
     
     <string name= "quest1">What is the objective of Within Reach?</string>
     <string name= "quest2">How to drop a pin?</string>
     <string name= "quest3">Time Adjust</string>
     <string name= "quest4">Transportation Modes</string>
+    <string name= "quest5">Search Bar</string>
     <string name= "answer1">This Android app and an accompanied computational server which calculate and show to the user a reachable zone on the map given starting location and amount of travel time.</string>
     <string name= "answer2">In order to drop a pin on the map, please long hold your desired location and a pin will appear</string>
 	<string name= "answer3">Adjust the time by navigating into the settings and selecting your desired time span.</string>
 	<string name= "answer4">There are three different transportation modes, a user is free to select one, two, or all three at one given time. To enable a transpostation mode, enter the settings menu and click on the desired mode</string>
-	
+	<string name= "answer5">The search bar that appears at the top of the map displayed as a means to help locate local businesses within a specified </string>
 	
 	
 

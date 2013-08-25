@@ -35,7 +35,7 @@ import android.widget.Button;
 public class HelpActivity extends Activity {
 	
 	//UI elements setup and definitions 
-	private Button Question1Button;
+	//private Button Question1Button;
 	private Button Question2Button;
 	private Button Question3Button;
 	private Button Question4Button;
@@ -45,16 +45,16 @@ public class HelpActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_help);
 		
-		Question1Button = (Button) findViewById(R.id.help_objective);
-		Question1Button.setOnClickListener(new View.OnClickListener() {
+		//Question1Button = (Button) findViewById(R.id.help_objective);
+		//Question1Button.setOnClickListener(new View.OnClickListener() {
 			
-			@Override
-			public void onClick(View v) {
+			//@Override
+			//public void onClick(View v) {
 				// TODO Auto-generated method stub
 				
-			}
-		});
-		
+			//}
+		//});
+		/*
 		Question2Button = (Button) findViewById(R.id.pin_drop);
 		Question2Button.setOnClickListener(new View.OnClickListener() {
 			
@@ -63,8 +63,8 @@ public class HelpActivity extends Activity {
 				// TODO Auto-generated method stub
 				
 			}
-		});
-		
+		});*/
+		/*
 		Question3Button = (Button) findViewById(R.id.time_adjust);
 		Question3Button.setOnClickListener(new View.OnClickListener() {
 			
@@ -83,7 +83,7 @@ public class HelpActivity extends Activity {
 				// TODO Auto-generated method stub
 				
 			}
-		});
+		});*/
 	}
 	
 }

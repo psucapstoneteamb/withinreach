@@ -107,18 +107,55 @@
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:background="@color/blue"
-                android:text=""
+                android:text="@string/quest5"
                 android:textSize="@dimen/activity_horizontal_margin"
 		        android:textStyle="bold"
 		        android:gravity="center" />
             
             <TextView
-                android:id="@+id/answer_transp_mode"
+                android:id="@+id/search_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:editable="false"
                 android:ems="10"
-                android:text="@string/answer4" />
+                android:text="@string/answer5" />
+            
+             <TextView
+                android:id="@+id/help_quest6"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:background="@color/blue"
+                android:text="@string/quest6"
+                android:textSize="@dimen/activity_horizontal_margin"
+		        android:textStyle="bold"
+		        android:gravity="center" />
+            
+            <TextView
+                android:id="@+id/set_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:editable="false"
+                android:ems="10"
+                android:text="@string/answer6" />
+            
+             <TextView
+                android:id="@+id/help_quest7"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:background="@color/blue"
+                android:text="@string/quest7"
+                android:textSize="@dimen/activity_horizontal_margin"
+		        android:textStyle="bold"
+		        android:gravity="center" />
+            
+            <TextView
+                android:id="@+id/set_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:editable="false"
+                android:ems="10"
+                android:text="@string/answer7" />
+            
         </LinearLayout>
 
     </ScrollView>

@@ -546,6 +546,8 @@ public class WithinReachActivity extends FragmentActivity implements
 			return false; // not a placeMarker
 		}
 
+		// save gps position information of the marker
+		// that was clicked
 		placeMarkerPos = m.getPosition();
 		
 		handlePlaceDetail(getPlaceMarkerRef(m));
@@ -801,7 +803,6 @@ public class WithinReachActivity extends FragmentActivity implements
 	    	switch(modeCode){
 	    	case 1: // walk
 	    		overlayWalk = createTileOverlay(1, loc,WALK_Z);
-				//Toast.makeText(this, "WALK not yet supported", Toast.LENGTH_LONG).show();
 				break;
 				
 	    	case 2: //bike
@@ -845,7 +846,7 @@ public class WithinReachActivity extends FragmentActivity implements
 	            @Override
 	            public synchronized URL getTileUrl(int x, int y, int zoom) {
 	
-	                String s = String.format(Locale.US, OTPA_URL_FORMAT, zoom, x, y);
+	                String s = String.format(Locale.US, OTPA_URL_FORMAT2, zoom, x, y);
 	                String mode = "";
 	                String style = "";
 	                URL url = null;
@@ -1066,10 +1067,7 @@ public class WithinReachActivity extends FragmentActivity implements
 			polyline.clear();
 		}
 		
-	}
-
-
-    
+	}  
 }
 
 

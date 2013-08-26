@@ -38,6 +38,8 @@ import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -275,6 +277,21 @@ public class MenuActivity extends Activity {
 						dialog.setTitle("About Within Reach");
 						dialog.setCancelable(true);
 						dialog.setContentView(inflater.inflate(R.layout.about_view, null, false));
+						
+						// set build info dynamically by getting version number from the manifest
+						PackageInfo pInfo = null;
+						try {
+							pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+						} catch (NameNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						String version = pInfo.versionName;
+						TextView aboutText = (TextView)dialog.findViewById(R.id.about_text);
+						aboutText.setText("Within Reach \n\n" +
+										  "Build: v" + version + "\n\n" +
+										  "Copyright (c) 2013, Haneen Abu-Khater, Alex Flyte, " +
+										  "Kyle Greene, Vi Nguyen, Clinton Olson, and Hanrong Zhao");
 						
 					}
 				}

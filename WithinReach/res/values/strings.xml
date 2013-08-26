@@ -51,7 +51,7 @@
     <string name= "quest8">Search Bar Results</string>
     <string name= "quest6">Setting the Date</string>
     <string name= "quest7">Setting the Time</string>
-    <string name= "answer1">This Android app and an accompanied computational server which calculate and show to the user a reachable zone on the map given starting location and amount of travel time.</string>
+    <string name= "answer1">Within Reach interfaces with the Open Trip Planner Analyst API, allowing you to see what destinations are within reach given specified time, day, and transportation mode constraints.</string>
     <string name= "answer2">In order to drop a pin on the map, please long hold your desired location and a pin will appear</string>
 	<string name= "answer3">Adjust the time by navigating into the settings and selecting your desired time span.</string>
 	<string name= "answer4">There are three different  transportation modes, a user is free to select one, two, or all three at one given time. To enable a  transportation mode, enter the settings menu and click on the desired mode.</string>
@@ -83,7 +83,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     
     <string name="about_info">
         Within Reach \n\n
-        Build: v1.1 \n\n
+        Build: v1.0 \n\n
         Copyright (c) 2013, Haneen Abu-Khater, Alex Flyte, Kyle Greene, Vi Nguyen, Clinton Olson, and Hanrong Zhao
         
     </string>

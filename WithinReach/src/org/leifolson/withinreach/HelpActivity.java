@@ -28,62 +28,15 @@ package org.leifolson.withinreach;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 
 
 public class HelpActivity extends Activity {
-	
-	//UI elements setup and definitions 
-	//private Button Question1Button;
-	private Button Question2Button;
-	private Button Question3Button;
-	private Button Question4Button;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_help);
-		
-		//Question1Button = (Button) findViewById(R.id.help_objective);
-		//Question1Button.setOnClickListener(new View.OnClickListener() {
-			
-			//@Override
-			//public void onClick(View v) {
-				// TODO Auto-generated method stub
-				
-			//}
-		//});
-		/*
-		Question2Button = (Button) findViewById(R.id.pin_drop);
-		Question2Button.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				
-			}
-		});*/
-		/*
-		Question3Button = (Button) findViewById(R.id.time_adjust);
-		Question3Button.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		
-		Question4Button = (Button) findViewById(R.id.transp_mode);
-		Question4Button.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				
-			}
-		});*/
+
 	}
 	
 }

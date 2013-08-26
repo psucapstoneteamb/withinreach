@@ -9,5 +9,6 @@
     <dimen name="map_legend_margin">3dp</dimen>
     <dimen name="about_view_margin">10dip</dimen>
     <dimen name="license_view_margin">10dip</dimen>
+    <dimen name="help_title_fontsize">20sp</dimen>
 
 </resources>

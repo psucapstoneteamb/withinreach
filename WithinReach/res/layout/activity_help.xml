@@ -15,6 +15,7 @@
         android:focusable="false"
         android:gravity="center"
         android:text="@string/help_title"
+        android:textSize="@dimen/help_title_fontsize"
         android:textStyle="bold" >
 
         <requestFocus />
@@ -155,6 +156,27 @@
                 android:paddingLeft="32dp"
     			android:paddingRight="32dp"
                 android:text="@string/answer5" />
+             
+                          <TextView
+                android:id="@+id/help_quest7"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:background="@color/blue"
+                android:text="@string/quest7"
+                android:textSize="@dimen/activity_horizontal_margin"
+		        android:textStyle="bold"
+		        android:gravity="center" />
+            
+            <TextView
+                android:id="@+id/set_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:editable="false"
+                android:ems="10"
+                android:gravity="center"
+                android:paddingLeft="32dp"
+    			android:paddingRight="32dp"
+                android:text="@string/answer7" />
             
              <TextView
                 android:id="@+id/help_quest8"
@@ -177,26 +199,7 @@
     			android:paddingRight="32dp"
                 android:text="@string/answer8" />
             
-             <TextView
-                android:id="@+id/help_quest7"
-                android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:background="@color/blue"
-                android:text="@string/quest7"
-                android:textSize="@dimen/activity_horizontal_margin"
-		        android:textStyle="bold"
-		        android:gravity="center" />
-            
-            <TextView
-                android:id="@+id/set_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:editable="false"
-                android:ems="10"
-                android:gravity="center"
-                android:paddingLeft="32dp"
-    			android:paddingRight="32dp"
-                android:text="@string/answer7" />
+
             
         </LinearLayout>
 

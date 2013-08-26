@@ -7,6 +7,7 @@
     >
 
     <TextView
+        android:id="@+id/about_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/about_view_margin"

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" 
+    android:orientation="vertical"
     android:scrollbars="vertical" >
 
     <TextView
@@ -46,6 +46,9 @@
                 android:layout_height="wrap_content"
                 android:editable="false"
                 android:ems="10"
+                android:gravity="center"
+                android:paddingLeft="32dp"
+    			android:paddingRight="32dp"
                 android:text="@string/answer1" />
 
             <TextView
@@ -64,6 +67,9 @@
                 android:layout_height="wrap_content"
                 android:editable="false"
                 android:ems="10"
+                android:gravity="center"
+                android:paddingLeft="32dp"
+    			android:paddingRight="32dp"
                 android:text="@string/answer2" />
 
             <TextView
@@ -82,6 +88,9 @@
                 android:layout_height="wrap_content"
                 android:editable="false"
                 android:ems="10"
+                android:gravity="center"
+                android:paddingLeft="32dp"
+    			android:paddingRight="32dp"
                 android:text="@string/answer3" />
 
             <TextView
@@ -100,6 +109,9 @@
                 android:layout_height="wrap_content"
                 android:editable="false"
                 android:ems="10"
+                android:gravity="center"
+                android:paddingLeft="32dp"
+    			android:paddingRight="32dp"
                 android:text="@string/answer4" />
             
              <TextView
@@ -118,6 +130,9 @@
                 android:layout_height="wrap_content"
                 android:editable="false"
                 android:ems="10"
+                android:gravity="center"
+                android:paddingLeft="32dp"
+    			android:paddingRight="32dp"
                 android:text="@string/answer5" />
             
              <TextView
@@ -130,13 +145,37 @@
 		        android:textStyle="bold"
 		        android:gravity="center" />
             
-            <TextView
-                android:id="@+id/set_date"
+             <TextView
+                android:id="@+id/search_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:editable="false"
                 android:ems="10"
-                android:text="@string/answer6" />
+                android:gravity="center"
+                android:paddingLeft="32dp"
+    			android:paddingRight="32dp"
+                android:text="@string/answer5" />
+            
+             <TextView
+                android:id="@+id/help_quest8"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:background="@color/blue"
+                android:text="@string/quest8"
+                android:textSize="@dimen/activity_horizontal_margin"
+		        android:textStyle="bold"
+		        android:gravity="center" />
+             
+            <TextView
+                android:id="@+id/search_markers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:editable="false"
+                android:ems="10"
+                android:gravity="center"
+                android:paddingLeft="32dp"
+    			android:paddingRight="32dp"
+                android:text="@string/answer8" />
             
              <TextView
                 android:id="@+id/help_quest7"
@@ -154,6 +193,9 @@
                 android:layout_height="wrap_content"
                 android:editable="false"
                 android:ems="10"
+                android:gravity="center"
+                android:paddingLeft="32dp"
+    			android:paddingRight="32dp"
                 android:text="@string/answer7" />
             
         </LinearLayout>

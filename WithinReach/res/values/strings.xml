@@ -48,16 +48,17 @@
     <string name= "quest3">Time Adjust</string>
     <string name= "quest4">Transportation Modes</string>
     <string name= "quest5">Search Bar</string>
+    <string name= "quest8">Search Bar Results</string>
     <string name= "quest6">Setting the Date</string>
     <string name= "quest7">Setting the Time</string>
     <string name= "answer1">This Android app and an accompanied computational server which calculate and show to the user a reachable zone on the map given starting location and amount of travel time.</string>
     <string name= "answer2">In order to drop a pin on the map, please long hold your desired location and a pin will appear</string>
 	<string name= "answer3">Adjust the time by navigating into the settings and selecting your desired time span.</string>
-	<string name= "answer4">There are three different transportation modes, a user is free to select one, two, or all three at one given time. To enable a transpostation mode, enter the settings menu and click on the desired mode</string>
+	<string name= "answer4">There are three different  transportation modes, a user is free to select one, two, or all three at one given time. To enable a  transportation mode, enter the settings menu and click on the desired mode.</string>
 	<string name= "answer5">The search bar that appears at the top of the map displayed as a means to help locate local businesses within a specified time frame. </string>
 	<string name= "answer6">Within Reach has the functionality to set a desired date in order to display a calculated prediction of how far a user could get on a specified day given the time and transportation mode constraints. Once the "Set Time" button is pressed, a calendar will be displayed and the user will be able to choose the date desired.</string>
 	<string name= "answer7">Once the "Set Time" Button is selected from the main menu, the user will be prompted to choose a time. The hour, minute, and a choice of AM/PM will be selected in order to create a map illustration based on this given time. </string>
-
+	<string name= "answer8">The use of the search bar enables the user to view various markers on the map that display the locations of the places found along their specified zone. These markers may be clicked in order to view an information window that displays the name of the place. Further information about a specific place, including the phone number, address, google place ratings and more, can be found by clicking the info window.</string>
 
     <string name="license_info">
         Copyright (c) 2013, Haneen Abu-Khater, Alex Flyte, Kyle Greene, Vi Nguyen, Clinton Olson, and Hanrong Zhao \n

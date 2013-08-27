@@ -1,5 +1,0 @@
-//application key
-AIzaSyAox1kk5_7iB7pfaN2XA7lyhvKzihR0o-8
-
-//browser app key
-AIzaSyD2_Qcor9BZVPuU6dEN8yqAgEwZlJDq8eM
